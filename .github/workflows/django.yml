@@ -25,7 +25,3 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         
-    - name: Deploy to ec2
-      run: |
-        
-        python manage.py test
