@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
 	<title>Bhaavi</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+	integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<link rel="stylesheet" href="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.min.css">
 
 	<style>
 		
@@ -32,29 +35,62 @@
 
 
 	</style>
+
+<link rel="stylesheet" href="{%  static  'css/main.css'  %}">
+<link rel="stylesheet" href="{%  static  'css/sidebar-theme.css'  %}">
+<link rel="shortcut icon" type="image/png" href="img/favicon.png" />
 </head>
 <body>
-	{%  include 'base/navbar.html' %}
-	<div class="container-fluid">
+	<div class="page-wrapper default-theme sidebar-bg bg1 toggled pinned">	
+		{%  include 'base/navbar.html' %}
+
+	<main class="page-content pt-2">
+		<div id="overlay" class="overlay"></div>
+		<div class="container-fluid p-5">
 	{% block content %}
+	
+			
+			
 
 
 
 	{% endblock %}
-    </div>
 	<hr>
-	<ul class="list-style-none d-flex flex-wrap ">
-		<li class="mr-5">© 2020 GitHub, Inc.</li>
-		  <li class="mr-5"><a data-ga-click="Footer, go to terms, text:terms" href="https://github.com/site/terms">Terms</a></li>
-		  <li class="mr-5"><a data-ga-click="Footer, go to privacy, text:privacy" href="https://github.com/site/privacy">Privacy</a></li>
-		  <li class="mr-5"><a data-ga-click="Footer, go to security, text:security" href="https://github.com/security">Security</a></li>
-		  <li class="mr-5"><a href="https://githubstatus.com/" data-ga-click="Footer, go to status, text:status">Status</a></li>
-		  <li><a data-ga-click="Footer, go to help, text:help" href="https://help.github.com">Help</a></li>
-  
-	  </ul>	
+	<div class="row ">
+		<div class="form-group col-md-12">
+			<small>Developed by <svg class="bi bi-gem" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				<path fill-rule="evenodd" d="M3.1.7a.5.5 0 0 1 .4-.2h9a.5.5 0 0 1 .4.2l2.976 3.974c.149.185.156.45.01.644L8.4 15.3a.5.5 0 0 1-.8 0L.1 5.3a.5.5 0 0 1 0-.6l3-4zm11.386 3.785l-1.806-2.41-.776 2.413 2.582-.003zm-3.633.004l.961-2.989H4.186l.963 2.995 5.704-.006zM5.47 5.495l5.062-.005L8 13.366 5.47 5.495zm-1.371-.999l-.78-2.422-1.818 2.425 2.598-.003zM1.499 5.5l2.92-.003 2.193 6.82L1.5 5.5zm7.889 6.817l2.194-6.828 2.929-.003-5.123 6.831z"/>
+			  </svg>  <span
+					class="text-secondary font-weight-bold">
+					Bhaavi</span></small>
+		</div>
+		<div class="form-group col-md-12">
+			<a href="https://twitter.com/bhaavi" target="_blank"
+				class="btn btn-sm bg-secondary shadow-sm rounded-0 text-light mr-3 mb-3">
+				<i class="fab fa-twitter" aria-hidden="true"></i>
+			</a>
+			<a href="https://www.instagram.com/bhaavi/" target="_blank"
+				class="btn btn-sm bg-secondary shadow-sm rounded-0 text-light mr-3 mb-3">
+				<i class="fab fa-instagram" aria-hidden="true"></i>
+			</a>
+			<a href="https://www.linkedin.com/in/bhaavi/" target="_blank"
+				class="btn btn-sm bg-secondary shadow-sm rounded-0 text-light mr-3 mb-3">
+				<i class="fab fa-linkedin-in" aria-hidden="true"></i>
+			</a>
+		</div>
+	</div>
+</div>
+</main>	
+	
 </body>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+	integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous">
+</script>
+<script src="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="{%  static  'js/main.js'  %}"></script>
 </html>

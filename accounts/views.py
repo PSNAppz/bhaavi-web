@@ -8,4 +8,10 @@ def home(request):
 
 def  profile(request):
     return HttpResponse('profile')
-    
+
+def login(request):
+    return render(request, 'accounts/login.html')    
+
+def register(request):
+    return render(request, 'accounts/register.html')    
+        
