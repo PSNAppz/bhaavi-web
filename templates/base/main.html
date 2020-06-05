@@ -119,7 +119,7 @@
 			  </li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" id="navbarLandings" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
-				  Services
+				  About
 				</a>
 				<div class="dropdown-menu dropdown-menu-xl p-0" aria-labelledby="navbarLandings">
 				  <div class="row no-gutters">
@@ -150,18 +150,18 @@
   
 							<!-- Heading -->
 							<h6 class="dropdown-header">
-							  Services
+							Connect
 							</h6>
   
 							<!-- List -->
 							<a class="dropdown-item" href="./coworking.html">
-							  Psychometric test
+							  About Us
 							</a>
 							<a class="dropdown-item" href="./rental.html">
-							  E-Mentoring
+							  Contact Us
 							</a>
 							<a class="dropdown-item mb-5" href="./job.html">
-							  E-Jyothisham
+							  Technical Support
 							</a>
   
 							<!-- <h6 class="dropdown-header">
@@ -214,10 +214,10 @@
 			  </a>
               <ul class="dropdown-menu" aria-labelledby="navbarAccount">
 				{% if user.is_authenticated == False %}
-                  <a class="dropdown-item" href="./signin-cover.html">
+                  <a class="dropdown-item" href="{% url 'login'%}">
                     Sign In
                   </a>
-				  <a class="dropdown-item" href="./signin-cover.html">
+				  <a class="dropdown-item" href="{% url 'register'%}">
                     Sign Up
 				  </a>
 				{% endif %}
