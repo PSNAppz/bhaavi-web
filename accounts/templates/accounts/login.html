@@ -1,128 +1,97 @@
-<!DOCTYPE html>
-<html>
+{% load static %}
+<!doctype html>
+<html lang="en">
+	{%  include 'base/head.html' %}
+  <body>
     
-<head>
-	<title>Login</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <!-- CONTENT
+    ================================================== -->
+    <section class="section-border border-primary">
+      <div class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center no-gutters min-vh-100">
+          <div class="col-12 col-md-5 col-lg-4 py-8 py-md-11">
+            
+            <!-- Heading -->
+            <h1 class="mb-0 font-weight-bold text-center">
+              Sign in
+            </h1>
 
+            <!-- Text -->
+            <p class="mb-6 text-center text-muted">
+              Log-in to manage your account
+            </p>
 
-	<style>
-		body,
-		html {
-			margin: 0;
-			padding: 0;
-			height: 100%;
-			background: #7abecc !important;
-		}
-		.user_card {
-			width: 350px;
-			margin-top: auto;
-			margin-bottom: auto;
-			background: #74cfbf;
-			position: relative;
-			display: flex;
-			justify-content: center;
-			flex-direction: column;
-			padding: 10px;
-			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			border-radius: 5px;
+            <!-- Form -->
+            <form class="mb-6" method="POST" action="">
+				{% csrf_token %}
 
-		}
+              <!-- Email -->
+              <div class="form-group">
+                <label for="email">
+                  Email Address
+                </label>
+                <input name="email" type="email" class="form-control" id="email" placeholder="name@address.com" required>
+              </div>
 
-		.form_container {
-			margin-top: 20px;
-		}
+              <!-- Password -->
+              <div class="form-group mb-5">
+                <label for="password">
+                  Password
+                </label>
+                <input name="password" type="password" class="form-control" id="password" placeholder="Enter your password" required>
+              </div>
 
-		#form-title{
-			color: #fff;
+              <!-- Submit -->
+              <button class="btn btn-block btn-primary" type="submit">
+                Sign in
+              </button>
+
+			</form>
+			{% if form %}
+			<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				<strong>Oops!</strong> <br>{{form}}
+			  </div>
+			{% endif %}
+			  
 			
-		}
+            <!-- Text -->
+            <p class="mb-0 font-size-sm text-center text-muted">
+				Forgot password? <a href="{%url 'register'%}">Reset password</a>. Don't have an account yet <a href="{%url 'register'%}">Sign up</a>.
+            </p>
 
-		.login_btn {
-			width: 100%;
-			background: #33ccff !important;
-			color: white !important;
-		}
-		.login_btn:focus {
-			box-shadow: none !important;
-			outline: 0px !important;
-		}
-		.login_container {
-			padding: 0 2rem;
-		}
-		.input-group-text {
-			background: #f7ba5b !important;
-			color: white !important;
-			border: 0 !important;
-			border-radius: 0.25rem 0 0 0.25rem !important;
-		}
-		.input_user,
-		.input_pass:focus {
-			box-shadow: none !important;
-			outline: 0px !important;
-		}
+          </div>
+        </div> <!-- / .row -->
+      </div> <!-- / .container -->
+    </section>
 
-		#messages{
-			background-color: grey;
-			color: #fff;
-			padding: 10px;
-			margin-top: 10px;
-		}
-	</style>
+    <!-- JAVASCRIPT
+    ================================================== -->
+    <!-- Libs JS -->
+    <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/libs/@fancyapps/fancybox/dist/jquery.fancybox.min.js"></script>
+    <script src="./assets/libs/aos/dist/aos.js"></script>
+    <script src="./assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="./assets/libs/countup.js/dist/countUp.min.js"></script>
+    <script src="./assets/libs/dropzone/dist/min/dropzone.min.js"></script>
+    <script src="./assets/libs/flickity/dist/flickity.pkgd.min.js"></script>
+    <script src="./assets/libs/flickity-fade/flickity-fade.js"></script>
+    <script src="./assets/libs/highlightjs/highlight.pack.min.js"></script>
+    <script src="./assets/libs/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="./assets/libs/isotope-layout/dist/isotope.pkgd.min.js"></script>
+    <script src="./assets/libs/jarallax/dist/jarallax.min.js"></script>
+    <script src="./assets/libs/jarallax/dist/jarallax-video.min.js"></script>
+    <script src="./assets/libs/jarallax/dist/jarallax-element.min.js"></script>
+    <script src="./assets/libs/quill/dist/quill.min.js"></script>
+    <script src="./assets/libs/smooth-scroll/dist/smooth-scroll.min.js"></script>
+    <script src="./assets/libs/typed.js/lib/typed.min.js"></script>
 
-</head>
-<body>
-	<div class="container h-100">
-		<div class="d-flex justify-content-center h-100">
-			<div class="user_card">
-				<div class="d-flex justify-content-center">
+    <!-- Map -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
 
+    <!-- Theme JS -->
+    <script src="./assets/js/theme.min.js"></script>
 
-					<h3 id="form-title">LOGIN</h3>
-				</div>
-				<div class="d-flex justify-content-center form_container">
-					<form method="POST" action="">
-						{% csrf_token %}
-						<div class="input-group mb-3">
-							<div class="input-group-append">
-								<span class="input-group-text"><i class="fas fa-user"></i></span>
-							</div>
-
-							<input type="text" name="email" placeholder="Email" class="form-control">
-						</div>
-
-						<div class="input-group mb-2">
-							<div class="input-group-append">
-								<span class="input-group-text"><i class="fas fa-key"></i></span>
-							</div>
-
-								<input type="password" name="password" placeholder="Password..." class="form-control" >
-						</div>
-
-							<div class="d-flex justify-content-center mt-3 login_container">
-				 				<input class="btn login_btn" type="submit" value="Login">
-				   			</div>
-					</form>
-
-				</div>
-
-				{% for message in messages %}
-					<p id="messages">{{message}}</p>
-				{% endfor %}			
-		
-				<div class="mt-4">
-					<div class="d-flex justify-content-center links">
-						Don't have an account? <a href="{% url 'register' %}" class="ml-2">Sign Up</a>
-					</div>
-			
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
-
+      
+  </body>
 </html>

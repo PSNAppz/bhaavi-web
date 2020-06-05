@@ -6,8 +6,8 @@ urlpatterns = [
     path('profile', views.profilePage),
     path('dashboard', views.userDashboard,name="dashboard"),
     path('login', views.loginPage, name="login"),
-    path('mentor/register', views.mentorRegisterPage, name="register"),
-    path('jyolsyan/register', views.jyolsyanRegisterPage, name="register"),
+    path('mentor/register', views.mentorRegisterPage, name="mentor_register"),
+    path('jyolsyan/register', views.jyolsyanRegisterPage, name="jyolsyan_register"),
     path('user/register', views.userRegisterPage, name="register"),
     path('logout', views.logoutUser, name="logout"),   
 ]

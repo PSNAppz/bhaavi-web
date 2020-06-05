@@ -10,7 +10,7 @@ from django.contrib import messages
 
 
 def homePage(request):
-    return render(request, 'base/main.html')
+    return render(request, 'base/home.html')
 
 @login_required(login_url='login')
 def userDashboard(request):
@@ -22,19 +22,20 @@ def profilePage(request):
 
 @unauthenticated_user
 def loginPage(request):
+    messages =''
     if request.method == 'POST':
         email = request.POST.get('email')
         password =request.POST.get('password')
-
+        
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('dashboard')
         else:
-            messages.info(request, 'Username OR password is incorrect')
+            messages ='Email or password incorrect'
 
-    context = {}
+    context = {'form':messages}
     return render(request, 'accounts/login.html', context)   
 
 def logoutUser(request):
