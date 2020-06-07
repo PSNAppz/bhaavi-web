@@ -20,6 +20,10 @@ def userDashboard(request):
 def profilePage(request):
     return HttpResponse('profile')
 
+def chatpage(requset):
+    return render(requset, 'accounts/video.html')
+
+
 @unauthenticated_user
 def loginPage(request):
     messages =''
