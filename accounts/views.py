@@ -18,7 +18,10 @@ def userDashboard(request):
 
 @login_required(login_url='login')
 def profilePage(request):
-    return HttpResponse('profile')
+    return render(request, 'accounts/profile.html')
+
+def pricingDetails(request):
+    return render(request, 'base/pricing.html')    
 
 def chatpage(requset):
     return render(requset, 'accounts/video.html')
@@ -54,10 +57,14 @@ def userRegisterPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('full_name')
-            messages.success(request, 'Account was created for ' + user)
 
-            return redirect('login')
+            email = request.POST.get('email')
+            password =request.POST.get('password1')
         
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('profile')
 
     context = {'form':form,'type':'User'}
     return render(request, 'accounts/register.html', context)     
@@ -70,7 +77,6 @@ def mentorRegisterPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('full_name')
-            messages.success(request, 'Account was created for ' + user)
 
             return redirect('login')
         
@@ -86,7 +92,6 @@ def jyolsyanRegisterPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('full_name')
-            messages.success(request, 'Account was created for ' + user)
 
             return redirect('login')
         

@@ -11,21 +11,13 @@
   
               <!-- Heading -->
               <h1 class="font-weight-bold text-white mb-2">
-                Welcome {{ user.full_name }}
+                {{ user.full_name }}
               </h1>
   
               <!-- Text -->
               <p class="font-size-lg text-white-75 mb-0">
-                Complete your profile
+                Welcome to Bhaavi, please complete your profile.
               </p>
-  
-            </div>
-            <div class="col-auto">
-  
-              <!-- Button -->
-              <button class="btn btn-sm btn-gray-300-20">
-                Log Out
-              </button>
   
             </div>
           </div> <!-- / .row -->
@@ -40,15 +32,15 @@
             <div class="col-12 col-md-12">
   
               <!-- Card -->
-              <div class="card card-bleed shadow-light-lg mb-6">
-                <div class="card-header">
+                <div class="card card-bleed shadow-light-lg mb-6">
+                    <div class="card-header">
   
-                  <!-- Heading -->
-                  <h4 class="mb-0">
-                    Basic Information
-                  </h4>
+                    <!-- Heading -->
+                    <h4 class="mb-0">
+                        Basic Information
+                    </h4>
   
-                </div>
+                    </div>
                 <div class="card-body">
   
                   <!-- Form -->
@@ -72,12 +64,42 @@
                         </div>
   
                       </div>
-                      <div class="col-12">
+
+                      <div class="col-12 col-md-6">
   
-                        <!-- Bio -->
+                        <!-- Phone -->
                         <div class="form-group">
-                          <label>Bio</label>
-                          <div data-quill='{"placeholder": "Quill WYSIWYG"}'></div>
+                          <label for="phone">Phone</label>
+                          <input class="form-control" id="phone" type="text" placeholder="9XXXXXXXXX" >
+                        </div>
+  
+                      </div>
+
+                      <div class="col-12 col-md-6">
+  
+                        <!-- Address -->
+                        <div class="form-group">
+                          <label for="address">Address</label>
+                          <input class="form-control" id="address" type="text" placeholder="XYZ, ABC Block" >
+                        </div>
+  
+                      </div>      
+                      
+                      <div class="col-12 col-md-6">
+  
+                        <!-- State -->
+                        <div class="form-group">
+                          <label for="state">State</label>
+                          <input class="form-control" id="state" type="text" placeholder="State" >
+                        </div>
+  
+                      </div>
+                      <div class="col-12 col-md-6">
+  
+                        <!-- Pincode -->
+                        <div class="form-group">
+                          <label for="pincode">Pincode</label>
+                          <input class="form-control" id="pincode" type="text" placeholder="111111" >
                         </div>
   
                       </div>
@@ -94,168 +116,83 @@
   
                 </div>
               </div>
-  
-              <!-- Card -->
-              <div class="card card-bleed shadow-light-lg mb-6">
-                <div class="card-header">
-  
-                  <!-- Heading -->
-                  <h4 class="mb-0">
-                    Your media
-                  </h4>
-  
-                </div>
+
+                <!-- Card -->
+                <div class="card card-bleed shadow-light-lg mb-6">
+                    <div class="card-header">
+
+                    <!-- Heading -->
+                    <h4 class="mb-0">
+                        Academic profile
+                    </h4>
+
+                    </div>
                 <div class="card-body">
-  
-                  <!-- List group -->
-                  <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col-auto">
-  
-                          <!-- Avatar -->
-                          <div class="avatar avatar-xl">
-                            <img class="avatar-img rounded-circle" src="assets/img/avatars/avatar-1.jpg" alt="...">
-                          </div>
-  
+
+                    <!-- Form -->
+                    <form>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label for="qualification">Highest qualification</label>
+                            <input class="form-control" id="qualification" name="qualification" type="text" placeholder="Higher secondary education">
                         </div>
-                        <div class="col ml-n5">
-  
-                          <!-- Heading -->
-                          <p class="mb-0">
-                            Your avatar
-                          </p>
-  
-                          <!-- Text -->
-                          <small class="text-gray-700">
-                            PNG or JPG no larger than 1000px
-                          </small>
-  
-  
+
                         </div>
+                        <div class="col-12 col-md-6">
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="stream">Stream</label>
+                            <input class="form-control" id="stream" type="text" placeholder="Computer Science">
+                        </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-6">
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label for="institute">Institute name</label>
+                            <input class="form-control" id="institute" type="text" placeholder="School/College name" >
+                        </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-6">
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="mark">Mark/GPA</label>
+                            <input class="form-control" id="mark" type="number" placeholder="82%">
+                        </div>
+
+                        </div>                      
                         <div class="col-12 col-md-auto">
-  
-                          <!-- Button -->
-                          <button class="btn btn-xs btn-block btn-primary mt-5 mt-md-0">
-                            Upload
-                          </button>
-  
+
+                        <!-- Button -->
+                        <button class="btn btn-block btn-primary" type="submit">
+                            Save changes
+                        </button>
+
                         </div>
-                      </div>
                     </div>
-                    <div class="list-group-item">
-  
-                      <!-- Heading -->
-                      <p class="mb-0">
-                        Profile cover
-                      </p>
-  
-                      <!-- Text -->
-                      <p class="small text-gray-700">
-                        PNG or JPG at 16:9 ratio no larger than 2MB
-                      </p>
-  
-                      <!-- Dropzone -->
-                      <div class="dropzone dropzone-single" data-dropzone='{"url": "https://", "maxFiles": 1, "acceptedFiles": "image/*"}'>
-  
-                        <!-- Fallback -->
-                        <div class="fallback">
-                          <div class="custom-file">
-                            <input class="custom-file-input" id="projectCoverUploads" type="file">
-                            <label class="custom-file-label" for="projectCoverUploads">Choose file</label>
-                          </div>
-                        </div>
-  
-                        <!-- Preview -->
-                        <div class="dz-preview dz-preview-single">
-                          <div class="dz-preview-cover">
-                            <img class="dz-preview-img" data-dz-thumbnail src="data:image/svg+xml,%3csvg3c/svg%3e" alt="...">
-                          </div>
-                        </div>
-  
-                      </div>
-  
-                    </div>
-                  </div>
-  
+                    </form>
+
                 </div>
-              </div>
-  
+                </div>
               <!-- Card -->
-              <div class="card card-bleed shadow-light-lg mb-8">
-                <div class="card-header">
-  
-                  <!-- Title -->
-                  <h4 class="mb-0">
-                    Privacy
-                  </h4>
-  
-                </div>
-                <div class="card-body">
-  
-                  <!-- List group -->
-                  <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col">
-  
-                          <!-- Heading -->
-                          <p class="mb-0">
-                            Public Profile
-                          </p>
-  
-                          <!-- Text -->
-                          <small class="text-gray-700">
-                            Making your profile public means anyone can see your information.
-                          </small>
-  
-                        </div>
-                        <div class="col-auto">
-  
-                          <!-- Switch -->
-                          <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="switchOne" checked>
-                            <label class="custom-control-label" for="switchOne"></label>
-                          </div>
-  
-                        </div>
-                      </div>
-                    </div>
-                    <div class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col">
-  
-                          <!-- Heading -->
-                          <p class="mb-0">
-                            Expose your email
-                          </p>
-  
-                          <!-- Text -->
-                          <small class="text-gray-700">
-                            This lets users find you by your email address.
-                          </small>
-  
-                        </div>
-                        <div class="col-auto">
-  
-                          <!-- Switch -->
-                          <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="switchTwo" checked>
-                            <label class="custom-control-label" for="switchTwo"></label>
-                          </div>
-  
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
   
                 </div>
               </div>
   
               <!-- Text -->
-              <p class="text-center mb-0">
-                <small class="text-muted">If you no longer want to use Landkit, you can <a class="text-danger" href="#!">delete your account</a>.</small>
-              </p>
+              <!-- <p class="text-center mb-0">
+                <small class="text-muted">If you no longer want to use Bhaavi, you can <a class="text-danger" href="#!">delete your account</a>.</small>
+              </p> -->
   
             </div>
           </div> <!-- / .row -->
