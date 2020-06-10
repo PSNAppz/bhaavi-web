@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-import uuid
 from django.core.validators import RegexValidator
-
+import uuid
 
 
 class UserManager(BaseUserManager):
@@ -34,8 +33,12 @@ class UserManager(BaseUserManager):
       user.save(using=self._db)
       return user   
 
+def id_gen():
+    uid = uuid.uuid4()
+    return uid.hex
+
 class User(AbstractBaseUser, PermissionsMixin):
-    id             = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id             = models.CharField(max_length=32, primary_key=True, default=id_gen, editable=False)
     email          = models.EmailField(max_length=255, unique=True)
     full_name      = models.CharField(max_length=255, blank=False)
     customer       = models.BooleanField('customer', default=False)
