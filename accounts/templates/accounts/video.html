@@ -1,10 +1,24 @@
-{% extends 'base/main.html' %}
-{% block content %}
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-
-<div class="agora-theme">
-  <br>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Basic Communication</title>
+  <!-- <link rel="stylesheet" href="./assets/css/common.css" /> -->
+  <link rel="stylesheet" href="{%  static 'assets/css/common.css' %}"/>
+ </head>
+<body class="agora-theme">
+  <div class="navbar-fixed">
+    <nav class="agora-navbar">
+      <div class="nav-wrapper agora-primary-bg valign-wrapper">
+        <h5 class="left-align">Basic Communication</h5>
+        <a href="https://github.com/AgoraIO/Basic-Video-Call/tree/master/One-to-One-Video/Agora-Web-Tutorial-1to1" class="agora-github-pin"></a>
+      </div>
+    </nav>
+  </div>
   <form id="form" class="row col l12 s12">
     <div class="row container col l12 s12">
       <div class="col" style="min-width: 433px; max-width: 443px">
@@ -107,10 +121,8 @@
   <script src="{%  static '/vendor/jquery.min.js' %}"></script>
   <script src="{%  static '/vendor/materialize.min.js' %}"></script>
   <script src="{%  static 'AgoraRTCSDK-3.1.1.js' %}"></script>
-  <!--TODO: Remove console prints  -->
-  
+
   <script>
-    
     console.log("agora sdk version: " + AgoraRTC.VERSION + " compatible: " + AgoraRTC.checkSystemRequirements());
     var resolutions = [
       {
@@ -590,4 +602,4 @@
       })
     })
   </script>
-{% endblock content %}
+</html>
