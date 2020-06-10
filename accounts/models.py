@@ -35,9 +35,9 @@ class UserManager(BaseUserManager):
       return user   
 
 class User(AbstractBaseUser, PermissionsMixin):
-    id             = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id             = models.UUIDField(primary_key=True, default=uuid.uuid4)
     email          = models.EmailField(max_length=255, unique=True)
-    full_name      = models.CharField(max_length=255, null=False)
+    full_name      = models.CharField(max_length=255, blank=False)
     customer       = models.BooleanField('customer', default=False)
     jyolsyan       = models.BooleanField('jyolsyan ',default=False)
     mentor         = models.BooleanField('mentor', default=False)
@@ -79,12 +79,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    dob = models.DateField()
-    address = models.CharField(max_length=255)
-    state = models.CharField(max_length=255)
-    pincode = models.CharField(primary_key=True, max_length=6, validators=[RegexValidator(r'^\d{1,10}$')])
-    father = models.CharField(max_length=255, null=False)
-    mother = models.CharField(max_length=255, null=False)
+    dob = models.DateField(null=True, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+    state = models.CharField(max_length=255, blank=True)
+    pincode = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{1,10}$')], null=True)
+    father = models.CharField(max_length=255, blank=True)
+    mother = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
