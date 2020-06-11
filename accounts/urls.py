@@ -11,5 +11,10 @@ urlpatterns = [
     path('user/register', views.userRegisterPage, name="register"),
     path('logout', views.logoutUser, name="logout"),  
     path('pricing', views.pricingDetails,name="pricing"),
-    path('chat', views.chatpage, name='chat')   
+    path('chat', views.chatpage, name='chat'),  
+    # Payment flow below
+    path('plans', views.plansPage, name='plans'),
+    path('checkout', views.checkoutPage, name='checkout'), 
+    path('payment_success', views.paymentSuccessPage, name="success_payment")  
+   
 ]

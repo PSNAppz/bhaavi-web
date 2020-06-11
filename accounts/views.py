@@ -20,6 +20,18 @@ def userDashboard(request):
 def profilePage(request):
     return render(request, 'accounts/profile.html')
 
+@login_required(login_url='login')
+def plansPage(request):
+    return render(request, 'accounts/plans.html')    
+
+@login_required(login_url='login')
+def checkoutPage(request):
+    return render(request, 'accounts/checkout.html')        
+
+@login_required(login_url='login')
+def paymentSuccessPage(request):
+    return render(request, 'accounts/success.html')        
+
 def pricingDetails(request):
     return render(request, 'base/pricing.html')    
 
