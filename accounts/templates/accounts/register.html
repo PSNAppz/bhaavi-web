@@ -1,0 +1,85 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  {%  include 'base/head.html' %}
+  <body>
+    
+    <!-- CONTENT
+    ================================================== -->
+    <section class="section-border border-primary">
+      <div class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center no-gutters min-vh-100">
+          <div class="col-8 col-md-6 col-lg-7 offset-md-1 order-md-2 mt-auto mt-md-0 pt-8 pb-4 py-md-11">
+
+            <!-- Image -->
+            <img src="{%  static 'assets/img/illustrations/illustration-8.png' %}" alt="..." class="img-fluid">
+
+          </div>
+          <div class="col-12 col-md-5 col-lg-4 order-md-1 mb-auto mb-md-0 pb-8 py-md-11">
+            
+            <!-- Heading -->
+            <h1 class="mb-0 font-weight-bold text-center">
+              Sign up
+            </h1>
+
+            <!-- Text -->
+            <p class="mb-6 text-center text-muted">
+              Sign-up and complete your profile
+            </p>
+
+            <!-- Form -->
+            <form class="mb-6" method="POST" action="">
+				{% csrf_token %}
+
+			 <!-- Full name -->
+			 <div class="form-group">
+                <label for="name">
+                  Full Name
+                </label>
+                <input name="full_name" type="text" class="form-control" id="name" placeholder="Full name" required>
+			  </div>
+			  	
+              <!-- Email -->
+              <div class="form-group">
+                <label for="email">
+                  Email Address
+                </label>
+                <input name="email" type="email" class="form-control" id="email" placeholder="name@address.com" required>
+              </div>
+
+              <!-- Password -->
+              <div class="form-group mb-5">
+                <label for="password">
+                  Password
+                </label>
+                <input name="password1" type="password" class="form-control" id="password" placeholder="Enter your password" required>
+			  </div>
+			  
+			  <!-- Confirm Password -->
+              <div class="form-group mb-5">
+                <label for="password2">
+                  Confirm Password
+                </label>
+                <input name="password2" type="password" class="form-control" id="password" placeholder="Confirm your password" required>
+              </div>
+
+              <!-- Submit -->
+              <button class="btn btn-block btn-primary" type="submit">
+                Sign up
+              </button>
+
+            </form>
+			{{form.errors}}
+            <!-- Text -->
+            <p class="mb-0 font-size-sm text-center text-muted">
+              Already have an account? <a href="{% url 'login' %}">Log in</a>.
+            </p>
+
+          </div>
+        </div> <!-- / .row -->
+      </div> <!-- / .container -->
+    </section>
+
+    {%  include 'base/scripts.html' %}
+  </body>
+</html>
