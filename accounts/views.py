@@ -35,8 +35,8 @@ def paymentSuccessPage(request):
 def pricingDetails(request):
     return render(request, 'base/pricing.html')    
 
-def chatpage(requset):
-    return render(requset, 'accounts/video.html')
+# def chatpage(requset):
+#     return render(requset, 'accounts/video.html')
 
 
 @unauthenticated_user
