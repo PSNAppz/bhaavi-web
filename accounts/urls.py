@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from agora.views import Agora
 
 urlpatterns = [
     path('', views.homePage,name="home"),
@@ -15,6 +16,7 @@ urlpatterns = [
     # Payment flow below
     path('plans', views.plansPage, name='plans'),
     path('checkout', views.checkoutPage, name='checkout'), 
-    path('payment_success', views.paymentSuccessPage, name="success_payment")  
-   
+    path('payment_success', views.paymentSuccessPage, name="success_payment"),  
+    # agora package test view
+    path('agora/',Agora.as_view(app_id='60c0a4a0d014433e9870a5ba3b6c8977',channel='1'), name="agora_package"),
 ]
