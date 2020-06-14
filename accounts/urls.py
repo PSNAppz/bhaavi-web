@@ -15,6 +15,8 @@ urlpatterns = [
     # Payment flow below
     path('plans', views.plansPage, name='plans'),
     path('checkout', views.checkoutPage, name='checkout'), 
-    path('payment_success', views.paymentSuccessPage, name="success_payment")  
-   
+    path('payment_success', views.paymentSuccessPage, name="success_payment"), 
+
+    path('request/mentor', )
+    #path('request/jyothishan', )
 ]

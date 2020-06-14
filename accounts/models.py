@@ -99,10 +99,11 @@ class MentorProfile(models.Model):
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
     tags = models.CharField(max_length=255)
-    experience = models.IntegerField
+    experience = models.IntegerField(default=0)
     mentor_type =  models.CharField(max_length=1, choices=MENTOR_TYPES)
     active = models.BooleanField(default=1)
     verified = models.BooleanField(default=0)
+    mentor_channel = models.AutoField(primary_key=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -153,6 +154,7 @@ class RequestedSchedules(models.Model):
     mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
     slot = models.DateTimeField()    
     accepted = models.BooleanField(default=0)
+    token = models.CharField(max_length=255, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

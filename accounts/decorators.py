@@ -23,5 +23,8 @@ def allowed_user(allowed_roles=[]):
         return wrapper_func
     return decorator
     
-    
+def checkPurchase(items=[]):
+    def wrapper_func(request, *args, **kwargs):
+        plans = None
+        if request.user.
             
