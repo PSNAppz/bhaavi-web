@@ -7,7 +7,8 @@ from django.http import HttpResponse
 class AgoraVideoCall(View):
     app_id=''
     channel = ''
-    permission_class = 'AllowAny'
+    token = ''
+    permission_class = 'AllowAny'   
     channel_end_url = '/success/'
 
     def get_permission(self,request,permission_class):
@@ -46,6 +47,7 @@ class AgoraVideoCall(View):
             return render(request,'index.html',{
                     'agora_id':self.app_id,
                     'channel':self.channel,
+                    'token':self.token,
                     'channel_end_url':self.channel_end_url
                     })
         else:
@@ -61,8 +63,9 @@ class AgoraVideoCall(View):
 # allowed_permissions = ['AllowAny','IsAuthenticated','IsAdmin']
 
 class Agora(AgoraVideoCall):
-    app_id=''
-    channel = ''
+    app_id='60c0a4a0d014433e9870a5ba3b6c8977'
+    channel = '1'
+    token = '1234'
     permission_class = 'AllowAny'
     channel_end_url = '/success/'
 

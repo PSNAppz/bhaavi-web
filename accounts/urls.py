@@ -18,5 +18,5 @@ urlpatterns = [
     path('checkout', views.checkoutPage, name='checkout'), 
     path('payment_success', views.paymentSuccessPage, name="success_payment"),  
     # agora package test view
-    path('agora/',Agora.as_view(app_id='60c0a4a0d014433e9870a5ba3b6c8977',channel='1'), name="agora_package"),
+    path('agora/',Agora.as_view(), name="agora_package"),
 ]
