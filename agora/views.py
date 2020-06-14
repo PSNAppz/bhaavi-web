@@ -63,9 +63,9 @@ class AgoraVideoCall(View):
 # allowed_permissions = ['AllowAny','IsAuthenticated','IsAdmin']
 
 class Agora(AgoraVideoCall):
-    app_id='60c0a4a0d014433e9870a5ba3b6c8977'
-    channel = '1'
-    token = '1234'
+    app_id='4b2ebf458c6c4ef9beeb02669f8d1c22'
+    channel = '12'
+    token = '0064b2ebf458c6c4ef9beeb02669f8d1c22IAAAUpkNdn3VRr/D7Vqb2WU8a9SOAsK+zudydWU4YTZEjs1EU08AAAAAEACtIROLdDHnXgEAAQBvMede'
     permission_class = 'AllowAny'
     channel_end_url = '/success/'
 

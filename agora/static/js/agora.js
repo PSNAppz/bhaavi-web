@@ -118,7 +118,6 @@ client.on("unmute-video", function (evt) {
 // join a channel
 function joinChannel(channelName,tokenId) {
     var token = tokenId;
-    
     var userID = null; // set to null to auto generate uid on successfull connection
     client.join(token, channelName, userID, function (uid) {
         console.log("token "+token +" here")
