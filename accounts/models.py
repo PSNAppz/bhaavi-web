@@ -131,7 +131,7 @@ class Product(models.Model):
         return 'Product name: {}'.format(self.name)              
 
 class CustomerPlan(models.Model):
-    users = models.ForeignKey(User, on_delete=models.CASCADE)
+    users = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     status = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True)

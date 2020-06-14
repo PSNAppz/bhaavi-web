@@ -25,6 +25,8 @@ def allowed_user(allowed_roles=[]):
     
 def checkPurchase(items=[]):
     def wrapper_func(request, *args, **kwargs):
-        plans = None
-        if request.user.
+        if request.user.user_products in items:
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponse('Not authorised') 
             

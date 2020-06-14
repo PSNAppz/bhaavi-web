@@ -109,4 +109,9 @@ def jyolsyanRegisterPage(request):
         
 
     context = {'form':form,'type':'Jyolsyan'}
-    return render(request, 'accounts/register.html', context)                
+    return render(request, 'accounts/register.html', context)   
+
+
+ ## Request system
+
+ def request                
