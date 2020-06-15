@@ -17,6 +17,9 @@ urlpatterns = [
     path('checkout', views.checkoutPage, name='checkout'), 
     path('payment_success', views.paymentSuccessPage, name="success_payment"), 
 
-    path('request/mentor', )
+    path('request/mentor', views.requestSchedule, name="mentor_request"),
     #path('request/jyothishan', )
+
+    # Admin panel
+    path('dashboard/admin',views.adminDashboard, name="admin_panel")
 ]

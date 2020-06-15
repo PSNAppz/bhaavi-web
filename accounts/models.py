@@ -37,6 +37,10 @@ def id_gen():
     uid = uuid.uuid4()
     return uid.hex
 
+def channel_gen():
+    uid = uuid.uuid4()
+    return uid.int   
+
 class User(AbstractBaseUser, PermissionsMixin):
     id             = models.CharField(max_length=32, primary_key=True, default=id_gen, editable=False)
     email          = models.EmailField(max_length=255, unique=True)
@@ -103,7 +107,7 @@ class MentorProfile(models.Model):
     mentor_type =  models.CharField(max_length=1, choices=MENTOR_TYPES)
     active = models.BooleanField(default=1)
     verified = models.BooleanField(default=0)
-    mentor_channel = models.AutoField(primary_key=True)
+    mentor_channel = models.IntegerField(default=channel_gen)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -130,39 +134,51 @@ class Product(models.Model):
     def __str__(self):
         return 'Product name: {}'.format(self.name)              
 
-class CustomerPlan(models.Model):
+class UserPurchases(models.Model):
     users = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     status = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Plan name: {}'.format(self.product.name)   
+        return 'Plan name: {}'.format(self.product.name) 
 
-class CallSchedule(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='call', null=False)
+class MentorCallRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_request', null=False)
+    mentor_type = models.ForeignKey(Product, on_delete=models.CASCADE)
+    responded = models.BooleanField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True) 
+
+    def __str__(self):
+        return 'Profile of user: {}'.format(self.user.full_name) 
+
+class RequestedSchedules(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_times', null=False)
+    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
+    request = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False, related_name='mentor_request_schedule') 
+    slot = models.DateTimeField()    
+    accepted = models.BooleanField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+   
+    def __str__(self):
+        return 'Profile of user: {}'.format(self.user.full_name)   
+
+class AcceptedCallSchedule(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accepted_call', null=False)
     mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
     slot = models.DateTimeField()    
     completed = models.BooleanField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)          
-
-class RequestedSchedules(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_request', null=False)
-    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
-    slot = models.DateTimeField()    
-    accepted = models.BooleanField(default=0)
     token = models.CharField(max_length=255, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)       
+        return 'Profile of user: {}'.format(self.user.full_name)   
+
+    
 
 class Coupon(models.Model):
     code = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='coupon', null=True)                            
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_coupon', null=True)                            
     discount_percent = models.DecimalField( max_digits=5, decimal_places=2)
     count = models.IntegerField(default=1)
     multiple_usage = models.BooleanField(default=0)
@@ -178,8 +194,6 @@ class Coupon(models.Model):
         else:
             return False
     
-
-
 class UserRedeemCoupon(models.Model):
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, related_name='coupon_details', null=False)   
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_details', null=False)   

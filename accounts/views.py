@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 # Create your views here.
 from django.contrib.auth.decorators import login_required
-from .decorators import unauthenticated_user, allowed_user
+from .decorators import *
 from .models import *
 from .forms import *
 from django.contrib import messages
@@ -14,7 +14,16 @@ def homePage(request):
 
 @login_required(login_url='login')
 def userDashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    products = Product.objects.all()
+    purchases = request.user.user_products.all()
+    requests = request.user.mentor_request.all()
+    context = {'request':'success', 'products':products, 'purchases':purchases, 'requests':requests}
+    return render(request, 'accounts/dashboard.html', context)
+
+@login_required(login_url='login')
+@admin_user
+def adminDashboard(request):
+    return render(request, 'accounts/adminpanel.html')    
 
 @login_required(login_url='login')
 def profilePage(request):
@@ -104,7 +113,6 @@ def jyolsyanRegisterPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('full_name')
-
             return redirect('login')
         
 
@@ -113,5 +121,18 @@ def jyolsyanRegisterPage(request):
 
 
  ## Request system
+@login_required(login_url='login')
+def requestSchedule(request):
+    form = ScheduleRequestForm()
+    if request.method == "POST" :
+        form = ScheduleRequestForm(request.POST)
+        print(form.data.get('user'))
+        if form.is_valid():
+            user_id = form.data.get('user')
+            user = User.objects.get(id=user_id)
+            # if user.user_products:
+            print(user.user_products.get(id=2).product.name)
+            print(user.mentor_request.count())
+    context = {'request':'success','type':'Mentor'}
+    return redirect('dashboard')
 
- def request                
