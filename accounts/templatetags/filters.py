@@ -15,18 +15,26 @@ def check_purchase_status(lst, i):
     except:
         return None
 
-
 @register.filter
 def check_request_status(lst, i):
     try:
         counter = 0
-        print(lst)
         for request in lst.iterator():            
-            if i == request.mentor_type_id:
+            if i == request.product_id:
                 if not request.responded:
                     return lst[counter]
+                else:
+                    return lst[counter]    
             counter += 1
-        return lst[counter]    
+        return None    
 
-    except:
+    except Exception as e:
+        print("HELLO",lst, e)
         return None        
+
+@register.filter
+def check_mentor_type(item):
+    try:
+        return item.request.product.name    
+    except:
+        return None                

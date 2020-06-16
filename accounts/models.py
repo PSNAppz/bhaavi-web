@@ -145,12 +145,14 @@ class UserPurchases(models.Model):
 
 class MentorCallRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_request', null=False)
-    mentor_type = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     responded = models.BooleanField(default=0)
+    scheduled = models.BooleanField(default=0)
+    closed = models.BooleanField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name) 
+        return 'Call Request Mentor type: {}'.format(self.product.name) 
 
 class RequestedSchedules(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_times', null=False)
@@ -161,7 +163,7 @@ class RequestedSchedules(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
    
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)   
+        return 'Mentor Call Request id: {}'.format(self.request.id)   
 
 class AcceptedCallSchedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accepted_call', null=False)

@@ -15,10 +15,17 @@ def homePage(request):
 @login_required(login_url='login')
 def userDashboard(request):
     products = Product.objects.all()
-    purchases = request.user.user_products.all()
-    requests = request.user.mentor_request.all()
-    schedules = request.user.schedule_times.filter(accepted=0)
-    context = {'request':'success', 'products':products, 'purchases':purchases, 'requests':requests, 'schedules':schedules}
+    purchases = request.user.user_products.filter(status=1)
+    schedules = request.user.schedule_times.none()
+    user_requests = request.user.mentor_request.none()
+    for purchase in purchases:
+        if purchase.product_id == 2 or  purchase.product_id == 3:
+            user_requests |= request.user.mentor_request.filter(product_id = purchase.product_id)
+    #print("TYPE",requests)        
+    for user_request in user_requests :
+        if user_request.responded and not user_request.scheduled:
+            schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
+    context = {'request':'success', 'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
