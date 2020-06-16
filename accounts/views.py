@@ -17,7 +17,8 @@ def userDashboard(request):
     products = Product.objects.all()
     purchases = request.user.user_products.all()
     requests = request.user.mentor_request.all()
-    context = {'request':'success', 'products':products, 'purchases':purchases, 'requests':requests}
+    schedules = request.user.schedule_times.filter(accepted=0)
+    context = {'request':'success', 'products':products, 'purchases':purchases, 'requests':requests, 'schedules':schedules}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')

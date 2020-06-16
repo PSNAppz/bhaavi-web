@@ -20,9 +20,10 @@ def check_purchase_status(lst, i):
 def check_request_status(lst, i):
     try:
         counter = 0
-        for item in lst.iterator():            
-            if i == item.product_id:
-                if item.status == 1:
+        print(lst)
+        for request in lst.iterator():            
+            if i == request.mentor_type_id:
+                if not request.responded:
                     return lst[counter]
             counter += 1
         return lst[counter]    
