@@ -21,5 +21,6 @@ urlpatterns = [
     #path('request/jyothishan', )
 
     # Admin panel
-    path('dashboard/admin',views.adminDashboard, name="admin_panel")
+    path('dashboard/admin',views.adminDashboard, name="admin_panel"),
+    path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call")
 ]

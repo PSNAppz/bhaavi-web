@@ -26,14 +26,23 @@ def userDashboard(request):
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
     context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
-    return render(request, 'accounts/dashboard.html', context)
+    return render(request, 'admin/dashboard.html', context)
 
 @login_required(login_url='login')
 @admin_user
 def adminDashboard(request):
     call_requests = MentorCallRequest.objects.all().order_by('-responded')
     context = {'requests':call_requests}
-    return render(request, 'accounts/adminpanel.html', context)    
+    return render(request, 'admin/adminpanel.html', context)   
+
+@login_required(login_url='login')
+@admin_user
+def respondCallRequest(request, id):
+    try:
+        p = MentorCallRequest.objects.get(pk=id)
+    except MentorCallRequest.DoesNotExist:
+        raise Http404("Request does not exist")
+    return render(request, 'accounts/profile.html')     
 
 @login_required(login_url='login')
 def profilePage(request):
