@@ -98,18 +98,22 @@
               <th>UUID</th>
               <th>Name</th>
               <th>Email</th>
-              <th>Mobile</th>
               <th>Request Type</th>
+              <th>Date</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
+            {% for request in requests%}
             <tr>
-              <td>1,001</td>
-              <td>Lorem</td>
-              <td>ipsum</td>
-              <td>dolor</td>
-              <td>sit</td>
+              <td>{{request.user_id}}</td>
+              <td>{{request.user.full_name}}</td>
+              <td>{{request.user}}</td>
+              <td>{{request.product.name}}</td>
+              <td>{{request.timestamp}}</td>
+              <td>Respond</td>
             </tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>

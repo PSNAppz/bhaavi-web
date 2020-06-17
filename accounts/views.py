@@ -25,13 +25,15 @@ def userDashboard(request):
     for user_request in user_requests :
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
-    context = {'call_request':None,'type':None, 'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
+    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
 @admin_user
 def adminDashboard(request):
-    return render(request, 'accounts/adminpanel.html')    
+    call_requests = MentorCallRequest.objects.all().order_by('-responded')
+    context = {'requests':call_requests}
+    return render(request, 'accounts/adminpanel.html', context)    
 
 @login_required(login_url='login')
 def profilePage(request):
@@ -144,5 +146,5 @@ def requestSchedule(request):
                     product = purchased_product
                 ) 
     context = {'call_request':'success','type':'Mentor'}
-    return redirect('dashboard')
+    return redirect('dashboard',success=True)
 
