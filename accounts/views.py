@@ -25,7 +25,7 @@ def userDashboard(request):
     for user_request in user_requests :
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
-    context = {'request':'success', 'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
+    context = {'call_request':None,'type':None, 'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
@@ -131,16 +131,18 @@ def jyolsyanRegisterPage(request):
  ## Request system
 @login_required(login_url='login')
 def requestSchedule(request):
-    form = ScheduleRequestForm()
     if request.method == "POST" :
+        product_id = request.POST.get('product')
+        user = request.user
+        purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
+        print(user, purchased_product)
         form = ScheduleRequestForm(request.POST)
-        print(form.data.get('user'))
         if form.is_valid():
-            user_id = form.data.get('user')
-            user = User.objects.get(id=user_id)
-            # if user.user_products:
-            print(user.user_products.get(id=2).product.name)
-            print(user.mentor_request.count())
-    context = {'request':'success','type':'Mentor'}
+            if str(purchased_product.id) == str(product_id):
+                MentorCallRequest.objects.create(
+                    user = user,
+                    product = purchased_product
+                ) 
+    context = {'call_request':'success','type':'Mentor'}
     return redirect('dashboard')
 
