@@ -16,7 +16,19 @@ urlpatterns = [
     # Payment flow below
     path('plans', views.plansPage, name='plans'),
     path('checkout', views.checkoutPage, name='checkout'), 
-    path('payment_success', views.paymentSuccessPage, name="success_payment"),  
+    path('payment_success', views.paymentSuccessPage, name="success_payment"), 
+
+    path('request/mentor', views.requestCall, name="mentor_request"),
+    #path('request/jyothishan', )
+
+    # Admin panel
+    path('dashboard/admin',views.adminDashboard, name="admin_panel"),
+    path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call"),
+    path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
+    path('dashboard/admin/schedules/<int:id>',views.showSchedules, name="show_schedules"),
+    path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule")
+ 
     # agora package test view
     path('agora/',Agora.as_view(), name="agora_package"),
+
 ]

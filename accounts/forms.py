@@ -3,6 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.forms.utils import ValidationError
 from .models import User
+from .models import RequestedSchedules, MentorCallRequest
 from django import forms
 
 
@@ -182,3 +183,18 @@ class LoginForm(forms.Form):
 		login(request, user)
 		self.user = user
 		return data
+
+
+class ScheduleRequestForm(forms.ModelForm):
+	
+	class Meta:
+		model = MentorCallRequest
+		fields = ('product','user')
+
+class RequestedSchedulesForm(forms.ModelForm):
+	
+	class Meta:
+		model = RequestedSchedules
+		fields = ('user','mentor','request','slot')		
+
+
