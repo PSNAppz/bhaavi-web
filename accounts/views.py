@@ -8,7 +8,9 @@ from .models import *
 from .forms import *
 from django.contrib import messages
 import datetime
+import pytz
 
+utc=pytz.UTC
 
 def homePage(request):
     return render(request, 'base/home.html')
@@ -34,7 +36,6 @@ def pricingDetails(request):
 
 def chatpage(requset):
     return render(requset, 'accounts/video.html')
-
 
 @unauthenticated_user
 def loginPage(request):
@@ -107,7 +108,6 @@ def jyolsyanRegisterPage(request):
     context = {'form':form,'type':'Jyolsyan'}
     return render(request, 'accounts/register.html', context)   
 
-
  ## Request system
 @login_required(login_url='login')
 def requestCall(request):
@@ -135,22 +135,85 @@ def requestSchedule(request):
         request_id = request.POST.get('request')
         dt = request.POST.get('slot')
         slot = datetime.datetime.strptime(dt, "%Y-%m-%d %H:%M")
+        slot = utc.localize(slot)
         user = User.objects.get(pk=user_id)
         call_request = MentorCallRequest.objects.get(pk=request_id)
         mentor = MentorProfile.objects.get(pk=mentor_id)
+        product_id = call_request.product_id 
         form = RequestedSchedulesForm(request.POST)
-        check_schedules = RequestedSchedules.objects.filter(request_id = request_id).filter(mentor_id= mentor_id)
+        check_schedules = RequestedSchedules.objects.filter(request_id = request_id)
+        clash_requests = MentorCallRequest.objects.filter(user_id = user_id).filter(closed=0).filter(responded=1).exclude(product_id = product_id)
         if form.is_valid():
-            if not check_schedules:
-                RequestedSchedules.objects.create(
-                    user = user,
-                    mentor = mentor,
-                    request = call_request,
-                    slot = slot
-                )
-                MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
-            #else: # TODO: Add method here
-                #Already scheduled with same request and mentor
+            if clash_requests:
+                for clash in clash_requests:
+                    check_clashes = RequestedSchedules.objects.filter(request_id = clash.id)
+                    for clash_req in check_clashes:
+                        time_delta = (clash_req.slot - slot)
+                        total_seconds = time_delta.total_seconds()
+                        minutes = total_seconds/60
+                        if (minutes <= 120 and minutes >= -120):
+                            # TODO: Show error message
+                            print(minutes,"TODO: Schedule clashing")
+                            return redirect('admin_panel')
+                        else:
+                            if not check_schedules:
+                                RequestedSchedules.objects.create(
+                                    user = user,
+                                    mentor = mentor,
+                                    request = call_request,
+                                    slot = slot
+                                )
+                                print("Schedule added")
+                                MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
+                                return redirect('admin_panel')  
+                            else:
+                                for schedules in check_schedules:
+                                    time_delta = (schedules.slot - slot)
+                                    total_seconds = time_delta.total_seconds()
+                                    minutes = total_seconds/60
+                                    if (minutes <= 5 and minutes >= -5):
+                                        # TODO: Show error message
+                                        print(minutes,"TODO: Schedule within 5 min already exist")
+                                        return redirect('admin_panel') 
+                                    else:
+                                        RequestedSchedules.objects.create(
+                                            user = user,
+                                            mentor = mentor,
+                                            request = call_request,
+                                            slot = slot
+                                        )
+                                        print("Schedule added")
+                                        MentorCallRequest.objects.filter(pk=request_id).update(responded=True) 
+                                        return redirect('admin_panel')  
+            else:    
+                if not check_schedules:
+                    RequestedSchedules.objects.create(
+                        user = user,
+                        mentor = mentor,
+                        request = call_request,
+                        slot = slot
+                    )
+                    MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
+                    return redirect('admin_panel')  
+                else:
+                    for schedules in check_schedules:
+                        time_delta = (schedules.slot - slot)
+                        total_seconds = time_delta.total_seconds()
+                        minutes = total_seconds/60
+                        if (minutes <= 5 and minutes >= -5):
+                            # TODO: Show error message
+                            print(minutes,"TODO: Schedule within 5 min already exist")
+                            return redirect('admin_panel')  
+                        else:
+                            RequestedSchedules.objects.create(
+                                user = user,
+                                mentor = mentor,
+                                request = call_request,
+                                slot = slot
+                            )
+                            MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
+                            return redirect('admin_panel')  
+
     return redirect('admin_panel')   
 
 @login_required(login_url='login')
@@ -160,7 +223,7 @@ def userDashboard(request):
     schedules = request.user.schedule_times.none()
     user_requests = request.user.mentor_request.none()
     for purchase in purchases:
-        if purchase.product_id == 2 or  purchase.product_id == 3:
+        if purchase.call_required:
             user_requests |= request.user.mentor_request.filter(product_id = purchase.product_id)
     #print("TYPE",requests)        
     for user_request in user_requests :
@@ -182,9 +245,7 @@ def respondCallRequest(request, id):
     try:
         call_request = MentorCallRequest.objects.get(pk=id)
         user = call_request.user
-        mentor_type = 'C' if call_request.product.id == 2 else 'J' 
-        mentors = MentorProfile.objects.filter(mentor_type = mentor_type)
-        print(mentors)
+        mentors = MentorProfile.objects.filter(associated_product_id = call_request.product.id)
         context = {'request':call_request,'request_user':user,'mentors':mentors}
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")

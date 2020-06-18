@@ -96,6 +96,17 @@ class UserProfile(models.Model):
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
 
+class Product(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    amount = models.IntegerField()
+    call_required = models.BooleanField(default=0)
+    active = models.BooleanField(default=1)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Product name: {}'.format(self.name)             
+
 class MentorProfile(models.Model):
     MENTOR_TYPES=(
         ('J', 'Jyolsyan'),
@@ -105,6 +116,7 @@ class MentorProfile(models.Model):
     tags = models.CharField(max_length=255)
     experience = models.IntegerField(default=0)
     mentor_type =  models.CharField(max_length=1, choices=MENTOR_TYPES)
+    associated_product = models.ForeignKey(Product, on_delete=models.CASCADE)
     active = models.BooleanField(default=1)
     verified = models.BooleanField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -121,17 +133,7 @@ class AcademicProfile(models.Model):
     mark = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{1,10}$')])
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)
-        
-class Product(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    amount = models.IntegerField()
-    active = models.BooleanField(default=1)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'Product name: {}'.format(self.name)              
+        return 'Profile of user: {}'.format(self.user.full_name)         
 
 class UserPurchases(models.Model):
     users = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
