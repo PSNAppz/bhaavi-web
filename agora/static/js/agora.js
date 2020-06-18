@@ -32,7 +32,7 @@ function initClientAndJoinChannel(agoraAppId, channelName) {
     client.init(agoraAppId, function () {
         // console.log("blaaaa")
         console.log("AgoraRTC client initialized");
-        joinChannel(channelName,tokenId); // join channel upon successfull init
+        joinChannel(channelName); // join channel upon successfull init
     }, function (err) {
         console.log("[ERROR] : AgoraRTC client init failed", err);
     });
@@ -116,12 +116,13 @@ client.on("unmute-video", function (evt) {
 });
 
 // join a channel
-function joinChannel(channelName,tokenId) {
+function joinChannel(channelName) {
     // var token = tokenId;
-    var token = null
+    // var token = tokenId
+    var token=null
     var userID = null; // set to null to auto generate uid on successfull connection
     client.join(token, channelName, userID, function (uid) {
-        console.log("token "+token +" here")
+        // console.log("token "+token +" here")
         console.log("Userss " + uid + " join channel successfully");
         createCameraStream(uid);
         localStreams.camera.id = uid; // keep track of the stream uid 

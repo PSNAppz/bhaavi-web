@@ -9905,7 +9905,7 @@
                         options: arguments,
                         tag: "tracer"
                     });
-                    Object(W.checkValidString)(n), Object(m.isChromeKernel)() && Object(m.getChromeKernelVersion)() <= 48 ? a ? r(I.default.BAD_ENVIRONMENT) : Object(F.popBanTip)() : (o.default.info("[".concat(t.clientId, "] Initializing AgoraRTC client, appId: ").concat(n, ".")), e.appId = n, e.sessionId = Object(F.generateSessionId)(), r())
+                    Object(W.checkValidString)(n), Object(m.isChromeKernel)() && Object(m.getChromeKernelVersion)() <= 48 ? a ? r(I.default.BAD_ENVIRONMENT) : Object(F.popBanTip)() : (o.default.info("[".concat(t.clientId, "] Initializing AgoraRTC client, aes875102f52da54e").concat(n, ".")), e.appId = n, e.sessionId = Object(F.generateSessionId)(), r())
                 }, t.setTurnServer = function (n) {
                     var i = s.b.reportApiInvoke(e.sessionId, {
                         name: "Client.setTurnServer",
