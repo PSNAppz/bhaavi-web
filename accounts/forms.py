@@ -190,3 +190,11 @@ class ScheduleRequestForm(forms.ModelForm):
 	class Meta:
 		model = MentorCallRequest
 		fields = ('product','user')
+
+class RequestedSchedulesForm(forms.ModelForm):
+	
+	class Meta:
+		model = RequestedSchedules
+		fields = ('user','mentor','request','slot')		
+
+

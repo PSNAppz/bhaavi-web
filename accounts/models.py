@@ -107,7 +107,6 @@ class MentorProfile(models.Model):
     mentor_type =  models.CharField(max_length=1, choices=MENTOR_TYPES)
     active = models.BooleanField(default=1)
     verified = models.BooleanField(default=0)
-    mentor_channel = models.IntegerField(default=channel_gen)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -170,13 +169,11 @@ class AcceptedCallSchedule(models.Model):
     mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
     slot = models.DateTimeField()    
     completed = models.BooleanField(default=0)
-    token = models.CharField(max_length=255, blank=True)
+    channel = models.CharField(max_length=255, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)   
-
-    
 
 class Coupon(models.Model):
     code = models.CharField(max_length=255)
