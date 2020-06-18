@@ -68,53 +68,67 @@
                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
             </div>
          </div>
-         <h2>Assign a mentor to {{request_user.full_name}}</h2>
+         <h2>Schedules for {{requested_user.full_name}}</h2>
          <div class="card-body">
-
+      <div class="col-sm-5 col-md-6">
          <div class="list-group list-group-flush">
             <div class="list-group-item">
                <div class="row align-items-center">
                   <div class="col auto">
                      <!-- Heading -->
                      <p class="mb-0">
-                        Requested mentor type: <span class="badge badge-primary-soft">{{request.product.name}}</span>
+                        Requested mentor type: <span class="badge badge-primary-soft">{{schedules.0.request.product.name}}</span>
                      </p>
                      <!-- Text -->
-                     Date:
+                    
                      <small class="text-gray-700">
-                     {{request.timestamp}}
+                        {{schedules.0.request.timestamp}}
                      </small>
                   </div>
                </div>
-            </div>
-            <div class="list-group-item">
-                <div class="row align-items-center">
-                   <div class="col-sm-5 col-md-6">
-                    <form>
-
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Assign Mentor</label>
-                            <select name="mentor" class="form-control form-control-sm" id="exampleFormControlSelect1">
-                                {{ mentors }}
-                                {% for mentor in mentors %}
-                              <option>{{mentor.user.full_name}}, {{mentor.user.email}}</option>
-                              {% endfor %}
-                            </select>
-                          </div>
-                        <div class="form-group">
-                            <label for="datepicker">Scheduled Date & Time</label>
-                            <input type='text' id ="datepicker" class="form-control form-control-sm" />
-                        </div>
-                        <div class="mt-6">
-                           <input class="btn btn-sm btn-success lift" type="submit" value="Add schedule">
-                        </div>
+            </div> 
+            
+               <div class="list-group list-group-flush">
+                  {% for schedule in schedules %}
+                  <div class="list-group-item d-flex align-items-center">
+                        
+                     <!-- Text -->
+                     <div class="mr-auto">
+                        
+                        <!-- Heading -->
+                        <p class="font-weight-bold mb-1">
+                        {{schedule.mentor.user.full_name}}
+                        </p>
+                  
+                        <!-- Text -->
+                        <p class="font-size-sm text-muted mb-0">
+                           Date:
+                        <small class="text-gray-700">
+                           {{schedule.slot}}
+                        </small>
+                        </p>
+                  
+                     </div>
+                        
+                     <!-- Check -->
+                     <form action="{% url 'drop_schedule' schedule.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-xs btn-rounded-circle btn-danger-soft">
+                           <i class="fe fe-x"></i>
+                         </button>
+                        
                      </form>
-                   </div>
-                </div>
-             </div>
+                  
+                  </div>
+                  {% endfor %}
+
+                  </div>
+               
+
          </div>
          
         </div>
+      </div>
        </div>
 </div>
 </main>

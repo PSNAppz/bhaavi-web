@@ -91,15 +91,17 @@
             <td>
               {% if request.responded %}
               <a href="{% url 'respond_call' request.id %}" class="btn btn-success btn-pill btn-xs">
-                Add schedule
+                New
               </a>
             {% endif %}
           </td>
           <td>
             {% if request.responded %}
-            <a href="{% url 'respond_call' request.id %}" class="btn btn-warning btn-pill btn-xs">
-              View
-            </a>
+            <form action="{% url 'show_schedules' request.id %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="user" value="{{ request.user.id }}" />
+              <input class="btn btn-warning btn-pill btn-xs" type="submit" value="View"/>
+            </form>
           {% endif %}
         </td>
             </tr>

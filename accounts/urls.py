@@ -23,6 +23,9 @@ urlpatterns = [
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
     path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call"),
-    path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule")
+    path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
+    path('dashboard/admin/schedules/<int:id>',views.showSchedules, name="show_schedules"),
+    path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule")
+
 
 ]

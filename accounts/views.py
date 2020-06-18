@@ -218,12 +218,12 @@ def requestSchedule(request):
 
 @login_required(login_url='login')
 def userDashboard(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(active=1)
     purchases = request.user.user_products.filter(status=1)
     schedules = request.user.schedule_times.none()
     user_requests = request.user.mentor_request.none()
     for purchase in purchases:
-        if purchase.call_required:
+        if purchase.product.call_required:
             user_requests |= request.user.mentor_request.filter(product_id = purchase.product_id)
     #print("TYPE",requests)        
     for user_request in user_requests :
@@ -238,6 +238,28 @@ def adminDashboard(request):
     call_requests = MentorCallRequest.objects.all().order_by('-responded')
     context = {'requests':call_requests}
     return render(request, 'admin/adminpanel.html', context)   
+
+@login_required(login_url='login')
+@admin_user
+def showSchedules(request, id):
+    schedules = RequestedSchedules.objects.filter(request_id=id)
+    user = User.objects.get(pk=schedules[0].user_id)
+    context = {'schedules':schedules,'requested_user':user}
+    return render(request, 'admin/view_schedule.html', context) 
+
+@login_required(login_url='login')
+@admin_user
+def dropSchedule(request, id):
+    if request.method == "POST":
+        schedule = RequestedSchedules.objects.get(pk=id)
+        request_id = schedule.request.id
+        all_requests = RequestedSchedules.objects.filter(request_id = request_id)
+        if (all_requests.count()>1):
+            schedule.delete()
+        else:
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(responded = False)
+            schedule.delete()
+    return redirect('admin_panel') 
 
 @login_required(login_url='login')
 @admin_user
