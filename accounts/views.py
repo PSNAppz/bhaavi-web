@@ -130,16 +130,22 @@ def requestCall(request):
 def acceptCall(request):
     if request.method == "POST" :
         schedule_id = request.POST.get('schedule')
-        user = request.user
-        purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
-        print(user, purchased_product)
-        form = ScheduleRequestForm(request.POST)
+        print(schedule_id)
+        schedule = RequestedSchedules.objects.get(pk=schedule_id) 
+        call_request_id = schedule.request.id
+        call_request =  MentorCallRequest.objects.get(pk=call_request_id)
+        form = AcceptedSchedulesForm(request.POST)
         if form.is_valid():
-            if str(purchased_product.id) == str(product_id):
-                MentorCallRequest.objects.create(
-                    user = user,
-                    product = purchased_product
-                ) 
+            if schedule.user_id == request.user.id and not call_request.scheduled:
+                AcceptedCallSchedule.objects.create(
+                    schedule = schedule
+                )
+                RequestedSchedules.objects.filter(pk=schedule_id).update(accepted=True) 
+                MentorCallRequest.objects.filter(pk=call_request_id).update(scheduled=True)
+                # TODO: Success message
+            else:
+                # TODO: schedule invalid message
+                print("Invalid schedule")     
 
     return redirect('dashboard')    
 
@@ -239,6 +245,8 @@ def userDashboard(request):
     purchases = request.user.user_products.filter(status=1)
     schedules = request.user.schedule_times.none()
     user_requests = request.user.mentor_request.none()
+    accepted_calls = AcceptedCallSchedule.objects.none()
+    
     for purchase in purchases:
         if purchase.product.call_required:
             user_requests |= request.user.mentor_request.filter(product_id = purchase.product_id)
@@ -246,7 +254,11 @@ def userDashboard(request):
     for user_request in user_requests :
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
-    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules}
+        elif user_request.responded and user_request.scheduled and not user_request.closed:
+            accepted_calls |= AcceptedCallSchedule.objects.filter(schedule_id = user_request.id)
+        else:
+            pass    
+    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
