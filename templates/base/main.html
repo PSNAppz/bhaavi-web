@@ -10,7 +10,7 @@
       <div class="container-fluid">
 
         <!-- Brand -->
-        <a class="navbar-brand" href="{%url 'home'%}">
+        <a class="navbar-brand" href="{% url 'home' %}">
           <img src="{% static '/assets/img/brand.png' %}" class="navbar-brand-img" alt="...">
         </a>
 
@@ -31,19 +31,29 @@
           <ul class="navbar-nav ml-auto">
             
       <li class="nav-item dropdown">
-              <a class="nav-link" id="navbarPages"  href="{%url 'home'%}" >
+              <a class="nav-link" id="navbarPages"  href="{% url 'home' %}" >
                 Home
               </a>
             </li>
             {% if user.is_authenticated %}
 
             <li class="nav-item dropdown">
-              <a class="nav-link" id="navbarPages"  href="{%url 'dashboard'%}" >
+              <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
                 Dashboard
               </a>
             </li>
             
             {% endif %}
+
+            {% if user.is_superuser %}
+
+            <li class="nav-item dropdown">
+              <a class="nav-link" id="navbarPages"  href="{%url 'admin_panel'%}" >
+                Admin Dashboard
+              </a>
+            </li>
+            
+            {% endif %} 
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" id="navbarDocumentation" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
 				  Services

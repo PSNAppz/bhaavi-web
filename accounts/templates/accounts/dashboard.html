@@ -1,6 +1,7 @@
 {% extends 'base/main.html' %}
 {% block content %}
-
+{% load filters %}
+{% load static %}
 {% if user.is_authenticated %}
     <!-- HEADER
     ================================================== -->
@@ -96,87 +97,149 @@
 
                 <!-- List group -->
                 <div class="list-group list-group-flush">
+                  {% for product in products %}
+                  {% with purchases|check_purchase_status:product.id as purchase %}
                   <div class="list-group-item">
                     <div class="row align-items-center">
                       <div class="col">
 
                         <!-- Heading -->
                         <p class="mb-0">
-                          Take psychometric test
+                          {{ product.name }} <i class="fe fe-info text-gray-500" data-toggle="tooltip" title="We use the the phone number you provide in General"></i>
                         </p>
+                       
 
                         <!-- Text -->
                         <small class="text-gray-700">
-                          Try our test today
+                          {{ product.description }}
                         </small>
 
                       </div>
                       <div class="col-auto">
 
                         <!-- Button -->
-                        <button class="btn btn-xs btn-outline-white">
-                          Attend test
-                        </button>
+                        {% if product.id == 1 %}
+                        
+                        {% if purchase.product_id == product.id and purchase.status %}
+                        <form action="{% url 'plans' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="user" value="{{ user.id }}" />
+                          <input type="submit" class="btn btn-xs btn-outline-success" value="Attend Test" />
+                        </form>
+                        {% else %}
+                        <form action="{% url 'plans' %}" method="GET">
+                          {% csrf_token %}
+                            <input type="submit" class="btn btn-xs btn-success-soft" value="Purchase" />
+                        </form>
+                       
+                        {% endif %}
+                        
+                        {% else %}
+                        {% with requests|check_request_status:product.id as requested %}
+                        {% if purchase.product_id == product.id and purchase.status and requested == None %}
+                        <form action="{% url 'mentor_request' %}" method="POST">
+                          {% csrf_token %}
+                            <input type="hidden" name="product" value="{{ product.id }}" />
+                            <input type="hidden" name="user" value="{{ user.id }}" />
+                            <input type="submit" class="btn btn-xs btn-outline-white" value="Request" />
+                        </form>
+                            {% elif requested.responded and purchase.status and not requested.scheduled%}
+                            <a href="#schedules" class="btn btn-xs btn-outline-info" >Available schedules</a>
+                            {% elif not requested.responded and purchase.status  %}    
+                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Please wait for the schedule from the mentor">Requested</a>
+                            {% elif requested.responded and purchase.status and requested.scheduled %}   
+                              {% with accepted_calls|get_schedule:requested.id as schedule %}
+                                <a href="#" class="btn btn-xs btn-primary-soft " >Scheduled for: {{schedule.schedule.slot}}</a>
+                              {% endwith %}
+                            {% else %}
+                        <form action="{% url 'plans' %}" method="GET">
+                          {% csrf_token %}
+                          <input type="hidden" name="user" value="{{ user.id }}" />
+                          <input type="hidden" name="product" value="{{ product.id }}" />
+                            <input type="submit" class="btn btn-xs btn-success-soft" value="Purchase" />
+                        </form>
+                        {% endif %}
+                        {% endwith %}
+                        {% endif %}
+
 
                       </div>
                     </div>
                   </div>
-                  <div class="list-group-item">
-                    <div class="row align-items-center">
-                      <div class="col">
-
-                        <!-- Heading -->
-                        <p class="mb-0">
-                          E-Mentoring <i class="fe fe-info text-gray-500" data-toggle="tooltip" title="We use the the phone number you provide in General"></i>
-                        </p>
-
-                        <!-- Text -->
-                        <small class="text-gray-700">
-                          Get guidance from an expert
-                        </small>
-
-                      </div>
-                      <div class="col-auto">
-
-                        <!-- Button -->
-                        <a href="{% url 'chat' %}" class="btn btn-xs btn-outline-white">
-                          Request
-                        </a>
-
-                      </div>
-                    </div>
-                  </div>
-                  <div class="list-group-item">
-                    <div class="row align-items-center">
-                      <div class="col">
-
-                        <!-- Heading -->
-                        <p class="mb-0">
-                          E-Jyothisham <i class="fe fe-info text-gray-500" data-toggle="tooltip" title="We use the the phone number you provide in General"></i>
-                        </p>
-
-                        <!-- Text -->
-                        <small class="text-gray-700">
-                          Try our online jyothisham consultation
-                        </small>
-
-                      </div>
-                      <div class="col-auto">
-
-                        <!-- Button -->
-                        <a href= "{% url 'plans' %}" class="btn btn-xs btn-outline-info">
-                          Purchase
-                        </a>
-
-                      </div>
-                    </div>
-                  </div>
+                  {% endwith %}
+                  {% endfor %}
                 </div>
 
               </div>
             </div>
 
-            <!-- Card -->
+            <!--Requested schedules-->
+            {% if schedules %}
+            <div class="card card-bleed shadow-light-lg" id="schedules">
+              <div class="card-header">
+                <div class="row align-items-center">
+                  <div class="col">
+
+                    <!-- Heading -->
+                    <h4 class="mb-0">
+                     Available schedules
+                    </h4>
+
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <!-- start for -->
+                {% for schedule in schedules %}
+                <div class="list-group list-group-flush">
+                  <div class="list-group-item">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+
+                        <!-- Icon -->
+                        <div class="icon">
+                          <img src="{% static 'assets/img/icons/duotone-icons/Media/Rec.svg' %}"/>
+                        </div>
+
+                      </div>
+                      <div class="col ml-n5">
+                        
+                        <!-- Heading -->
+                        <p class="mb-0">
+                            {{schedule.request.product.name}} 
+                        </p>
+                       
+                        <!-- Text -->
+                        Schedule time: 
+                        <small class="text-gray-700">
+                          {{schedule.slot}}
+                        </small>
+
+                      </div>
+                      <div class="col-auto">
+
+                        <!-- Button -->
+                        <form action="{% url 'accept_call' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                            <input type="submit" class="btn btn-xs btn-primary-soft" value="Accept" />
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                {% if not forloop.last %}
+                <hr>
+                {% endif %}
+                <!-- End for -->
+                {% endfor %}
+              </div>
+            </div>
+             <br>
+            {% endif %}
+           
+            <!-- Test History -->
             <div class="card card-bleed shadow-light-lg">
               <div class="card-header">
                 <div class="row align-items-center">
