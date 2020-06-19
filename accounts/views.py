@@ -9,6 +9,8 @@ from .forms import *
 from django.contrib import messages
 import datetime
 import pytz
+import uuid
+
 
 utc=pytz.UTC
 
@@ -115,7 +117,6 @@ def requestCall(request):
         product_id = request.POST.get('product')
         user = request.user
         purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
-        print(user, purchased_product)
         form = ScheduleRequestForm(request.POST)
         if form.is_valid():
             if str(purchased_product.id) == str(product_id):
@@ -130,7 +131,6 @@ def requestCall(request):
 def acceptCall(request):
     if request.method == "POST" :
         schedule_id = request.POST.get('schedule')
-        print(schedule_id)
         schedule = RequestedSchedules.objects.get(pk=schedule_id) 
         call_request_id = schedule.request.id
         call_request =  MentorCallRequest.objects.get(pk=call_request_id)
@@ -255,7 +255,8 @@ def userDashboard(request):
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
         elif user_request.responded and user_request.scheduled and not user_request.closed:
-            accepted_calls |= AcceptedCallSchedule.objects.filter(schedule_id = user_request.id)
+            schedule = RequestedSchedules.objects.filter(request_id = user_request.id).get(accepted=True)
+            accepted_calls |= AcceptedCallSchedule.objects.filter(schedule_id = schedule.id)
         else:
             pass    
     context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls}

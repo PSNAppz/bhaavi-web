@@ -43,8 +43,8 @@ def check_mentor_type(item):
 def get_schedule(lst, i):
     try:
         counter = 0
-        for schedule in lst.iterator():            
-            if i == schedule.schedule_id:
+        for schedule in lst.iterator():   
+            if i == schedule.schedule.request_id:
                 return lst[counter]
             counter += 1
         return None    
