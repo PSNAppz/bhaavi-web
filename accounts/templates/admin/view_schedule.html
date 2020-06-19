@@ -97,8 +97,12 @@
                         
                         <!-- Heading -->
                         <p class="font-weight-bold mb-1">
-                        {{schedule.mentor.user.full_name}}
+                        {{schedule.mentor.user.full_name}} 
+                        {% if schedule.accepted %}
+                        <span class="badge badge-primary-soft">Scheduled</span>
+                        {% endif %}
                         </p>
+                        
                   
                         <!-- Text -->
                         <p class="font-size-sm text-muted mb-0">
@@ -111,6 +115,7 @@
                      </div>
                         
                      <!-- Check -->
+                     {% if not schedule.accepted %}
                      <form action="{% url 'drop_schedule' schedule.id %}" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-xs btn-rounded-circle btn-danger-soft">
@@ -118,7 +123,7 @@
                          </button>
                         
                      </form>
-                  
+                     {% endif %}
                   </div>
                   {% endfor %}
 

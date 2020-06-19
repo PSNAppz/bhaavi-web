@@ -38,3 +38,17 @@ def check_mentor_type(item):
         return item.request.product.name    
     except:
         return None                
+
+@register.filter
+def get_schedule(lst, i):
+    try:
+        counter = 0
+        for schedule in lst.iterator():   
+            if i == schedule.schedule.request_id:
+                return lst[counter]
+            counter += 1
+        return None    
+
+    except Exception as e:
+        print("HELLO",lst, e)
+        return None           

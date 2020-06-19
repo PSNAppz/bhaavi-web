@@ -64,7 +64,8 @@
               <th>UUID</th>
               <th>Request Type</th>
               <th>Date</th>
-              <th>Response</th>
+              <th>Status</th>
+              <th>Action</th>
               <th>Add new</th>
               <th>View</th>
             </tr>
@@ -77,20 +78,31 @@
               <td>{{request.user_id}}</td>
               <td>{{request.product.name}}</td>
               <td>{{request.timestamp}}</td>
+              <td>{% if not request.scheduled %}
+                <button type="button" class="btn btn-xs btn-rounded-circle btn-danger-soft">
+                  <i class="fe fe-x"></i>
+                </button>
+
+                {% else %}
+                <button type="button" class="btn btn-xs btn-rounded-circle btn-success-soft">
+                  <i class="fe fe-check"></i>
+                </button>
+                {% endif %}
+              </td>
               <td>
                 {% if not request.responded %}
                 <a href="{% url 'respond_call' request.id %}" class="btn btn-info btn-pill btn-xs">
                   Respond
                 </a>
                 {% else %}
-                <a href="#" class="btn btn-dark btn-pill btn-xs disabled">
+                <a href="#" class="btn btn-dark-soft btn-pill btn-xs disabled">
                 Responded
               </a>
               {% endif %}
             </td>
             <td>
               {% if request.responded %}
-              <a href="{% url 'respond_call' request.id %}" class="btn btn-success btn-pill btn-xs">
+              <a href="{% url 'respond_call' request.id %}" class="btn btn-success-soft btn-pill btn-xs">
                 New
               </a>
             {% endif %}
@@ -100,7 +112,7 @@
             <form action="{% url 'show_schedules' request.id %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="user" value="{{ request.user.id }}" />
-              <input class="btn btn-warning btn-pill btn-xs" type="submit" value="View"/>
+              <input class="btn btn-warning-soft btn-pill btn-xs" type="submit" value="View"/>
             </form>
           {% endif %}
         </td>

@@ -39,7 +39,7 @@ def id_gen():
 
 def channel_gen():
     uid = uuid.uuid4()
-    return uid.int   
+    return uid.hex   
 
 class User(AbstractBaseUser, PermissionsMixin):
     id             = models.CharField(max_length=32, primary_key=True, default=id_gen, editable=False)
@@ -167,15 +167,14 @@ class RequestedSchedules(models.Model):
         return 'Mentor Call Request id: {}'.format(self.request.id)   
 
 class AcceptedCallSchedule(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accepted_call', null=False)
-    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
-    slot = models.DateTimeField()    
+    schedule = models.ForeignKey(RequestedSchedules, on_delete=models.CASCADE, null=False, related_name='accepted_schedule') 
     completed = models.BooleanField(default=0)
-    channel = models.CharField(max_length=255, blank=True)
+    channel = models.CharField(max_length=255, default=channel_gen)
+    token = models.CharField(max_length=255, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)   
+        return 'Schedule id: {}'.format(self.schedule.id)   
 
 class Coupon(models.Model):
     code = models.CharField(max_length=255)
