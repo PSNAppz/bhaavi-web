@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from agora.views import Agora
+from payments.views import *
 
 urlpatterns = [
     path('', views.homePage,name="home"),
@@ -13,10 +14,12 @@ urlpatterns = [
     path('logout', views.logoutUser, name="logout"),  
     path('pricing', views.pricingDetails,name="pricing"),
     # path('chat', views.chatpage, name='chat'),  
+
     # Payment flow below
     path('plans', views.plansPage, name='plans'),
     path('checkout', views.checkoutPage, name='checkout'), 
-    path('payment_success', views.paymentSuccessPage, name="success_payment"), 
+    path('payment/success', views.createOrder , name="success_payment"), 
+    path('payment/status', views.paymentStatus, name = 'payment_status'),
 
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('accept/mentor', views.acceptCall, name="accept_call"),

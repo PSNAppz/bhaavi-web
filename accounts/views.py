@@ -36,9 +36,6 @@ def paymentSuccessPage(request):
 def pricingDetails(request):
     return render(request, 'base/pricing.html')    
 
-# def chatpage(requset):
-#     return render(requset, 'accounts/video.html')
-
 @unauthenticated_user
 def loginPage(request):
     messages =''
@@ -301,5 +298,40 @@ def respondCallRequest(request, id):
         context = {'request':call_request,'request_user':user,'mentors':mentors}
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")
-    return render(request, 'admin/call_view.html',context)     
+    return render(request, 'admin/call_view.html',context) 
+
+# Payment URLs
+ def createOrder(request):
+    client = razorpay.Client(auth=("rzp_test_OELls9tGvt0Yur", "D6qyfOy4c3tEa2IosNKtxAeL"))
+    order_amount = 999
+    order_currency = 'INR'
+    order_receipt = 'order_rcptid_11'
+    notes = {'Product name': 'PICSET test'}   # OPTIONAL
+
+    response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
+    order_id = response['id']
+    order_status = response['status']
+    context = {'order_status':order_status}
+    return render(request, 'accounts/success.html', context)
+
+def app_charge():
+    amount = 5100
+    payment_id = request.form['razorpay_payment_id']
+    razorpay_client.payment.capture(payment_id, amount)
+    return json.dumps(razorpay_client.payment.fetch(payment_id))
+    
+def paymentStatus(request):
+    response = request.POST
+    params_dict = {
+        'razorpay_payment_id' : response['razorpay_payment_id'],
+        'razorpay_order_id' : response['razorpay_order_id'],
+        'razorpay_signature' : response['razorpay_signature']
+    }
+
+    # VERIFYING SIGNATURE
+    try:
+        status = client.utility.verify_payment_signature(params_dict)
+        return render(request, 'order_summary.html', {'status': 'Payment Successful'})
+    except:
+        return render(request, 'order_summary.html', {'status': 'Payment Faliure!!!'})          
 
