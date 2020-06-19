@@ -4,6 +4,7 @@ from django.http import HttpResponse,Http404
 # import model -
 from accounts.models import User  # for testing only
 import hashlib
+from decouple import config
 
 
 
@@ -95,8 +96,7 @@ class AgoraVideoCall(View):
 # allowed_permissions = ['AllowAny','IsAuthenticated','IsAdmin']
 
 class Agora(AgoraVideoCall):
-    app_id='60c0a4a0d014433e9870a5ba3b6c8977'
-    # channel='dummy_channel_name_this_name_is_ignored_but_necessary_(it will result in getpermission error if left blank)'
+    app_id=''
     channel=''
     # appCertificate='a378db0f912f4b169e4f0208511de1a4'
     # expiredTsInSeconds='60'
