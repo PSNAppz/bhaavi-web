@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
 from agora.views import Agora
-from payments.views import *
 
 urlpatterns = [
     path('', views.homePage,name="home"),

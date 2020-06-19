@@ -301,7 +301,7 @@ def respondCallRequest(request, id):
     return render(request, 'admin/call_view.html',context) 
 
 # Payment URLs
- def createOrder(request):
+def createOrder(request):
     client = razorpay.Client(auth=("rzp_test_OELls9tGvt0Yur", "D6qyfOy4c3tEa2IosNKtxAeL"))
     order_amount = 999
     order_currency = 'INR'
