@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.forms.utils import ValidationError
 from .models import User
-from .models import RequestedSchedules, MentorCallRequest
+from .models import RequestedSchedules, MentorCallRequest, AcceptedCallSchedule
 from django import forms
 
 
@@ -196,5 +196,11 @@ class RequestedSchedulesForm(forms.ModelForm):
 	class Meta:
 		model = RequestedSchedules
 		fields = ('user','mentor','request','slot')		
+
+class AcceptedSchedulesForm(forms.ModelForm):
+	
+	class Meta:
+		model = AcceptedCallSchedule
+		fields = ('schedule',)				
 
 

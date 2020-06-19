@@ -167,9 +167,7 @@ class RequestedSchedules(models.Model):
         return 'Mentor Call Request id: {}'.format(self.request.id)   
 
 class AcceptedCallSchedule(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accepted_call', null=False)
-    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
-    slot = models.DateTimeField()    
+    schedule = models.ForeignKey(RequestedSchedules, on_delete=models.CASCADE, null=False, related_name='accepted_schedule') 
     completed = models.BooleanField(default=0)
     channel = models.CharField(max_length=255, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)

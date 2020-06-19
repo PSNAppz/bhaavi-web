@@ -217,10 +217,11 @@
                       <div class="col-auto">
 
                         <!-- Button -->
-                        <button class="btn btn-xs btn-primary-soft">
-                         Accept
-                        </button>
-
+                        <form action="{% url 'accept_call' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="user" value="{{ schedule.id }}" />
+                            <input type="submit" class="btn btn-xs btn-primary-soft" value="Accept" />
+                        </form>
                       </div>
                     </div>
                   </div>

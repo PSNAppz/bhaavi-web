@@ -123,8 +123,25 @@ def requestCall(request):
                     user = user,
                     product = purchased_product
                 ) 
-    context = {'call_request':'success','type':'Mentor'}
+    #TODO: Send success message
     return redirect('dashboard')
+
+@login_required(login_url='login')
+def acceptCall(request):
+    if request.method == "POST" :
+        schedule_id = request.POST.get('schedule')
+        user = request.user
+        purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
+        print(user, purchased_product)
+        form = ScheduleRequestForm(request.POST)
+        if form.is_valid():
+            if str(purchased_product.id) == str(product_id):
+                MentorCallRequest.objects.create(
+                    user = user,
+                    product = purchased_product
+                ) 
+
+    return redirect('dashboard')    
 
 @login_required(login_url='login')
 @admin_user
