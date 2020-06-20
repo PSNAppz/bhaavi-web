@@ -49,14 +49,18 @@ def paymentSuccessPage(request):
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
                 purchase = UserPurchases.objects.get(invoice=response['invoice'])
-                RazorPayTransactions.objects.create(
-                    razorpay_payment_id = razorpay_payment_id,
-                    razorpay_order_id = razorpay_order_id,
-                    razorpay_signature = razorpay_signature,
-                    status = 1,
-                    purchase = purchase
-                )
-                UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
+                check_saved =  RazorPayTransactions.objects.get(purchase_id=purchase.id)
+                if not check_saved:
+                    RazorPayTransactions.objects.create(
+                        razorpay_payment_id = razorpay_payment_id,
+                        razorpay_order_id = razorpay_order_id,
+                        razorpay_signature = razorpay_signature,
+                        status = 1,
+                        purchase = purchase
+                    )
+                    UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
+                else:
+                    return redirect('dashboard')    
             context = {'payment':True}
         else:
             context = {'payment':False}
