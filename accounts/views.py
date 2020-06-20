@@ -10,7 +10,8 @@ from django.contrib import messages
 import datetime
 import pytz
 import uuid
-
+import razorpay
+from decouple import config
 
 utc=pytz.UTC
 
@@ -27,11 +28,40 @@ def plansPage(request):
 
 @login_required(login_url='login')
 def checkoutPage(request):
-    return render(request, 'accounts/checkout.html')        
+    if request.method == "POST":
+        product_id = request.POST.get('product')
+        product = Product.objects.filter(active=True).get(pk=product_id)
+        if product:
+            name = request.user.full_name
+            email = request.user
+            context = {'product':product,'name':name,'email':email}
+            return render(request, 'accounts/checkout.html',context)
+        # else: TODO: Return error            
 
 @login_required(login_url='login')
 def paymentSuccessPage(request):
-    return render(request, 'accounts/success.html')        
+    if request.method == "POST":
+        response = request.POST
+        if response['razorpay_payment_id']:
+            razorpay_payment_id = response['razorpay_payment_id']
+            razorpay_order_id = response['razorpay_order_id']
+            razorpay_signature = response['razorpay_signature']
+            status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
+            if status:
+                purchase = UserPurchases.objects.get(invoice=response['invoice'])
+                RazorPayTransactions.objects.create(
+                    razorpay_payment_id = razorpay_payment_id,
+                    razorpay_order_id = razorpay_order_id,
+                    razorpay_signature = razorpay_signature,
+                    status = 1,
+                    purchase = purchase
+                )
+                UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
+            context = {'payment':True}
+        else:
+            context = {'payment':False}
+
+        return render(request, 'accounts/success.html', context)        
 
 def pricingDetails(request):
     return render(request, 'base/pricing.html')    
@@ -300,38 +330,54 @@ def respondCallRequest(request, id):
         raise Http404("Request does not exist")
     return render(request, 'admin/call_view.html',context) 
 
-# Payment URLs
+def initPaymentClient():
+    rpay_id = config('RazorPay_ID')
+    rpay_seceret = config('RazorPay_Secret')
+    client = razorpay.Client(auth=(rpay_id, rpay_seceret))
+    return client
+
+# Payment URLs TODO: Secure these links
+@login_required(login_url='login')
 def createOrder(request):
-    client = razorpay.Client(auth=("rzp_test_OELls9tGvt0Yur", "D6qyfOy4c3tEa2IosNKtxAeL"))
-    order_amount = 999
-    order_currency = 'INR'
-    order_receipt = 'order_rcptid_11'
-    notes = {'Product name': 'PICSET test'}   # OPTIONAL
+    if request.method == "POST":
+        product_id = request.POST.get('product')
+        product = Product.objects.filter(active=True).get(pk=product_id)
+        if product:
+            try:
+                in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
+                invoice = in_progress.invoice
+            except UserPurchases.DoesNotExist:
+                purchase = UserPurchases.objects.create(
+                                    user = request.user,
+                                    product = product,
+                            )
+                invoice = purchase.invoice             
+            client = initPaymentClient()    
+            order_amount = product.amount * 100
+            order_currency = 'INR'
+            order_receipt = 'order_rcptid_11'
+            notes = {'Product': product.name}   
+            product_name = product.name
+            name = request.user.full_name
+            email = request.user
+            response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
+            order_id = response['id']
+            order_status = response['status']
+            if order_status=='created':
+                print(invoice)
+                context = {'order_id':order_id, 'product':product_name, 'amount':order_amount,'name':name,'email':email,'invoice':invoice}
+                return render(request, 'accounts/payment.html', context)
+            # else: TODO: Return error    
 
-    response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
-    order_id = response['id']
-    order_status = response['status']
-    context = {'order_status':order_status}
-    return render(request, 'accounts/success.html', context)
-
-def app_charge():
-    amount = 5100
-    payment_id = request.form['razorpay_payment_id']
-    razorpay_client.payment.capture(payment_id, amount)
-    return json.dumps(razorpay_client.payment.fetch(payment_id))
-    
-def paymentStatus(request):
-    response = request.POST
+def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
     params_dict = {
-        'razorpay_payment_id' : response['razorpay_payment_id'],
-        'razorpay_order_id' : response['razorpay_order_id'],
-        'razorpay_signature' : response['razorpay_signature']
+        'razorpay_payment_id' : razorpay_payment_id,
+        'razorpay_order_id' : razorpay_order_id,
+        'razorpay_signature' : razorpay_signature
     }
-
     # VERIFYING SIGNATURE
-    try:
-        status = client.utility.verify_payment_signature(params_dict)
-        return render(request, 'order_summary.html', {'status': 'Payment Successful'})
-    except:
-        return render(request, 'order_summary.html', {'status': 'Payment Faliure!!!'})          
+    client = initPaymentClient()    
+    status = client.utility.verify_payment_signature(params_dict)
+    return True
+     
 

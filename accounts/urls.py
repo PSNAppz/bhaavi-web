@@ -15,10 +15,14 @@ urlpatterns = [
     # path('chat', views.chatpage, name='chat'),  
 
     # Payment flow below
-    path('plans', views.plansPage, name='plans'),
-    path('checkout', views.checkoutPage, name='checkout'), 
-    path('payment/success', views.createOrder , name="success_payment"), 
+    path('payment/plans', views.plansPage, name='plans'),
+    path('payment/checkout', views.checkoutPage, name='checkout'), 
+    path('payment/payment', views.createOrder , name="payment"), 
     path('payment/status', views.paymentStatus, name = 'payment_status'),
+    path('payment/done', views.paymentSuccessPage , name="success"), 
+    #path('payment/failure', views.paymentSuccessPage , name="failure"), TODO: failed page
+
+
 
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
