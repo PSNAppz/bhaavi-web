@@ -24,7 +24,12 @@ def profilePage(request):
 
 @login_required(login_url='login')
 def plansPage(request):
-    return render(request, 'accounts/plans.html')    
+    products = Product.objects.filter(active=True).filter(is_package=False)
+    features = ProductFeatures.objects.all()
+    packages = Product.objects.filter(active=True).filter(is_package=True)
+    purchases = UserPurchases.objects.filter(user_id=request.user.id).filter(status=1)
+    context = {'products':products, 'packages':packages, 'purchases':purchases, 'features':features}
+    return render(request, 'accounts/plans.html', context)    
 
 @login_required(login_url='login')
 def checkoutPage(request):
@@ -272,7 +277,7 @@ def requestSchedule(request):
 
 @login_required(login_url='login')
 def userDashboard(request):
-    products = Product.objects.filter(active=1)
+    products = Product.objects.filter(is_package=0).filter(active=1)
     purchases = request.user.user_products.filter(status=1)
     schedules = request.user.schedule_times.none()
     user_requests = request.user.mentor_request.none()
@@ -347,31 +352,35 @@ def createOrder(request):
         product_id = request.POST.get('product')
         product = Product.objects.filter(active=True).get(pk=product_id)
         if product:
-            try:
-                in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
-                invoice = in_progress.invoice
-            except UserPurchases.DoesNotExist:
-                purchase = UserPurchases.objects.create(
-                                    user = request.user,
-                                    product = product,
-                            )
-                invoice = purchase.invoice             
-            client = initPaymentClient()    
-            order_amount = product.amount * 100
-            order_currency = 'INR'
-            order_receipt = 'order_rcptid_11'
-            notes = {'Product': product.name}   
-            product_name = product.name
-            name = request.user.full_name
-            email = request.user
-            response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
-            order_id = response['id']
-            order_status = response['status']
-            if order_status=='created':
-                print(invoice)
-                context = {'order_id':order_id, 'product':product_name, 'amount':order_amount,'name':name,'email':email,'invoice':invoice}
-                return render(request, 'accounts/payment.html', context)
-            # else: TODO: Return error    
+            if product.is_package:
+                # TODO: Package
+                print(product.is_package)
+            else:
+                try:
+                    in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
+                    invoice = in_progress.invoice
+                except UserPurchases.DoesNotExist:
+                    purchase = UserPurchases.objects.create(
+                                        user = request.user,
+                                        product = product,
+                                )
+                    invoice = purchase.invoice             
+                client = initPaymentClient()    
+                order_amount = product.amount * 100
+                order_currency = 'INR'
+                order_receipt = 'order_rcptid_11' #TODO: Receipt id
+                notes = {'Product': product.name}   
+                product_name = product.name
+                name = request.user.full_name
+                email = request.user
+                response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
+                order_id = response['id']
+                order_status = response['status']
+                if order_status=='created':
+                    print(invoice)
+                    context = {'order_id':order_id, 'product':product_name, 'amount':order_amount,'name':name,'email':email,'invoice':invoice}
+                    return render(request, 'accounts/payment.html', context)
+                # else: TODO: Return error    
 
 def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
     params_dict = {
