@@ -54,20 +54,37 @@ def paymentSuccessPage(request):
             razorpay_signature = response['razorpay_signature']
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
-                purchase = UserPurchases.objects.get(invoice=response['invoice'])
-                try:
-                    check_saved =  RazorPayTransactions.objects.get(purchase_id=purchase.id)
-                except  RazorPayTransactions.DoesNotExist:
-                    RazorPayTransactions.objects.create(
-                        razorpay_payment_id = razorpay_payment_id,
-                        razorpay_order_id = razorpay_order_id,
-                        razorpay_signature = razorpay_signature,
-                        status = 1,
-                        purchase = purchase
-                    )
-                    UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
+                items = UserPurchases.objects.filter(invoice=response['invoice'])
+                if not items.count() > 1:
+                    purchase = UserPurchases.objects.get(invoice=response['invoice'])
+                    try:
+                        check_saved =  RazorPayTransactions.objects.get(purchase_id=purchase.id)
+                    except  RazorPayTransactions.DoesNotExist:
+                        RazorPayTransactions.objects.create(
+                            razorpay_payment_id = razorpay_payment_id,
+                            razorpay_order_id = razorpay_order_id,
+                            razorpay_signature = razorpay_signature,
+                            status = 1,
+                            purchase = purchase
+                        )
+                        UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
                 else:
-                    return redirect('dashboard')    
+                    try:
+                        check_saved =  RazorPayTransactions.objects.get(purchase_id=items[0].id)
+                    except  RazorPayTransactions.DoesNotExist:
+                        RazorPayTransactions.objects.create(
+                            razorpay_payment_id = razorpay_payment_id,
+                            razorpay_order_id = razorpay_order_id,
+                            razorpay_signature = razorpay_signature,
+                            status = 1,
+                            purchase = items[0]
+                        )
+                        for item in items:
+                            if not item.product.is_package:
+                                UserPurchases.objects.filter(pk = item.id).update(payment_progress=0, status=1)
+                            else:
+                                UserPurchases.objects.filter(pk = item.id).update(payment_progress=0)
+
             context = {'payment':True}
         else:
             context = {'payment':False}
@@ -157,12 +174,15 @@ def requestCall(request):
         purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
         form = ScheduleRequestForm(request.POST)
         if form.is_valid():
-            if str(purchased_product.id) == str(product_id):
+            if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
                 MentorCallRequest.objects.create(
                     user = user,
                     product = purchased_product
                 ) 
-    messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
+                messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
+            else:
+                messages.error(request, 'An error occured!')
+
     return redirect('dashboard')
 
 @login_required(login_url='login')
@@ -356,12 +376,53 @@ def createOrder(request):
         product = Product.objects.filter(active=True).get(pk=product_id)
         if product:
             if product.is_package:
-                # TODO: Package
-                print(product.is_package)
+                products_in_package = ProductPackages.objects.filter(package_id = product.id)
+                for pdt in products_in_package:
+                    print(pdt.product.name)
+                    try:
+                        check_product_status = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = pdt.product.id).get(status=True)
+                        messages.warning(request, 'Product already purchased.')
+                        return redirect('plans')
+                    except UserPurchases.DoesNotExist:
+                        print("Checking next or going forward")
+
+                try:
+                    in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
+                    invoice = in_progress.invoice
+                except UserPurchases.DoesNotExist:
+                    purchase = UserPurchases.objects.create(
+                        user = request.user,
+                        product = product,
+                        )
+                    invoice = purchase.invoice 
+                    for pdt in products_in_package:
+                        purchase = UserPurchases.objects.create(
+                            user = request.user,
+                            product = pdt.product,
+                            invoice = invoice,
+                            )
+                client = initPaymentClient()    
+                order_amount = product.amount * 100
+                order_currency = 'INR'
+                order_receipt = invoice
+                notes = {'Product': product.name}   
+                product_name = product.name
+                name = request.user.full_name
+                email = request.user
+                response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
+                order_id = response['id']
+                order_status = response['status']
+                if order_status=='created':
+                    context = {'order_id':order_id, 'product':product_name, 'amount':order_amount,'name':name,'email':email,'invoice':invoice}
+                    return render(request, 'accounts/payment.html', context)
+                else: 
+                    messages.error(request, 'Some error occured, please try again!')
+                    return redirect('plans')
+
             else:
                 # Check if user already has the product
                 try:
-                    check_produst_status = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = product.id).get(status=True)
+                    check_product_status = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = product.id).get(status=True)
                     messages.warning(request, 'Product already purchased.')
                     return redirect('plans')
                 except UserPurchases.DoesNotExist:    
