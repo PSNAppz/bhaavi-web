@@ -38,7 +38,7 @@ urlpatterns = [
     path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule"),
  
     # Conference call URLs
-    path('dashboard/calldetails', views.callDetails, name="call_details"),
+    path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/',Agora.as_view(), name="conference")
 
 

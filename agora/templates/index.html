@@ -76,9 +76,9 @@
     $(document).ready(function () {
         var agoraAppId = '{{ agora_id }}';
         var channelName = '{{ channel }}';
-        // var tokenId = '{{token}}';
-        // initClientAndJoinChannel(agoraAppId, channelName,tokenId);
-        initClientAndJoinChannel(agoraAppId, channelName);
+        var tokenId = '{{token}}';
+        initClientAndJoinChannel(agoraAppId, channelName, tokenId);
+        //initClientAndJoinChannel(agoraAppId, channelName);
     });
 </script>
 <script src="{% static 'js/index.js' %}"></script>

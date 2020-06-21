@@ -19,27 +19,11 @@ class AgoraVideoCall(View):
 #change it to the random channel_name stored in the table.
     def createChannel(self,request):
         try:
-
             data = User.objects.get(email=self.request.user)
             channel = data.full_name
             return channel
         except:
             raise Http404("Request is not valid/ Schedule Not Found")
-# Token generation
-    # def generateSignalingToken(
-    #     account,
-    #     appID,
-    #     appCertificate,
-    #     expiredTsInSeconds):
-    #     version = "1"
-    #     expired = str(expiredTsInSeconds)
-    #     account="test@test"
-    #     content = account + appID + appCertificate + expired
-    #     md5sum = hashlib.md5(content.encode('utf-8')).hexdigest()
-    #     token = "%s:%s:%s:%s" % (version, appID, expired, md5sum)
-    #     return token
-    
-
 
     def get_permission(self,request,permission_class):
         if permission_class == 'AllowAny':
@@ -76,11 +60,11 @@ class AgoraVideoCall(View):
         print(self.app_id,self.channel)
         # channel = self.createChannel(request)   #sample function.
         if stat:
+            print("HELLO")
             return render(request,'index.html',{
                     'agora_id':self.app_id,
-                    'channel':self.createChannel(request), 
-                    # 'channel':self.channel,
-                    # 'token':self.generateSignalingToken(self.app_id,self.appCertificate,self.expiredTsInSeconds),
+                    'channel':self.channel,
+                    'token':self.token,
                     'channel_end_url':self.channel_end_url
                     })
         else:
@@ -96,10 +80,10 @@ class AgoraVideoCall(View):
 # allowed_permissions = ['AllowAny','IsAuthenticated','IsAdmin']
 
 class Agora(AgoraVideoCall):
-    app_id=''
-    channel=''
-    # appCertificate='a378db0f912f4b169e4f0208511de1a4'
-    # expiredTsInSeconds='60'
-    # token = '123'
+    app_id=config('AGORA_APP_ID')
+    channel='12'
+    appCertificate=config('AGORA_CERT_PRIMARY')
+    expiredTsInSeconds='3600'
+    token = '0064b2ebf458c6c4ef9beeb02669f8d1c22IAA/zA5Wg+3HIlteHAR30wfHTMGs8HGrJdQ7eKAaqHqTGs1EU08AAAAAEABY6hqlPrTwXgEAAQA9tPBe'
     permission_class = 'IsAuthenticated'
     channel_end_url = '/dashboard'

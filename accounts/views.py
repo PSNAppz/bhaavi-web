@@ -138,6 +138,37 @@ def callDetails(request):
                 else:
                     context = {'minutes':minutes,'scheduled':False, 'token':None}
                     return render(request, 'accounts/pre_call_user.html', context)
+        else:
+            try:
+                profile = MentorProfile.objects.get(user_id = request.user.id)
+            except MentorProfile.DoesNotExist:
+                return redirect('home')    
+            if (schedule.accepted and schedule.mentor_id == profile.id and schedule.request.scheduled and not schedule.request.closed):
+                now = utc.localize(datetime.datetime.now())
+                time_delta = (now - schedule.slot)
+                total_seconds = time_delta.total_seconds()
+                minutes = total_seconds/60
+                if (minutes >= -5 and minutes <= 65):
+                    accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
+                    token = accepted_call.token
+                    if not token:
+                        expiryTimeSec = "4200"
+                        appCert = config('AGORA_CERT_PRIMARY')
+                        appID = config('AGORA_APP_ID')
+                        account = request.user.email
+                        token = generateSignalingToken(account, appID, appCert, expiryTimeSec )
+                        AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
+                    context = {'minutes':minutes,'scheduled':True, 'token':token}
+                    return render(request, 'accounts/pre_call_mentor.html', context)
+                else:
+                    if (minutes < -5):
+                        context = {'minutes':minutes,'scheduled':False, 'token':None}
+                        return render(request, 'accounts/pre_call_mentor.html', context)
+                    else:
+                        context = {'minutes':minutes,'scheduled':False, 'token':None}
+                        return render(request, 'accounts/pre_call_mentor.html', context)
+            return redirect('mentorboard')
+
                 
 @unauthenticated_user
 def loginPage(request):

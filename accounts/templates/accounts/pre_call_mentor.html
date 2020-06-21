@@ -24,7 +24,7 @@
           
           <!-- Heading -->
           <h2 class="font-weight-bold text-center mb-2">
-            Please make sure you have the following:
+            Please make sure the following before proceeding to call:
           </h2>
 
           <!-- Text -->
@@ -42,12 +42,12 @@
                 
                 <!-- Heading -->
                 <p class="font-weight-bold mb-1">
-                  Unlimited users. One price.
+                  Stable internet connection.
                 </p>
           
                 <!-- Text -->
                 <p class="font-size-sm text-muted mb-0">
-                  We don't charge per seat, just per service.
+                  Make sure your internet is stable so that the call won't get interrupted.
                 </p>
           
               </div>
@@ -65,12 +65,12 @@
                 
                 <!-- Heading -->
                 <p class="font-weight-bold mb-1">
-                  Guaranteed 100% uptime
+                  Neat Backdrops 
                 </p>
           
                 <!-- Text -->
                 <p class="font-size-sm text-muted mb-0">
-                  Our server network never goes down.
+                  Make sure your background is neat and professional.
                 </p>
           
               </div>
@@ -88,12 +88,12 @@
                 
                 <!-- Heading -->
                 <p class="font-weight-bold mb-1">
-                  Lifetime storage *
+                  Working camera and mic
                 </p>
           
                 <!-- Text -->
                 <p class="font-size-sm text-muted mb-0">
-                  We store all your data forever. No extra charge.
+                  Make sure microphone and camera is working properly.
                 </p>
           
               </div>
@@ -111,12 +111,12 @@
                 
                 <!-- Heading -->
                 <p class="font-weight-bold mb-1">
-                  256-bit encryption
+                  Do not give personal information.
                 </p>
           
                 <!-- Text -->
                 <p class="font-size-sm text-muted mb-0">
-                  Keep your communication and data safe.
+                  Giving personal information to customers is a violation of policy.
                 </p>
           
               </div>
@@ -125,10 +125,27 @@
               <div class="badge badge-rounded-circle badge-success-soft ml-4">
                 <i class="fe fe-check"></i>
               </div>
+
+              
           
             </div>
           </div>
+          <hr>
+          <div class="form-group mb-0">
+              
+            <!-- Submit -->
+            <form action="{% url 'conference' %}" method="GET">
+              {% csrf_token %}
+              <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+              <button type="submit" class="btn btn-block btn-success-soft lift">
+                Proceed to call <span class="fe fe-users"></span>
+              </button>
+            </form>
+
+
+          </div>
         </div>
+        
       </div> <!-- / .row -->
     </div>
   </section>
