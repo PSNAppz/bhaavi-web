@@ -11,13 +11,22 @@
             <div class="col">
   
               <!-- Heading -->
-              <h1 class="font-weight-bold text-white mb-2">
-                {{ user.full_name }}
-              </h1>
-  
+              <h1>
+              <span class="font-weight-bold text-white">
+               {{ user.full_name }}
+              
+                {% if profile.verified %}
+                
+                <span style="font-size: small;" class="badge badge-rounded-circle badge-primary" title="Verified">
+                  <i class="fe fe-check"></i>
+                </span>
+                {% endif %}
+              </span>
+              
+            </h1>
               <!-- Text -->
               <p class="font-size-lg text-white-75 mb-0">
-                Welcome to Bhaavi dashboard.
+                Welcome to mentor dashboard.
               </p>
   
             </div>
@@ -70,16 +79,7 @@
                         Notifications
                       </a>
                     </li>
-                    <!-- <li class="list-item">
-                      <a class="list-link text-reset" href="{% url 'pricing'%}">
-                        Upgrade plan 
-                      </a>
-                    </li>
-                    <li class="list-item">
-                      <a class="list-link text-reset" href="billing-users.html">
-                        Payment history
-                      </a>
-                    </li> -->
+                    
                   </ul>
 
                 </div>
@@ -87,82 +87,67 @@
             </div>
           </div>
             <div class="col-12 col-md-9">
-            <div class="card card-bleed shadow-light-lg mb-6">
-              
-                <div class="card-body">
+              <div class="card card-bleed shadow-light-lg" id="schedules">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
   
-                  <!-- List group -->
-                  <div class="list-group list-group-flush">
-                    {% for item in schedule %}
-                    
-                    <div class="list-group-item">
-                      <div class="row align-items-center">
-                        <div class="col">
+                      <!-- Heading -->
+                      <h4 class="mb-0">
+                       Available schedules
+                      </h4>
   
-                          <!-- Heading -->
-                          <h2>Schedules</h2>
-                          <div class="col-auto">
-
-                          <p class="mb-0">
-                            {{ item.user }} <i class="fe fe-info text-gray-500" data-toggle="tooltip" title="We use the the phone number you provide in General"></i>
-                          </p>
-                         
-  
-                          <!-- Text -->
-                          <small class="text-gray-700">
-                            {{ item.slot }}
-                          </small>
-  
-                        </div>
-                      </div>
                     </div>
-                    
-                    {% endfor %}
                   </div>
-  
                 </div>
-              <!-- </div> -->
-          </div>
-          <!-- </div> -->
-          <div class="col-12 col-md-9">       
+                <div class="card-body">
+                  <!-- start for -->
+                  {% for schedule in schedules %}
                   <div class="list-group list-group-flush">
                     <div class="list-group-item">
                       <div class="row align-items-center">
                         <div class="col-auto">
   
                           <!-- Icon -->
-                          <div class="icon icon-sm text-gray-400">
-                            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"/><path d="M8 2.5c-.69 0-1.25.56-1.25 1.25v16.5c0 .69.56 1.25 1.25 1.25h8c.69 0 1.25-.56 1.25-1.25V3.75c0-.69-.56-1.25-1.25-1.25H8z" fill="#335EEA" opacity=".3"/><path d="M8 2.5c-.69 0-1.25.56-1.25 1.25v16.5c0 .69.56 1.25 1.25 1.25h8c.69 0 1.25-.56 1.25-1.25V3.75c0-.69-.56-1.25-1.25-1.25H8zM8 1h8a2.75 2.75 0 012.75 2.75v16.5A2.75 2.75 0 0116 23H8a2.75 2.75 0 01-2.75-2.75V3.75A2.75 2.75 0 018 1zm1.5.75h5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5z" fill="#335EEA"/></g></svg>
+                          <div class="icon">
+                            <img src="{% static 'assets/img/icons/duotone-icons/Media/Rec.svg' %}"/>
                           </div>
   
                         </div>
                         <div class="col ml-n5">
-  
+                          
                           <!-- Heading -->
                           <p class="mb-0">
-                            Title
+                            <small class="text-blue-300">
+                              Customer: 
+                            </small> {{schedule.user.full_name}} 
                           </p>
-  
+                         
                           <!-- Text -->
+                          Scheduled time: 
                           <small class="text-gray-700">
-                            April 20 at 4:16PM
+                            {{schedule.slot}}
                           </small>
   
                         </div>
                         <div class="col-auto">
   
                           <!-- Button -->
-                          <button class="btn btn-xs btn-outline-white">
-                            Download
-                          </button>
-  
+                          <form action="{% url 'call' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                            <input type="submit" class="btn btn-xs btn-success-soft" value="Join Call" />
+                          </form>
                         </div>
-
                       </div>
                     </div>
   
                   </div>
-  
+                  {% if not forloop.last %}
+                  <hr>
+                  {% endif %}
+                  <!-- End for -->
+                  {% endfor %}
                 </div>
               </div>
   
@@ -171,8 +156,5 @@
         </div> <!-- / .container -->
       </main>
   
-     
-  
   {% endif %}
-  
   {% endblock content %}

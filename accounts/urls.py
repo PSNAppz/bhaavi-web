@@ -37,6 +37,6 @@ urlpatterns = [
     path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule"),
  
     # agora package test view
-    path('agora/',Agora.as_view(), name="agora_package")
+    path('dashboard/call/',Agora.as_view(), name="call")
 
 ]
