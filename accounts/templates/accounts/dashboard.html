@@ -71,7 +71,7 @@
                       </a>
                     </li>
                     <li class="list-item">
-                      <a class="list-link text-reset" href="{% url 'pricing'%}">
+                      <a class="list-link text-reset" href="{% url 'plans'%}">
                         Upgrade plan 
                       </a>
                     </li>
@@ -118,7 +118,7 @@
                       <div class="col-auto">
 
                         <!-- Button -->
-                        {% if product.id == 1 %}
+                        {% if product.call_required == False %}
                         
                         {% if purchase.product_id == product.id and purchase.status %}
                         <form action="{% url 'plans' %}" method="POST">
@@ -157,9 +157,6 @@
                               {% endwith %}
                             {% else %}
                         <form action="{% url 'plans' %}" method="GET">
-                          {% csrf_token %}
-                          <input type="hidden" name="user" value="{{ user.id }}" />
-                          <input type="hidden" name="product" value="{{ product.id }}" />
                             <input type="submit" class="btn btn-xs btn-success-soft" value="Purchase" />
                         </form>
                         {% endif %}

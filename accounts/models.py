@@ -39,7 +39,23 @@ def id_gen():
 
 def channel_gen():
     uid = uuid.uuid4()
-    return uid.hex   
+    return uid.hex  
+
+def invoice_gen():
+        uid = uuid.uuid4()
+        last_invoice = UserPurchases.objects.all().order_by('id').last()
+        if not last_invoice:
+            return 'BHVI-'+uid.hex
+        new_invoice_no = 'BHVI-' + str(uid.hex)
+        return new_invoice_no         
+
+def product_gen():
+        uid = uuid.uuid4()
+        last_prod = Product.objects.all().order_by('id').last()
+        if not last_prod:
+            return 'PROD-'+uid.hex
+        prod_id = 'PROD-' + str(uid.hex)
+        return prod_id
 
 class User(AbstractBaseUser, PermissionsMixin):
     id             = models.CharField(max_length=32, primary_key=True, default=id_gen, editable=False)
@@ -95,34 +111,52 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
-
+    
 class Product(models.Model):
+    id = models.CharField(max_length=255, default=product_gen, primary_key=True, editable=False)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
-    amount = models.IntegerField()
+    amount = models.FloatField()
+    active_discount = models.FloatField()
     call_required = models.BooleanField(default=0)
+    is_package = models.BooleanField(default=0) 
     active = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Product name: {}'.format(self.name)             
+        return 'Product name: {}'.format(self.name) 
+
+class ProductFeatures(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    feature = models.CharField(max_length=255)
+
+    def __str__(self):
+        return 'Product name: {}'.format(self.product.name) 
+
+class ProductPackages(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='package_product')
+    package = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_package')
+
+    def __str__(self):
+        return 'Package name: {}'.format(self.package.name)         
 
 class MentorProfile(models.Model):
-    MENTOR_TYPES=(
-        ('J', 'Jyolsyan'),
-        ('C', 'Councellor'),
-    )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
     tags = models.CharField(max_length=255)
     experience = models.IntegerField(default=0)
-    mentor_type =  models.CharField(max_length=1, choices=MENTOR_TYPES)
     associated_product = models.ForeignKey(Product, on_delete=models.CASCADE)
     active = models.BooleanField(default=1)
     verified = models.BooleanField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)          
+        return 'Profile of user: {}'.format(self.user.full_name) 
+    @property
+    def mentor_type(self):
+        if self.user.mentor:
+            return 1 
+        else:
+            return 2                
 
 class AcademicProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='academic')
@@ -136,13 +170,35 @@ class AcademicProfile(models.Model):
         return 'Profile of user: {}'.format(self.user.full_name)         
 
 class UserPurchases(models.Model):
-    users = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    status = models.BooleanField(default=1)
+    status = models.BooleanField(default=0)
+    payment_progress = models.BooleanField(default=1)
+    invoice = models.CharField(max_length=255, default=invoice_gen)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Plan name: {}'.format(self.product.name) 
+        return 'Receipt id: {}'.format(self.receipt_id) 
+
+class RazorPayTransactions(models.Model):
+    purchase = models.ForeignKey(UserPurchases, on_delete=models.CASCADE, related_name='transaction_details')
+    razorpay_order_id = models.CharField(max_length=255, blank=True)
+    razorpay_payment_id = models.CharField(max_length=255, blank=True)
+    razorpay_signature = models.CharField(max_length=255, blank=True)
+    status = models.BooleanField(default=0)
+    refund = models.BooleanField(default=0)
+    refund_date = models.DateTimeField(blank=True, null=True)
+    payment_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Transaction id: {}'.format(self.id)
+
+    @property
+    def product_refunded(self):
+        return self.refund
+    @property
+    def transaction_success(self):
+        return self.status                  
 
 class MentorCallRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_request', null=False)
@@ -178,7 +234,7 @@ class AcceptedCallSchedule(models.Model):
 
 class Coupon(models.Model):
     code = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_coupon', null=True)                            
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)                            
     discount_percent = models.DecimalField( max_digits=5, decimal_places=2)
     count = models.IntegerField(default=1)
     multiple_usage = models.BooleanField(default=0)
@@ -198,8 +254,6 @@ class UserRedeemCoupon(models.Model):
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, related_name='coupon_details', null=False)   
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_details', null=False)   
     discount_percent = models.DecimalField( max_digits=5, decimal_places=2)
-    usage = models.IntegerField(default=1)
-    active = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
