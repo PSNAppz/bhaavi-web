@@ -36,13 +36,18 @@
               </a>
             </li>
             {% if user.is_authenticated %}
-
-            <li class="nav-item dropdown">
-              <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
-                Dashboard
-              </a>
-            </li>
-            
+              {% if user.is_mentor %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link" id="navbarPages"  href="{% url 'mentorboard' %}" >
+                    Dashboard
+                  </a>
+                </li>
+               {% endif %}
+               <li class="nav-item dropdown">
+                <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
+                  Dashboard
+                </a>
+              </li>
             {% endif %}
 
             {% if user.is_superuser %}
