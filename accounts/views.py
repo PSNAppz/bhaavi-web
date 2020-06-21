@@ -27,7 +27,12 @@ def plansPage(request):
 
 @login_required(login_url='login')
 def checkoutPage(request):
-    return render(request, 'accounts/checkout.html')        
+    # if request.method=="POST":
+    name = request.GET.get('plan')
+    product = Product.objects.get(name=name)
+    # user = User.objects.filter()
+    context = {'product':product}
+    return render(request, 'accounts/checkout.html', context)        
 
 @login_required(login_url='login')
 def paymentSuccessPage(request):
@@ -50,7 +55,12 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
-            return redirect('dashboard')
+            if user.is_mentor:
+                return redirect('mentorboard')
+            elif user.is_customer:
+                return redirect('dashboard')
+            else:
+                return redirect('')        
         else:
             messages ='Email or password incorrect'
 
@@ -302,4 +312,12 @@ def respondCallRequest(request, id):
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")
     return render(request, 'admin/call_view.html',context)     
+# mentor dashboard
+@login_required(login_url='login')
+@mentor
+def mentorDashboard(request):
+    profile = MentorProfile.objects.filter()
+    schedule = AcceptedCallSchedule.objects.all()
+    context = {'schedule':schedule}
+    return render(request, 'mentor/dashboard.html',context)
 

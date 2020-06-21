@@ -3,132 +3,261 @@
 {% block content %}
     <!-- WELCOME
     ================================================== -->
-    <section class="pt-8 pt-md-11 pb-10 pb-md-15 bg-primary">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/checkout/">
+  
+      <!-- Bootstrap core CSS -->
+  <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
+  
+      <style>
+        .bd-placeholder-img {
+          font-size: 1.125rem;
+          text-anchor: middle;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+  
+        @media (min-width: 768px) {
+          .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+          }
+        }
+        .container {
+            max-width: 960px;
+                }
 
-        <!-- Shape -->
-        <div class="shape shape-blur-3 svg-shim text-white">
-          <svg viewBox="0 0 1738 487" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h1420.92s713.43 457.505 0 485.868C707.502 514.231 0 0 0 0z" fill="url(#paint0_linear)"/><defs><linearGradient id="paint0_linear" x1="0" y1="0" x2="1049.98" y2="912.68" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".075"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs></svg>
-        </div>
+        .lh-condensed { line-height: 1.25; }
+      </style>
+      <!-- Custom styles for this template -->
+      
+    </head>
+    <body class="bg-light">
+      <div class="container">
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="../assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+      <h2>Checkout form</h2>
+      <!-- <p class="lead"></p> -->
+    </div>
   
-        <!-- Content -->
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-10 col-lg-8 text-center">
-              
-              <!-- Heading -->
-              <h1 class="display-2 text-white">
-                Complete payment for checkout
-              </h1>
-  
-              <!-- Text -->
-              <p class="lead text-white-80 mb-6 mb-md-8">
-                All types of businesses need access to development resources, so we give you the option to decide how much you need to use.
-              </p>
-  
-            
-  
+    <div class="row">
+      <div class="col-md-4 order-md-2 mb-4">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted">Your cart</span>
+          <span class="badge badge-secondary badge-pill">1</span>
+        </h4>
+        <ul class="list-group mb-3">
+          {% for i in product %}
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h4 class="mb-4">{{ i.name }}</h4>
+              <small class="text-muted">{{ i.description }}</small>
             </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
+            <span class="text-muted">{{ i.amount }}</span>
+          </li>
+          {% endfor %}
+          <!-- <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Second product</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">$8</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-condensed">
+            <div>
+              <h6 class="my-0">Third item</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+            <span class="text-muted">$5</span>
+          </li> -->
+          <li class="list-group-item d-flex justify-content-between bg-light">
+            <div class="text-success">
+              <h6 class="my-0">Promo code</h6>
+              <small>EXAMPLECODE</small>
+            </div>
+            <span class="text-success">-5</span>
+          </li>
+          <li class="list-group-item d-flex justify-content-between">
+            <span>Total (INR)</span>
+            <strong>{{ product.amount }}</strong>
+          </li>
+        </ul>
   
-      </section>
-
-       <!-- SHAPE
-    ================================================== -->
-    <div class="position-relative">
-        <div class="shape shape-bottom shape-fluid-x svg-shim text-light">
-          <svg viewBox="0 0 2880 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 48h2880V0h-720C1442.5 52 720 0 720 0H0v48z" fill="currentColor"/></svg>
-        </div>
+        <form class="card p-2">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Promo code">
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-secondary">Redeem</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <!-- FORM
-    ================================================== -->
-    <section class="pt-8 pt-md-11 pb-8 pb-md-14">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-10 col-lg-8 text-center">
-              
-              <!-- Heading -->
-              <h2 class="font-weight-bold">
-                Please complete the details below
-              </h2>
-  
-              <!-- Text -->
-              <p class="font-size-lg text-muted mb-7 mb-md-9">
-                We always want to hear from you! Let us know how we can best help you and we'll do our very best.
-              </p>
-  
+      <div class="col-md-8 order-md-1">
+        <h4 class="mb-3">Billing address</h4>
+        <form class="needs-validation" novalidate>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="firstName">First name</label>
+              <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid first name is required.
+              </div>
             </div>
-          </div> <!-- / .row -->
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-12 col-lg-10">
-              
-              <!-- Form -->
-              <form action="{% url 'success_payment' %}" method="POST">
-                {% csrf_token %}
-                <div class="row">
-                  <div class="col-12 col-md-6">
-                    <div class="form-group mb-5">
-                      
-                      <!-- Label -->
-                      <label for="contactName">
-                        Full name
-                      </label>
+            <div class="col-md-6 mb-3">
+              <label for="lastName">Last name</label>
+              <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid last name is required.
+              </div>
+            </div>
+          </div>
   
-                      <!-- Input -->
-                      <input type="text" class="form-control" id="contactName" placeholder="Full name" required>
+          <div class="mb-3">
+            <label for="username">Username</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">@</span>
+              </div>
+              <input type="text" class="form-control" id="username" placeholder="Username" required>
+              <div class="invalid-feedback" style="width: 100%;">
+                Your username is required.
+              </div>
+            </div>
+          </div>
   
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <div class="form-group mb-5">
-                      
-                      <!-- Label -->
-                      <label for="contactEmail">
-                        Email
-                      </label>
+          <div class="mb-3">
+            <label for="email">Email <span class="text-muted">(Optional)</span></label>
+            <input type="email" class="form-control" id="email" placeholder="you@example.com">
+            <div class="invalid-feedback">
+              Please enter a valid email address for shipping updates.
+            </div>
+          </div>
   
-                      <!-- Input -->
-                      <input type="email" class="form-control" id="contactEmail" placeholder="hello@domain.com" required>
+          <div class="mb-3">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+            <div class="invalid-feedback">
+              Please enter your shipping address.
+            </div>
+          </div>
   
-                    </div>
-                  </div>
-                </div> <!-- / .row -->
-                <div class="row">
-                  <div class="col-12">
-                    <div class="form-group mb-7 mb-md-9">
-                      
-                      <!-- Label -->
-                      <label for="contactMessage">
-                        Mobile
-                      </label>
+          <div class="mb-3">
+            <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+            <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
+          </div>
   
-                        <!-- Input -->
-                        <input type="text" class="form-control" id="contactEmail" placeholder="1234567890" required>
+          <div class="row">
+            <div class="col-md-5 mb-3">
+              <label for="country">Country</label>
+              <select class="custom-select d-block w-100" id="country" required>
+                <option value="">Choose...</option>
+                <option>India</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid country.
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="state">State</label>
+              <select class="custom-select d-block w-100" id="state" required>
+                <option value="">Choose...</option>
+                <option>Kerala</option>
+              </select>
+              <div class="invalid-feedback">
+                Please provide a valid state.
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="zip">Zip</label>
+              <input type="text" class="form-control" id="zip" placeholder="" required>
+              <div class="invalid-feedback">
+                Zip code required.
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="same-address">
+            <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="save-info">
+            <label class="custom-control-label" for="save-info">Save this information for next time</label>
+          </div>
+          <hr class="mb-4">
   
-                    </div>
-                  </div>
-                </div> <!-- / .row -->
-                <div class="row justify-content-center">
-                  <div class="col-auto">
-                    
-                    <!-- Submit -->
-                    <button type="submit" class="btn btn-primary lift">
-                      Proceed to pay
-                    </button>
+          <h4 class="mb-3">Payment</h4>
   
-                  </div>
-                </div> <!-- / .row -->
-                <style>
-                    .razorpay-payment-button{
-                       
-                            padding: .8125rem;
-                            visibility: hidden;
-                    }
-                  </style>
-                  <!-- cSI5sk84KgKZNZ9jyygvwh97 -->
-                                  <!-- Button -->
-                                  
-                                    <script
+          <div class="d-block my-3">
+            <div class="custom-control custom-radio">
+              <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+              <label class="custom-control-label" for="credit">Credit card</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+              <label class="custom-control-label" for="debit">Debit card</label>
+            </div>
+            <div class="custom-control custom-radio">
+              <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+              <label class="custom-control-label" for="paypal">PayPal</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="cc-name">Name on card</label>
+              <input type="text" class="form-control" id="cc-name" placeholder="" required>
+              <small class="text-muted">Full name as displayed on card</small>
+              <div class="invalid-feedback">
+                Name on card is required
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="cc-number">Credit card number</label>
+              <input type="text" class="form-control" id="cc-number" placeholder="" required>
+              <div class="invalid-feedback">
+                Credit card number is required
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <label for="cc-expiration">Expiration</label>
+              <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+              <div class="invalid-feedback">
+                Expiration date required
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="cc-cvv">CVV</label>
+              <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+              <div class="invalid-feedback">
+                Security code required
+              </div>
+            </div>
+          </div>
+          <hr class="mb-4">
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+        </form>
+      </div>
+    </div>
+  
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+      <p class="mb-1">&copy; 2020-2021 Bhaavi consultants</p>
+      <ul class="list-inline">
+        <li class="list-inline-item"><a href="#">Privacy</a></li>
+        <li class="list-inline-item"><a href="#">Terms</a></li>
+        <li class="list-inline-item"><a href="#">Support</a></li>
+      </ul>
+    </footer>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
+          <script src="/static/assets/js/form-validation.js">
+          </script>
+          <!-- <script
                                         src="https://checkout.razorpay.com/v1/checkout.js"
                                         data-key="rzp_test_oqLzGweuZMbmPP" 
                                         data-amount="50000" 
@@ -140,20 +269,8 @@
                                         data-prefill.name="{{ user.full_name }}"
                                         data-prefill.email=" {{ user.email }}"
                                         data-theme.color="#F37254"
-                                    ></script>
-                                    <input type="hidden" custom="Hidden Element" name="hidden">
-                                   
-                                  <!-- <input type="submit" href="#!" class="btn btn-block btn-primary" value="Start with Standard"> -->
-                                   <!-- <i class="fe fe-arrow-right ml-3"></i> -->
-              </form>
-  
-            </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-      </section>
-  
-          
-              
+                                    ></script>       
+               -->
     
-  
+        </body>
 {% endblock content %}

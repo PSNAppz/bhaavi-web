@@ -100,10 +100,21 @@
                   </div>
   
                   <!-- Button -->
-                  <a href="{% url 'checkout' %}" class="btn btn-block btn-primary-soft">
-                    Start with basic <i class="fe fe-arrow-right ml-3"></i>
+                  <button onclick="setPlan(this.id)" id="basic" class="btn btn-block btn-primary-soft" value = "basic">Start with Basic</button>
+                  <!-- <a href="{% url 'checkout' %}" class="btn btn-block btn-primary-soft"> -->
+                     <!-- <i class="fe fe-arrow-right ml-3"></i> -->
                   </a>
-                  
+                  <script>
+                  function setPlan(id){
+                    // $("button").click(function() {
+                      // var fired_button = $(this).val();
+                      console.log(id)
+                      var plan=document.getElementById(id).value;
+                      window.location.href = "{% url 'checkout' %}" + "?plan="+plan;  
+                          // });
+                      
+                   }
+                  </script>    
                 </div>
               </div>
   
@@ -201,9 +212,7 @@
                   </div>
   
                   <!-- Button -->
-                  <a href="#!" class="btn btn-block btn-primary">
-                    Start with Standard <i class="fe fe-arrow-right ml-3"></i>
-                  </a>
+                  <button onclick="setPlan(this.id)" id="standard" class="btn btn-block btn-primary" value = "standard">Start with Standard</button>
                   
                 </div>
               </div>
@@ -341,9 +350,7 @@
                   </div>
   
                   <!-- Button -->
-                  <a href="#!" class="btn btn-block btn-primary-soft">
-                    Start with Premium <i class="fe fe-arrow-right ml-3"></i>
-                  </a>
+                  <button onclick="setPlan(this.id)" id="premium" class="btn btn-block btn-primary-soft" value = "premium">Start with Premium</button>
                   
                 </div>
               </div>

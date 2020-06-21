@@ -21,6 +21,9 @@ urlpatterns = [
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
 
+    # Mentor Dash
+    path('mentorboard/', views.mentorDashboard, name="mentorboard"),
+
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
     path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call"),
