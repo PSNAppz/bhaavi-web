@@ -12,6 +12,7 @@ import pytz
 import uuid
 import razorpay
 from decouple import config
+from django.contrib import messages
 
 utc=pytz.UTC
 
@@ -22,13 +23,11 @@ def homePage(request):
 def profilePage(request):
     return render(request, 'accounts/profile.html')
 
-@login_required(login_url='login')
 def plansPage(request):
     products = Product.objects.filter(active=True).filter(is_package=False)
     features = ProductFeatures.objects.all()
     packages = Product.objects.filter(active=True).filter(is_package=True)
-    purchases = UserPurchases.objects.filter(user_id=request.user.id).filter(status=1)
-    context = {'products':products, 'packages':packages, 'purchases':purchases, 'features':features}
+    context = {'products':products, 'packages':packages, 'features':features}
     return render(request, 'accounts/plans.html', context)    
 
 @login_required(login_url='login')
@@ -41,7 +40,9 @@ def checkoutPage(request):
             email = request.user
             context = {'product':product,'name':name,'email':email}
             return render(request, 'accounts/checkout.html',context)
-        # else: TODO: Return error            
+        else: 
+            messages.warning(request, 'An error occured!')  
+            return redirect('plans')         
 
 @login_required(login_url='login')
 def paymentSuccessPage(request):
@@ -54,8 +55,9 @@ def paymentSuccessPage(request):
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
                 purchase = UserPurchases.objects.get(invoice=response['invoice'])
-                check_saved =  RazorPayTransactions.objects.get(purchase_id=purchase.id)
-                if not check_saved:
+                try:
+                    check_saved =  RazorPayTransactions.objects.get(purchase_id=purchase.id)
+                except  RazorPayTransactions.DoesNotExist:
                     RazorPayTransactions.objects.create(
                         razorpay_payment_id = razorpay_payment_id,
                         razorpay_order_id = razorpay_order_id,
@@ -160,7 +162,7 @@ def requestCall(request):
                     user = user,
                     product = purchased_product
                 ) 
-    #TODO: Send success message
+    messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
     return redirect('dashboard')
 
 @login_required(login_url='login')
@@ -178,10 +180,11 @@ def acceptCall(request):
                 )
                 RequestedSchedules.objects.filter(pk=schedule_id).update(accepted=True) 
                 MentorCallRequest.objects.filter(pk=call_request_id).update(scheduled=True)
-                # TODO: Success message
+                messages.success(request, 'Call Scheduled!')
+
             else:
-                # TODO: schedule invalid message
-                print("Invalid schedule")     
+                messages.error(request, 'Schedule invalid!')
+
 
     return redirect('dashboard')    
 
@@ -211,8 +214,7 @@ def requestSchedule(request):
                         total_seconds = time_delta.total_seconds()
                         minutes = total_seconds/60
                         if (minutes <= 120 and minutes >= -120):
-                            # TODO: Show error message
-                            print(minutes,"TODO: Schedule clashing")
+                            messages.warning(request, 'Schedule clash found, please add a different time for the new schedule.')
                             return redirect('admin_panel')
                         else:
                             if not check_schedules:
@@ -222,8 +224,8 @@ def requestSchedule(request):
                                     request = call_request,
                                     slot = slot
                                 )
-                                print("Schedule added")
                                 MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
+                                messages.success(request, 'Schedule added succesfully!')
                                 return redirect('admin_panel')  
                             else:
                                 for schedules in check_schedules:
@@ -231,8 +233,7 @@ def requestSchedule(request):
                                     total_seconds = time_delta.total_seconds()
                                     minutes = total_seconds/60
                                     if (minutes <= 5 and minutes >= -5):
-                                        # TODO: Show error message
-                                        print(minutes,"TODO: Schedule within 5 min already exist")
+                                        messages.warning(request, 'Schedule within 5 min already exist!')
                                         return redirect('admin_panel') 
                                     else:
                                         RequestedSchedules.objects.create(
@@ -241,8 +242,8 @@ def requestSchedule(request):
                                             request = call_request,
                                             slot = slot
                                         )
-                                        print("Schedule added")
                                         MentorCallRequest.objects.filter(pk=request_id).update(responded=True) 
+                                        messages.success(request, 'Schedule added succesfully!')
                                         return redirect('admin_panel')  
             else:    
                 if not check_schedules:
@@ -253,6 +254,7 @@ def requestSchedule(request):
                         slot = slot
                     )
                     MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
+                    messages.success(request, 'Schedule added succesfully!')
                     return redirect('admin_panel')  
                 else:
                     for schedules in check_schedules:
@@ -260,8 +262,7 @@ def requestSchedule(request):
                         total_seconds = time_delta.total_seconds()
                         minutes = total_seconds/60
                         if (minutes <= 5 and minutes >= -5):
-                            # TODO: Show error message
-                            print(minutes,"TODO: Schedule within 5 min already exist")
+                            messages.warning(request, 'Schedule within 5 min already exist!')
                             return redirect('admin_panel')  
                         else:
                             RequestedSchedules.objects.create(
@@ -271,6 +272,7 @@ def requestSchedule(request):
                                 slot = slot
                             )
                             MentorCallRequest.objects.filter(pk=request_id).update(responded=True)
+                            messages.success(request, 'Schedule added succesfully!')
                             return redirect('admin_panel')  
 
     return redirect('admin_panel')   
@@ -286,7 +288,6 @@ def userDashboard(request):
     for purchase in purchases:
         if purchase.product.call_required:
             user_requests |= request.user.mentor_request.filter(product_id = purchase.product_id)
-    #print("TYPE",requests)        
     for user_request in user_requests :
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id = user_request.id).filter(accepted = 0)
@@ -325,6 +326,7 @@ def dropSchedule(request, id):
         else:
             MentorCallRequest.objects.filter(pk=schedule.request.id).update(responded = False)
             schedule.delete()
+            messages.success(request, 'Schedule deleted succesfully!')
     return redirect('admin_panel') 
 
 @login_required(login_url='login')
@@ -350,37 +352,46 @@ def initPaymentClient():
 def createOrder(request):
     if request.method == "POST":
         product_id = request.POST.get('product')
+        print(product_id)
         product = Product.objects.filter(active=True).get(pk=product_id)
         if product:
             if product.is_package:
                 # TODO: Package
                 print(product.is_package)
             else:
+                # Check if user already has the product
                 try:
-                    in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
-                    invoice = in_progress.invoice
-                except UserPurchases.DoesNotExist:
-                    purchase = UserPurchases.objects.create(
-                                        user = request.user,
-                                        product = product,
-                                )
-                    invoice = purchase.invoice             
-                client = initPaymentClient()    
-                order_amount = product.amount * 100
-                order_currency = 'INR'
-                order_receipt = 'order_rcptid_11' #TODO: Receipt id
-                notes = {'Product': product.name}   
-                product_name = product.name
-                name = request.user.full_name
-                email = request.user
-                response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
-                order_id = response['id']
-                order_status = response['status']
-                if order_status=='created':
-                    print(invoice)
-                    context = {'order_id':order_id, 'product':product_name, 'amount':order_amount,'name':name,'email':email,'invoice':invoice}
-                    return render(request, 'accounts/payment.html', context)
-                # else: TODO: Return error    
+                    check_produst_status = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = product.id).get(status=True)
+                    messages.warning(request, 'Product already purchased.')
+                    return redirect('plans')
+                except UserPurchases.DoesNotExist:    
+                    try:
+                        in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
+                        invoice = in_progress.invoice
+                    except UserPurchases.DoesNotExist:
+                        purchase = UserPurchases.objects.create(
+                                            user = request.user,
+                                            product = product,
+                                    )
+                        invoice = purchase.invoice             
+                    client = initPaymentClient()    
+                    order_amount = product.amount * 100
+                    order_currency = 'INR'
+                    order_receipt = invoice
+                    notes = {'Product': product.name}   
+                    product_name = product.name
+                    name = request.user.full_name
+                    email = request.user
+                    response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
+                    order_id = response['id']
+                    order_status = response['status']
+                    if order_status=='created':
+                        context = {'order_id':order_id, 'product':product_name, 'amount':order_amount,'name':name,'email':email,'invoice':invoice}
+                        return render(request, 'accounts/payment.html', context)
+                    else: 
+                        messages.error(request, 'Some error occured, please try again!')
+                        return redirect('plans')
+
 
 def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
     params_dict = {

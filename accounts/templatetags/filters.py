@@ -78,4 +78,11 @@ def percent( value, arg ):
         if arg: return int((value / arg)*100)
     except: pass
     return 
-                       
+
+@register.filter
+def sub(value, arg):
+    return int(value - arg)    
+
+@register.filter
+def integer(value):
+    return int(value)                       

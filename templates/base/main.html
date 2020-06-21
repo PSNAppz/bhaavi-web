@@ -156,7 +156,7 @@
 						</p>
   
 						<!-- Button -->
-						<a href="{% url 'pricing' %}" class="btn btn-sm btn-white shadow-dark fonFt-size-sm">
+						<a href="{% url 'plans' %}" class="btn btn-sm btn-white shadow-dark fonFt-size-sm">
 						  Pricing
 						</a>
   
@@ -283,7 +283,7 @@
 
       </div>
     </nav>
-
+    {% include 'base/messages.html' %}
     {% block content %}
 	
 			

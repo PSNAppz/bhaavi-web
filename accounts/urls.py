@@ -11,13 +11,12 @@ urlpatterns = [
     path('jyolsyan/register', views.jyolsyanRegisterPage, name="jyolsyan_register"),
     path('user/register', views.userRegisterPage, name="register"),
     path('logout', views.logoutUser, name="logout"),  
-    path('pricing', views.pricingDetails,name="pricing"),
     # path('chat', views.chatpage, name='chat'),  
 
     # Payment flow below
     path('payment/plans', views.plansPage, name='plans'),
     path('payment/checkout', views.checkoutPage, name='checkout'), 
-    path('payment/payment', views.createOrder , name="payment"), 
+    path('payment/pay', views.createOrder , name="payment"), 
     path('payment/status', views.paymentStatus, name = 'payment_status'),
     path('payment/done', views.paymentSuccessPage , name="success"), 
     #path('payment/failure', views.paymentSuccessPage , name="failure"), TODO: failed page
