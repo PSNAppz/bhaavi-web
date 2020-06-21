@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-# Create your views here.
+from decouple import config
 from django.contrib.auth.decorators import login_required
 from .decorators import *
 from .models import *
@@ -10,6 +10,8 @@ from django.contrib import messages
 import datetime
 import pytz
 import uuid
+import hashlib
+
 import razorpay
 from decouple import config
 from django.contrib import messages
@@ -94,6 +96,49 @@ def paymentSuccessPage(request):
 def pricingDetails(request):
     return render(request, 'base/pricing.html')    
 
+# Conference call 
+# check if scheduled in 30 min
+@login_required(login_url='login')
+def callDetails(request):
+    # Token generation code
+    def generateSignalingToken(account, appID, appCertificate, expiredTsInSeconds):
+        version = "1"
+        expired = expiredTsInSeconds
+        account = account
+        content = account + appID + appCertificate + expired
+        md5sum = hashlib.md5(content.encode('utf-8')).hexdigest()
+        token = "%s:%s:%s:%s" % (version, appID, expired, md5sum)
+        return token
+
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        
+        if (schedule.accepted and schedule.user_id == request.user.id and schedule.request.scheduled and not schedule.request.closed):
+            now = utc.localize(datetime.datetime.now())
+            time_delta = (now - schedule.slot)
+            total_seconds = time_delta.total_seconds()
+            minutes = total_seconds/60
+            if (minutes >= -5 and minutes <= 65):
+                accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
+                token = accepted_call.token
+                if not token:
+                    expiryTimeSec = "4200"
+                    appCert = config('AGORA_CERT_PRIMARY')
+                    appID = config('AGORA_APP_ID')
+                    account = request.user.email
+                    token = generateSignalingToken(account, appID, appCert, expiryTimeSec )
+                    AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
+                context = {'minutes':minutes,'scheduled':True, 'token':token}
+                return render(request, 'accounts/pre_call_user.html', context)
+            else:
+                if (minutes < -5):
+                    context = {'minutes':minutes,'scheduled':False, 'token':None}
+                    return render(request, 'accounts/pre_call_user.html', context)
+                else:
+                    context = {'minutes':minutes,'scheduled':False, 'token':None}
+                    return render(request, 'accounts/pre_call_user.html', context)
+                
 @unauthenticated_user
 def loginPage(request):
     messages =''
@@ -144,7 +189,6 @@ def mentorRegisterPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('full_name')
-
             return redirect('login')
         
 

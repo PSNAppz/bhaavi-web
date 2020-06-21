@@ -149,7 +149,11 @@
                             <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Please wait for the schedule from the mentor">Requested</a>
                             {% elif requested.responded and purchase.status and requested.scheduled %}   
                               {% with accepted_calls|get_schedule:requested.id as schedule %}
-                                <a href="#" class="btn btn-xs btn-primary-soft " >Scheduled for: {{schedule.schedule.slot}}</a>
+                              <form action="{% url 'call_details' %}" method="POST">
+                                {% csrf_token %}
+                                  <input type="hidden" name="schedule" value="{{ schedule.schedule_id }}" />
+                                  <button type="submit" class="btn btn-xs btn-primary-soft" >Scheduled for: {{schedule.schedule.slot}}</button>
+                                </form>
                               {% endwith %}
                             {% else %}
                         <form action="{% url 'plans' %}" method="GET">
@@ -234,6 +238,8 @@
               </div>
             </div>
              <br>
+             <!-- Button trigger modal -->
+
             {% endif %}
            
             <!-- Test History -->

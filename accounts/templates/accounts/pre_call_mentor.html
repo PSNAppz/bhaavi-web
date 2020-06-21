@@ -1,0 +1,139 @@
+{% extends 'base/main.html' %}
+{% block content %}
+{% load filters %}
+{% load static %}
+{% if user.is_authenticated %}
+
+  <!-- CONTENT
+  ================================================== -->
+  <section>
+    
+    <!-- Content -->
+    <div class="container d-flex flex-column">
+      <div class="row align-items-center justify-content-between no-gutters min-vh-100">
+        <div class="col-12 col-md-5 align-self-stretch">
+
+          <!-- Image (mobile) -->
+          <img src="assets/img/photos/photo-5.jpg" class="d-md-none img-cover" alt="...">
+
+          <!-- Image -->
+          <div class="d-none d-md-block vw-50 h-100 float-right bg-cover" style="background-image: url({% static 'assets/img/illustrations/illustration-call.jpg' %});"></div>
+
+        </div>
+        <div class="col-12 col-md-6 py-8 py-md-11">
+          
+          <!-- Heading -->
+          <h2 class="font-weight-bold text-center mb-2">
+            Please make sure you have the following:
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-center text-muted mb-0">
+            Our goal is to be as helpful as possible. 
+          </p>
+
+          <!-- Divider -->
+          <hr class="hr-sm my-6 my-md-8 border-gray-300">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item d-flex align-items-center">
+              
+              <!-- Text -->
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Unlimited users. One price.
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  We don't charge per seat, just per service.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
+            </div>
+            <div class="list-group-item d-flex align-items-center">
+                
+              <!-- Text -->                
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Guaranteed 100% uptime
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  Our server network never goes down.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
+            </div>
+            <div class="list-group-item d-flex align-items-center">
+                
+              <!-- Text -->
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Lifetime storage *
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  We store all your data forever. No extra charge.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
+            </div>
+            <div class="list-group-item d-flex align-items-center">
+                
+              <!-- Text -->
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  256-bit encryption
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  Keep your communication and data safe.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
+            </div>
+          </div>
+        </div>
+      </div> <!-- / .row -->
+    </div>
+  </section>
+
+
+
+{% endif %}
+{% endblock content %}
