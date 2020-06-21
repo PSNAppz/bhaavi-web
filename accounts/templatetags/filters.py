@@ -1,4 +1,5 @@
 from django import template
+import datetime
 register = template.Library()
 
 @register.filter
@@ -85,4 +86,4 @@ def sub(value, arg):
 
 @register.filter
 def integer(value):
-    return int(value)                       
+    return int(value)

@@ -371,21 +371,21 @@ def initPaymentClient():
 @login_required(login_url='login')
 def createOrder(request):
     if request.method == "POST":
+        if not request.user.customer:
+            messages.warning(request, 'Mentors cannot purchase products. Please contact Admin!')
+            return redirect('plans')
         product_id = request.POST.get('product')
-        print(product_id)
         product = Product.objects.filter(active=True).get(pk=product_id)
         if product:
             if product.is_package:
                 products_in_package = ProductPackages.objects.filter(package_id = product.id)
                 for pdt in products_in_package:
-                    print(pdt.product.name)
                     try:
                         check_product_status = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = pdt.product.id).get(status=True)
                         messages.warning(request, 'Product already purchased.')
                         return redirect('plans')
                     except UserPurchases.DoesNotExist:
-                        print("Checking next or going forward")
-
+                        pass
                 try:
                     in_progress = UserPurchases.objects.filter(user_id = request.user.id).filter(payment_progress = True).get(product_id = product.id)
                     invoice = in_progress.invoice
@@ -465,4 +465,10 @@ def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
     status = client.utility.verify_payment_signature(params_dict)
     return True
      
-
+@login_required(login_url='login')
+@mentor
+def mentorDashboard(request):
+    profile = MentorProfile.objects.get(user_id = request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id = profile.id)
+    context = {'schedules':schedules, 'profile':profile}
+    return render(request, 'mentor/dashboard.html',context)

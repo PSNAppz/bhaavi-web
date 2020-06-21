@@ -26,6 +26,9 @@ urlpatterns = [
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
 
+    # Mentor Dash
+    path('mentorboard/', views.mentorDashboard, name="mentorboard"),
+
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
     path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call"),
@@ -34,6 +37,6 @@ urlpatterns = [
     path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule"),
  
     # agora package test view
-    path('agora/',Agora.as_view(), name="agora_package")
+    path('dashboard/call/',Agora.as_view(), name="call")
 
 ]

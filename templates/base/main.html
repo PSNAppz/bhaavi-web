@@ -36,13 +36,18 @@
               </a>
             </li>
             {% if user.is_authenticated %}
-
-            <li class="nav-item dropdown">
-              <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
-                Dashboard
-              </a>
-            </li>
-            
+              {% if user.is_mentor %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link" id="navbarPages"  href="{% url 'mentorboard' %}" >
+                    Dashboard
+                  </a>
+                </li>
+               {% else %}
+               <li class="nav-item dropdown">
+                <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
+                  Dashboard
+                </a>
+              </li>
             {% endif %}
 
             {% if user.is_superuser %}
@@ -54,13 +59,15 @@
             </li>
             
             {% endif %} 
+
+          {% endif %}  
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" id="navbarDocumentation" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
 				  Services
 				</a>
 				<div class="dropdown-menu dropdown-menu-md" aria-labelledby="navbarDocumentation">
 				  <div class="list-group list-group-flush">
-					<a class="list-group-item" href="./docs/index.html">
+					<a class="list-group-item" href="">
   
 					  <!-- Icon -->
 					  <div class="icon icon-sm text-primary">
@@ -83,7 +90,7 @@
 					  </div>
   
 					</a>
-					<a class="list-group-item" href="./docs/alerts.html">
+					<a class="list-group-item" href="">
   
 					  <!-- Icon -->
 					  <div class="icon icon-sm text-primary">
