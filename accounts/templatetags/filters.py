@@ -1,4 +1,5 @@
 from django import template
+import datetime
 register = template.Library()
 
 @register.filter
@@ -51,4 +52,38 @@ def get_schedule(lst, i):
 
     except Exception as e:
         print("HELLO",lst, e)
-        return None           
+        return None       
+
+@register.filter
+def get_features(items, i):
+    try:
+        counter = 0
+        print(items)
+        for item in items.iterator():
+            print(item)
+            if i == item.product_id:
+                return items[counter]
+            counter += 1
+        return None        
+    except:
+        return None
+
+@register.filter
+def percent( value, arg ):
+    '''
+    Returns percentage
+    '''
+    try:
+        value = int( value )
+        arg = int( arg )
+        if arg: return int((value / arg)*100)
+    except: pass
+    return 
+
+@register.filter
+def sub(value, arg):
+    return int(value - arg)    
+
+@register.filter
+def integer(value):
+    return int(value)

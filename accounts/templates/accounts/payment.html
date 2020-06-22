@@ -63,7 +63,7 @@
             <div class="col-12 col-md-12 col-lg-10">
               
               <!-- Form -->
-              <form action="{% url 'payment' %}" method="POST">
+              <form action="{% url 'success' %}" method="POST" id="payment">
                 {% csrf_token %}
                 <div class="row">
                   <div class="col-12 col-md-6">
@@ -75,7 +75,7 @@
                       </label>
   
                       <!-- Input -->
-                      <input type="text" class="form-control disabled" id="contactName" value="{{name}}" placeholder="Full name">
+                      <input type="text" class="form-control" id="contactName" value="{{name}}" placeholder="Full name" required>
   
                     </div>
                   </div>
@@ -88,52 +88,62 @@
                       </label>
   
                       <!-- Input -->
-                      <input type="email" class="form-control disabled" id="contactEmail" value="{{email}}" placeholder="hello@domain.com">
+                      <input type="email" class="form-control" id="contactEmail" value="{{email}}" placeholder="hello@domain.com" required>
   
                     </div>
                   </div>
-                  <div class="col-12 col-md-12">
-                    <label for="contactEmail">
-                      Plan details
-                    </label>
-                  <div class="card shadow-lg">
-                    <div class="card-body">
-                  
-                      <!-- Preheading -->
-                      <div class="text-center mb-3">
-                        <span class="badge badge-pill badge-primary-soft">
-                          <span class="h6 text-uppercase">{{product.name}}</span>
-                        </span>
-                      </div>
-                      <input type="hidden" name="product" value="{{product.id}}" />
-
-                      <!-- Price -->
-                      <div class="d-flex justify-content-center">
-                        <span class="h2 mb-0 mt-2">₹</span>
-                        <span class="price display-2 mb-0" data-annual="0" data-monthly="0">{{product.amount}}</span>
-                      </div>
-                      
-                    </div>
-                  </div>
-                  </div>
                 </div> <!-- / .row -->
-                <br>
-
+                
                 <div class="row justify-content-center">
                   <div class="col-auto">
                     
                     <!-- Submit -->
-                    <button type="submit" class="btn btn-primary lift">
-                      Proceed to checkout
+                    <button type="submit" id="rzp-button1" class="btn btn-primary lift">
+                      Proceed to pay
                     </button>
   
                   </div>
                 </div> <!-- / .row -->
               </form>
-  
+              <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+              <script>
+              var options = {
+                  "key": "rzp_test_IBTilNsjUgCqZx", // Enter the Key ID generated from the Dashboard
+                  "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                  "currency": "INR",
+                  "name": "Bhaavi consultants",
+                  "description": "For a better tomorrow",
+                  "image": "{%static 'assets/img/brand.png' %}",
+                  "order_id": "{{ order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                  "handler": function (response){
+                    $('#payment').append('<input type="hidden" name="razorpay_payment_id" value="'+response.razorpay_payment_id+'"/>');
+                    $('#payment').append('<input type="hidden" name="razorpay_order_id" value="'+response.razorpay_order_id+'"/>');
+                    $('#payment').append('<input type="hidden" name="razorpay_signature" value="'+response.razorpay_signature+'"/>');
+                    $('#payment').append('<input type="hidden" name="invoice" value="{{ invoice }}"/>');
+
+                    $('#payment').submit();
+                  },
+                  "prefill": {
+                      "name": "{{ name }}",
+                      "email": "{{ email }}",
+                  },
+                  "theme": {
+                      "color": "#335eea"
+                  }
+              };
+              var rzp1 = new Razorpay(options);
+              document.getElementById('rzp-button1').onclick = function(e){
+                  rzp1.open();
+                  e.preventDefault();
+              }
+              </script>  
             </div>
           </div> <!-- / .row -->
         </div> <!-- / .container -->
       </section>
+  
+          
+              
+    
   
 {% endblock content %}

@@ -1,7 +1,7 @@
 
 // join channel modal
 $("#join-channel").click(function (event) {
-    var agoraAppId = "a6af85f840ef43108491705e2315a857";
+    var agoraAppId = "";
     var channelName = $('#form-channel').val();
     initClientAndJoinChannel(agoraAppId, channelName);
     $("#modalForm").modal("hide");
@@ -59,7 +59,7 @@ function enableUiControls(localStream) {
                 }
                 break;
             case "q":
-                console.log("so sad to see you quit the channel");
+                console.log("you quit the call");
                 leaveChannel();
                 break;
             default:  // do nothing

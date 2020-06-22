@@ -1,356 +1,201 @@
 {% extends 'base/main.html' %}
 {% load static %}
+{% load filters %}
 {% block content %}
-    <!-- WELCOME
-    ================================================== -->
-    <section class="pt-8 pt-md-11 pb-10 pb-md-15 bg-primary">
-
-        <!-- Shape -->
-        <div class="shape shape-blur-3 svg-shim text-white">
-          <svg viewBox="0 0 1738 487" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h1420.92s713.43 457.505 0 485.868C707.502 514.231 0 0 0 0z" fill="url(#paint0_linear)"/><defs><linearGradient id="paint0_linear" x1="0" y1="0" x2="1049.98" y2="912.68" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".075"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs></svg>
-        </div>
-  
-        <!-- Content -->
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-10 col-lg-8 text-center">
-              
-              <!-- Heading -->
-              <h1 class="display-2 text-white">
-                Choose your plan.
-              </h1>
-  
-              <!-- Text -->
-              <p class="lead text-white-80 mb-6 mb-md-8">
-                All types of businesses need access to development resources, so we give you the option to decide how much you need to use.
-              </p>
-  
+    <section class="pt-8 pt-md-11 bg-gradient-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8 text-center">
             
-  
-            </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-  
-      </section>
+            <!-- Badge -->
+            <span class="badge badge-pill badge-success-soft mb-3">
+              <span class="h6 text-uppercase">Value Packs</span>
+            </span>
 
-       <!-- SHAPE
-    ================================================== -->
-    <div class="position-relative">
-        <div class="shape shape-bottom shape-fluid-x svg-shim text-light">
-          <svg viewBox="0 0 2880 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 48h2880V0h-720C1442.5 52 720 0 720 0H0v48z" fill="currentColor"/></svg>
-        </div>
-      </div>
-  
-      <!-- PRICING
-      ================================================== -->
-      <section class="mt-n8 mt-md-n14">
-        <div class="container">
-          <div class="form-row">
-            <div class="col-12 col-md-4">
-  
-              <!-- Card -->
-              <div class="card shadow-lg mb-6 mb-md-0">
-                <div class="card-body">
-  
-                  <!-- Preheading -->
-                  <div class="text-center mb-3">
-                    <span class="badge badge-pill badge-primary-soft">
-                      <span class="h6 text-uppercase">Basic</span>
-                    </span>
-                  </div>
-  
-                  <!-- Price -->
-                  <div class="d-flex justify-content-center">
-                    <span class="h2 mb-0 mt-2">₹</span>
-                    <span class="price display-2 mb-0" data-annual="10" data-monthly="10">10</span>
-                    <span class="h2 align-self-end mb-1">/mo</span>
-                  </div>
-  
-                  <!-- Text -->
-                  <p class="text-center text-muted mb-5">
-                    per seat
-                  </p>
-  
-                  <!-- List -->
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Rich landing pages
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p class="mb-5">
-                      100+ components
-                    </p>
-                    
-                  </div>
-  
-                  <!-- Button -->
-                  <a href="{% url 'checkout' %}" class="btn btn-block btn-primary-soft">
-                    Start with basic <i class="fe fe-arrow-right ml-3"></i>
-                  </a>
-                  
-                </div>
-              </div>
-  
-            </div>
-            <div class="col-12 col-md-4">
+            <!-- Heading -->
+            <h1>
+              Choose our combo value pack!
+            </h1>
+
+            <!-- Text -->
+            <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+              No matter what size your team, we have a solution. From single shared spaces to entire floors, it's available.
+            </p>
+
+          </div>
+        </div> <!-- / .row -->
+        <div class="row">
+          {% for package in packages %}
+          <div class="col-12 col-md-4" data-aos="fade-up">
+            
+            <!-- Card -->
+            <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
               
-              <!-- Card -->
-              <div class="card shadow-lg mb-6 mb-md-0">
-                <div class="card-body">
-  
-                  <!-- Preheading -->
-                  <div class="text-center mb-3">
-                    <span class="badge badge-pill badge-primary-soft">
-                      <span class="h6 text-uppercase">Standard</span>
-                    </span>
-                  </div>
-  
-                  <!-- Price -->
-                  <div class="d-flex justify-content-center">
-                    <span class="h2 mb-0 mt-2">₹</span>
-                    <span class="price display-2 mb-0" data-annual="29" data-monthly="49">29</span>
-                    <span class="h2 align-self-end mb-1">/mo</span>
-                  </div>
-  
-                  <!-- Text -->
-                  <p class="text-center text-muted mb-5">
-                    per seat
-                  </p>
-  
-                  <!-- List -->
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Rich landing pages
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      100+ components
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Flexible licensing
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Speedy build tooling
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p class="mb-5">
-                      6 months free support
-                    </p>
-                    
-                  </div>
-  
-                  <!-- Button -->
-                  <a href="#!" class="btn btn-block btn-primary">
-                    Start with Standard <i class="fe fe-arrow-right ml-3"></i>
-                  </a>
-                  
+
+              <!-- Body -->
+              <div class="card-body position-relative">
+
+                <!-- Badge -->
+                {% if package.active_discount != 0 %}
+                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ package.active_discount|percent:package.amount }}% discount</span>
+                  </span>
                 </div>
+                {% endif %}
+                <!-- Heading -->
+                <div class="text-center mb-3">
+                  <!-- <span class="badge badge-pill badge-primary"> -->
+                    <span class="h6 text-uppercase">{{package.name}}</span>
+                  <!-- </span> -->
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  {% if package.active_discount != 0 %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{package.amount|integer}}</s></span>
+                  <span class="h2 align-self-end mb-1">{{package.amount|sub:package.active_discount}}</span>
+                  {% else %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{package.amount|integer}}</span>
+                  {% endif %}
+                </div>
+                <br>
+
+                <!-- Text -->
+                {% for feature in features %}
+                    {% if feature.product_id == package.id%}
+                    <!-- List -->
+                    <div class="d-flex">
+                      
+                      <!-- Badge -->
+                      <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                        <i class="fe fe-check"></i>
+                      </div>
+                      
+                      <!-- Text -->
+                      <p>
+                      {{ feature.feature }}
+                      </p>
+                      
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                <!-- Link -->
+               <form action="{% url 'checkout' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product" value="{{package.id}}" />
+                    <button type="submit" class="btn btn-block btn-primary-soft">
+                      Purchase
+                    <i class="fe fe-arrow-right ml-3"></i>
+                  </button>
+                  </form>
+
               </div>
-  
+
             </div>
-            <div class="col-12 col-md-4">
+
+          </div>
+          {% endfor %}
+        </div> <!-- / .row --><br><hr>
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8 text-center">
+            
+            <!-- Badge -->
+            <span class="badge badge-pill badge-primary-soft mb-3">
+              <span class="h6 text-uppercase">Individual Packs</span>
+            </span>
+
+            <!-- Heading -->
+            <h1>
+              Individual products 
+            </h1>
+
+            <!-- Text -->
+            <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+              No matter what size your team, we have a solution. From single shared spaces to entire floors, it's available.
+            </p>
+
+          </div>
+        </div> <!-- / .row -->
+        <div class="row">
+          {% for product in products %}
+          <div class="col-12 col-md-4" data-aos="fade-up">
+            
+            <!-- Card -->
+            <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
               
-              <!-- Card -->
-              <div class="card shadow-lg mb-md-0">
-                <div class="card-body">
-  
-                  <!-- Preheading -->
-                  <div class="text-center mb-3">
-                    <span class="badge badge-pill badge-primary-soft">
-                      <span class="h6 text-uppercase">Premium</span>
-                    </span>
-                  </div>
-  
-                  <!-- Price -->
-                  <div class="d-flex justify-content-center">
-                    <span class="h2 mb-0 mt-2">₹</span>
-                    <span class="price display-2 mb-0" data-annual="49" data-monthly="69">49</span>
-                    <span class="h2 align-self-end mb-1">/mo</span>
-                  </div>
-  
-                  <!-- Text -->
-                  <p class="text-center text-muted mb-5">
-                    per seat
-                  </p>
-  
-                  <!-- List -->
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Rich landing pages
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      100+ components
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Flexible licensing
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Speedy build tooling
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      6 months free support
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      256-bit encryption
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p>
-                      Guaranteed 100% uptime
-                    </p>
-                    
-                  </div>
-                  <div class="d-flex">
-                    
-                    <!-- Badge -->
-                    <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                      <i class="fe fe-check"></i>
-                    </div>
-  
-                    <!-- Text -->
-                    <p class="mb-5">
-                      Unlimited users
-                    </p>
-                    
-                  </div>
-  
-                  <!-- Button -->
-                  <a href="#!" class="btn btn-block btn-primary-soft">
-                    Start with Premium <i class="fe fe-arrow-right ml-3"></i>
-                  </a>
-                  
+              <!-- Body -->
+              <div class="card-body position-relative">
+
+                <!-- Badge -->
+                {% if product.active_discount != 0 %}
+                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ product.active_discount|percent:product.amount }}% discount</span>
+                  </span>
                 </div>
+                {% endif %}
+                <!-- Heading -->
+                <div class="text-center mb-3">
+                  <!-- <span class="badge badge-pill badge-warning"> -->
+                    <span class="h6 text-uppercase">{{product.name}}</span>
+                  <!-- </span> -->
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  {% if product.active_discount != 0 %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{product.amount|integer}}</s></span>
+                  <span class="h2 align-self-end mb-1">{{product.amount|sub:product.active_discount}}</span>
+                  {% else %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{product.amount|integer}}</span>
+                  {% endif %}
+                </div>
+                <br>
+
+                <!-- Text -->
+                {% for feature in features %}
+                    {% if feature.product_id == product.id%}
+                    <!-- List -->
+                    <div class="d-flex">
+                      
+                      <!-- Badge -->
+                      <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                        <i class="fe fe-check"></i>
+                      </div>
+                      
+                      <!-- Text -->
+                      <p>
+                      {{ feature.feature }}
+                      </p>
+                      
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                <!-- Link -->
+               <form action="{% url 'checkout' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="product" value="{{product.id}}" />
+                    <button type="submit" class="btn btn-block btn-warning">
+                      Purchase
+                    <i class="fe fe-arrow-right ml-3"></i>
+                  </button>
+                  </form>
+
               </div>
-  
+
             </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-      </section>
+
+          </div>
+          {% endfor %}
+          
+        </div> <!-- / .row -->
+        <br><br>
+      </div> <!-- / .container -->
+    </section>
   
 {% endblock content %}
