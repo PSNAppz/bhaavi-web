@@ -134,9 +134,9 @@
           <div class="form-group mb-0">
               
             <!-- Submit -->
-            <form action="{% url 'conference' %}" method="GET">
+            <form action="{% url 'conference' %}" method="POST">
               {% csrf_token %}
-              <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+              <input type="hidden" name="schedule" value="{{ schedule }}" />
               <button type="submit" class="btn btn-block btn-success-soft lift">
                 Proceed to call <span class="fe fe-users"></span>
               </button>
