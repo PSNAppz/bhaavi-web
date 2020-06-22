@@ -36,7 +36,7 @@
           <hr class="hr-sm my-6 my-md-8 border-gray-300">
 
           <!-- Form -->
-          <form action="{% url 'conference' %}" method="GET">
+          <form action="{% url 'conference' %}" method="POST">
             <div class="form-group mb-5">
               
               <!-- Label -->
@@ -74,7 +74,7 @@
               
               <!-- Submit -->
                 {% csrf_token %}
-                <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                <input type="hidden" name="schedule" value="{{ schedule }}" />
                 <button type="submit" class="btn btn-block btn-success-soft lift">
                   Proceed to call <span class="fe fe-users"></span>
                 </button>

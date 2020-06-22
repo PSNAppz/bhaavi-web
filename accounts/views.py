@@ -11,7 +11,7 @@ import datetime
 import pytz
 import uuid
 import hashlib
-
+from .RtcTokenBuilder import buildToken
 import razorpay
 from decouple import config
 from django.contrib import messages
@@ -101,13 +101,8 @@ def pricingDetails(request):
 @login_required(login_url='login')
 def callDetails(request):
     # Token generation code
-    def generateSignalingToken(account, appID, appCertificate, expiredTsInSeconds):
-        version = "1"
-        expired = expiredTsInSeconds
-        account = account
-        content = account + appID + appCertificate + expired
-        md5sum = hashlib.md5(content.encode('utf-8')).hexdigest()
-        token = "%s:%s:%s:%s" % (version, appID, expired, md5sum)
+    def generateToken(uid, appID, appCertificate, channel, expiredTsInSeconds):
+        token = buildToken(appID, appCertificate, channel, uid, expiredTsInSeconds)
         return token
 
     if request.method == "POST":
@@ -119,24 +114,25 @@ def callDetails(request):
             time_delta = (now - schedule.slot)
             total_seconds = time_delta.total_seconds()
             minutes = total_seconds/60
-            if (minutes >= -5 and minutes <= 65):
+            if (1): #minutes >= -5 and minutes <= 65 TODO
                 accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
                 token = accepted_call.token
                 if not token:
-                    expiryTimeSec = "4200"
+                    expiryTimeSec = 3600
                     appCert = config('AGORA_CERT_PRIMARY')
                     appID = config('AGORA_APP_ID')
-                    account = request.user.email
-                    token = generateSignalingToken(account, appID, appCert, expiryTimeSec )
+                    uid = 0
+                    channel = accepted_call.channel
+                    token = generateToken(uid, appID, appCert, channel, expiryTimeSec )
                     AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
-                context = {'minutes':minutes,'scheduled':True, 'token':token}
+                context = {'minutes':minutes,'scheduled':True, 'schedule':schedule.id}
                 return render(request, 'accounts/pre_call_user.html', context)
             else:
                 if (minutes < -5):
-                    context = {'minutes':minutes,'scheduled':False, 'token':None}
+                    context = {'minutes':minutes,'scheduled':False}
                     return render(request, 'accounts/pre_call_user.html', context)
                 else:
-                    context = {'minutes':minutes,'scheduled':False, 'token':None}
+                    context = {'minutes':minutes,'scheduled':False}
                     return render(request, 'accounts/pre_call_user.html', context)
         else:
             try:
@@ -158,14 +154,14 @@ def callDetails(request):
                         account = request.user.email
                         token = generateSignalingToken(account, appID, appCert, expiryTimeSec )
                         AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
-                    context = {'minutes':minutes,'scheduled':True, 'token':token}
+                    context = {'minutes':minutes,'scheduled':True}
                     return render(request, 'accounts/pre_call_mentor.html', context)
                 else:
                     if (minutes < -5):
-                        context = {'minutes':minutes,'scheduled':False, 'token':None}
+                        context = {'minutes':minutes,'scheduled':False}
                         return render(request, 'accounts/pre_call_mentor.html', context)
                     else:
-                        context = {'minutes':minutes,'scheduled':False, 'token':None}
+                        context = {'minutes':minutes,'scheduled':False}
                         return render(request, 'accounts/pre_call_mentor.html', context)
             return redirect('mentorboard')
 
