@@ -148,11 +148,12 @@ def callDetails(request):
                     accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
                     token = accepted_call.token
                     if not token:
-                        expiryTimeSec = "4200"
+                        expiryTimeSec = 3600
                         appCert = config('AGORA_CERT_PRIMARY')
                         appID = config('AGORA_APP_ID')
-                        account = request.user.email
-                        token = generateSignalingToken(account, appID, appCert, expiryTimeSec )
+                        uid = 0
+                        channel = accepted_call.channel
+                        token = generateToken(uid, appID, appCert, channel, expiryTimeSec )
                         AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
                     context = {'minutes':minutes,'scheduled':True,'schedule':schedule.id}
                     return render(request, 'accounts/pre_call_mentor.html', context)
