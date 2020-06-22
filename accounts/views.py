@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-# Create your views here.
+from decouple import config
 from django.contrib.auth.decorators import login_required
 from .decorators import *
 from .models import *
@@ -10,6 +10,8 @@ from django.contrib import messages
 import datetime
 import pytz
 import uuid
+import hashlib
+from .RtcTokenBuilder import buildToken
 import razorpay
 from decouple import config
 from django.contrib import messages
@@ -94,6 +96,77 @@ def paymentSuccessPage(request):
 def pricingDetails(request):
     return render(request, 'base/pricing.html')    
 
+# Conference call 
+# check if scheduled in 30 min
+@login_required(login_url='login')
+def callDetails(request):
+    # Token generation code
+    def generateToken(uid, appID, appCertificate, channel, expiredTsInSeconds):
+        token = buildToken(appID, appCertificate, channel, uid, expiredTsInSeconds)
+        return token
+
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        
+        if (schedule.accepted and schedule.user_id == request.user.id and schedule.request.scheduled and not schedule.request.closed):
+            now = utc.localize(datetime.datetime.now())
+            time_delta = (now - schedule.slot)
+            total_seconds = time_delta.total_seconds()
+            minutes = total_seconds/60
+            if (minutes >= -5 and minutes <= 65): 
+                accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
+                token = accepted_call.token
+                if not token:
+                    expiryTimeSec = 3600
+                    appCert = config('AGORA_CERT_PRIMARY')
+                    appID = config('AGORA_APP_ID')
+                    uid = 0
+                    channel = accepted_call.channel
+                    token = generateToken(uid, appID, appCert, channel, expiryTimeSec )
+                    AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
+                context = {'minutes':minutes,'scheduled':True, 'schedule':schedule.id}
+                return render(request, 'accounts/pre_call_user.html', context)
+            else:
+                if (minutes < -5):
+                    context = {'minutes':minutes,'scheduled':False}
+                    return render(request, 'accounts/pre_call_user.html', context)
+                else:
+                    context = {'minutes':minutes,'scheduled':False}
+                    return render(request, 'accounts/pre_call_user.html', context)
+        else:
+            try:
+                profile = MentorProfile.objects.get(user_id = request.user.id)
+            except MentorProfile.DoesNotExist:
+                return redirect('home')    
+            if (schedule.accepted and schedule.mentor_id == profile.id and schedule.request.scheduled and not schedule.request.closed):
+                now = utc.localize(datetime.datetime.now())
+                time_delta = (now - schedule.slot)
+                total_seconds = time_delta.total_seconds()
+                minutes = total_seconds/60
+                if (minutes >= -5 and minutes <= 65):
+                    accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
+                    token = accepted_call.token
+                    if not token:
+                        expiryTimeSec = 3600
+                        appCert = config('AGORA_CERT_PRIMARY')
+                        appID = config('AGORA_APP_ID')
+                        uid = 0
+                        channel = accepted_call.channel
+                        token = generateToken(uid, appID, appCert, channel, expiryTimeSec )
+                        AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
+                    context = {'minutes':minutes,'scheduled':True,'schedule':schedule.id}
+                    return render(request, 'accounts/pre_call_mentor.html', context)
+                else:
+                    if (minutes < -5):
+                        context = {'minutes':minutes,'scheduled':False}
+                        return render(request, 'accounts/pre_call_mentor.html', context)
+                    else:
+                        context = {'minutes':minutes,'scheduled':False}
+                        return render(request, 'accounts/pre_call_mentor.html', context)
+            return redirect('mentorboard')
+
+                
 @unauthenticated_user
 def loginPage(request):
     messages =''
@@ -144,7 +217,6 @@ def mentorRegisterPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('full_name')
-
             return redirect('login')
         
 
@@ -224,17 +296,30 @@ def requestSchedule(request):
         product_id = call_request.product_id 
         form = RequestedSchedulesForm(request.POST)
         check_schedules = RequestedSchedules.objects.filter(request_id = request_id)
-        clash_requests = MentorCallRequest.objects.filter(user_id = user_id).filter(closed=0).filter(responded=1).exclude(product_id = product_id)
+        clash_requests_user = MentorCallRequest.objects.filter(user_id = user_id).filter(closed=0).filter(responded=1).exclude(product_id = product_id)
+        mentor_schedules = RequestedSchedules.objects.filter(mentor_id = mentor.id)
+        print(mentor_schedules)
         if form.is_valid():
-            if clash_requests:
-                for clash in clash_requests:
+            for mentor_schedule in mentor_schedules:
+                clash_request_mentor = MentorCallRequest.objects.get(pk = mentor_schedule.request_id)
+                print(clash_request_mentor)
+                if not clash_request_mentor.closed:
+                    time_delta = (mentor_schedule.slot - slot)
+                    total_seconds = time_delta.total_seconds()
+                    minutes = total_seconds/60
+                    if (minutes <= 120 and minutes >= -120):
+                        messages.warning(request, 'Mentor Schedule clash found, please add a different time for the new schedule.')
+                        return redirect('admin_panel')
+
+            if clash_requests_user:
+                for clash in clash_requests_user:
                     check_clashes = RequestedSchedules.objects.filter(request_id = clash.id)
                     for clash_req in check_clashes:
                         time_delta = (clash_req.slot - slot)
                         total_seconds = time_delta.total_seconds()
                         minutes = total_seconds/60
                         if (minutes <= 120 and minutes >= -120):
-                            messages.warning(request, 'Schedule clash found, please add a different time for the new schedule.')
+                            messages.warning(request, 'User Schedule clash found, please add a different time for the new schedule.')
                             return redirect('admin_panel')
                         else:
                             if not check_schedules:
