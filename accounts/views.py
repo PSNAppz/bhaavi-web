@@ -114,7 +114,7 @@ def callDetails(request):
             time_delta = (now - schedule.slot)
             total_seconds = time_delta.total_seconds()
             minutes = total_seconds/60
-            if (1): #minutes >= -5 and minutes <= 65 TODO
+            if (minutes >= -5 and minutes <= 65): 
                 accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
                 token = accepted_call.token
                 if not token:
@@ -154,7 +154,7 @@ def callDetails(request):
                         account = request.user.email
                         token = generateSignalingToken(account, appID, appCert, expiryTimeSec )
                         AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).filter(completed=False).update(token=token)
-                    context = {'minutes':minutes,'scheduled':True}
+                    context = {'minutes':minutes,'scheduled':True,'schedule':schedule.id}
                     return render(request, 'accounts/pre_call_mentor.html', context)
                 else:
                     if (minutes < -5):
