@@ -116,12 +116,14 @@
                   "image": "{%static 'assets/img/brand.png' %}",
                   "order_id": "{{ order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                   "handler": function (response){
-                    $('#payment').append('<input type="hidden" name="razorpay_payment_id" value="'+response.razorpay_payment_id+'"/>');
-                    $('#payment').append('<input type="hidden" name="razorpay_order_id" value="'+response.razorpay_order_id+'"/>');
-                    $('#payment').append('<input type="hidden" name="razorpay_signature" value="'+response.razorpay_signature+'"/>');
-                    $('#payment').append('<input type="hidden" name="invoice" value="{{ invoice }}"/>');
+                    if (response.razorpay_payment_id){
+                      $('#payment').append('<input type="hidden" name="razorpay_payment_id" value="'+response.razorpay_payment_id+'"/>');
+                      $('#payment').append('<input type="hidden" name="razorpay_order_id" value="'+response.razorpay_order_id+'"/>');
+                      $('#payment').append('<input type="hidden" name="razorpay_signature" value="'+response.razorpay_signature+'"/>');
+                      $('#payment').append('<input type="hidden" name="invoice" value="{{ invoice }}"/>');
 
-                    $('#payment').submit();
+                      $('#payment').submit();
+                    }
                   },
                   "prefill": {
                       "name": "{{ name }}",
