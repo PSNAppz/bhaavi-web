@@ -1,151 +1,217 @@
 {% extends 'base/main.html' %}
 {% load static %}
+{% load filters %}
 {% block content %}
+
     <!-- WELCOME
     ================================================== -->
-    <section class="pt-8 pt-md-11 pb-10 pb-md-15 bg-primary">
-
-        <!-- Shape -->
-        <div class="shape shape-blur-3 svg-shim text-white">
-          <svg viewBox="0 0 1738 487" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h1420.92s713.43 457.505 0 485.868C707.502 514.231 0 0 0 0z" fill="url(#paint0_linear)"/><defs><linearGradient id="paint0_linear" x1="0" y1="0" x2="1049.98" y2="912.68" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".075"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs></svg>
-        </div>
-  
-        <!-- Content -->
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-10 col-lg-8 text-center">
-              
-              <!-- Heading -->
-              <h1 class="display-2 text-white">
-                Complete payment for checkout
-              </h1>
-  
-              <!-- Text -->
-              <p class="lead text-white-80 mb-6 mb-md-8">
-                All types of businesses need access to development resources, so we give you the option to decide how much you need to use.
-              </p>
-  
+    <section class="pt-8 pt-md-11 pb-10 pb-md-15">
+      <!-- Content -->
+      
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8 text-center">
             
-  
-            </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-  
-      </section>
+            <!-- Heading -->
+            <h2 class="font-weight-bold">
+              Checkout
+            </h2>
 
-       <!-- SHAPE
-    ================================================== -->
-    <div class="position-relative">
-        <div class="shape shape-bottom shape-fluid-x svg-shim text-light">
-          <svg viewBox="0 0 2880 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 48h2880V0h-720C1442.5 52 720 0 720 0H0v48z" fill="currentColor"/></svg>
-        </div>
-      </div>
-      <!-- FORM
-    ================================================== -->
-    <section class="pt-8 pt-md-11 pb-8 pb-md-14">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-10 col-lg-8 text-center">
-              
-              <!-- Heading -->
-              <h2 class="font-weight-bold">
-                Please complete the details below
-              </h2>
-  
-              <!-- Text -->
-              <p class="font-size-lg text-muted mb-7 mb-md-9">
-                We always want to hear from you! Let us know how we can best help you and we'll do our very best.
-              </p>
-  
-            </div>
-          </div> <!-- / .row -->
-          <div class="row justify-content-center">
-            <div class="col-12 col-md-12 col-lg-10">
-              
-              <!-- Form -->
-              <form action="{% url 'success' %}" method="POST" id="payment">
-                {% csrf_token %}
-                <div class="row">
-                  <div class="col-12 col-md-6">
-                    <div class="form-group mb-5">
-                      
-                      <!-- Label -->
-                      <label for="contactName">
-                        Full name
-                      </label>
-  
-                      <!-- Input -->
-                      <input type="text" class="form-control" id="contactName" value="{{name}}" placeholder="Full name" required>
-  
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <div class="form-group mb-5">
-                      
-                      <!-- Label -->
-                      <label for="contactEmail">
-                        Email
-                      </label>
-  
-                      <!-- Input -->
-                      <input type="email" class="form-control" id="contactEmail" value="{{email}}" placeholder="hello@domain.com" required>
-  
-                    </div>
-                  </div>
-                </div> <!-- / .row -->
-                
-                <div class="row justify-content-center">
-                  <div class="col-auto">
-                    
-                    <!-- Submit -->
-                    <button type="submit" id="rzp-button1" class="btn btn-primary lift">
-                      Proceed to pay
-                    </button>
-  
-                  </div>
-                </div> <!-- / .row -->
-              </form>
-              <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-              <script>
-              var options = {
-                  "key": "rzp_test_IBTilNsjUgCqZx", // Enter the Key ID generated from the Dashboard
-                  "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                  "currency": "INR",
-                  "name": "Bhaavi consultants",
-                  "description": "For a better tomorrow",
-                  "image": "{%static 'assets/img/brand.png' %}",
-                  "order_id": "{{ order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                  "handler": function (response){
-                    if (response.razorpay_payment_id){
-                      $('#payment').append('<input type="hidden" name="razorpay_payment_id" value="'+response.razorpay_payment_id+'"/>');
-                      $('#payment').append('<input type="hidden" name="razorpay_order_id" value="'+response.razorpay_order_id+'"/>');
-                      $('#payment').append('<input type="hidden" name="razorpay_signature" value="'+response.razorpay_signature+'"/>');
-                      $('#payment').append('<input type="hidden" name="invoice" value="{{ invoice }}"/>');
+            <!-- Text -->
+            <p class="font-size-lg text-muted mb-7 mb-md-9">
+              Please verify the details below before payment.
+            </p>
 
-                      $('#payment').submit();
-                    }
-                  },
-                  "prefill": {
-                      "name": "{{ name }}",
-                      "email": "{{ email }}",
-                  },
-                  "theme": {
-                      "color": "#335eea"
-                  }
-              };
-              var rzp1 = new Razorpay(options);
-              document.getElementById('rzp-button1').onclick = function(e){
-                  rzp1.open();
-                  e.preventDefault();
-              }
-              </script>  
-            </div>
-          </div> <!-- / .row -->
-        </div> <!-- / .container -->
-      </section>
-  
+          </div>
+        </div> <!-- / .row -->
+
+        <div class="row justify-content-center">
           
-              
-    
+          <div class="row">
+            <div class="col-md-4 order-md-2 mb-4">
+              <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Product details</span>
+                
+              </h4>
+              <ul class="list-group mb-3">
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                  <div>
+                    <h6 class="my-0">{{product.name}}</h6>
+                    <small class="text-muted">{{product.description}}</small>
+                  </div>
+                  <span>₹{{product.amount|integer}}</span>
+                </li>
+                <!-- For promo code -->
+                <!-- <li class="list-group-item d-flex justify-content-between bg-light">
+                  <div class="text-success">
+                    <h6 class="my-0">Promo code</h6>
+                    <small>EXAMPLECODE</small>
+                  </div>
+                  <span class="text-success">-$5</span>
+                </li> -->
+                {% if product.active_discount != 0 %}
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                  <div class="text-success">
+                    <h6 class="my-0"></h6>
+                    <small>DISCOUNT</small>
+                  </div>
+                  <span class="text-success">-₹{{product.active_discount}}</span>
+                </li>
+                {% endif %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Total (INR)</span>
+                  <strong>₹{{product.amount|sub:product.active_discount}}</strong>
+                </li>
+              </ul>
+        
+              <!-- <form class="card p-2">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Promo code">
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-secondary">Redeem</button>
+                  </div>
+                </div>
+              </form> -->
+            </div>
+            <div class="col-md-8 order-md-1">
+              <h4 class="mb-3">Billing address</h4>
+              <form class="needs-validation" action="{% url 'success' %}" method="POST" id="payment">
+                {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="fullName">Name</label>
+                    <input type="text" class="form-control" id="fullName" placeholder="" value="{{request.user.full_name}}" disabled>
+                    <div class="invalid-feedback">
+                      Valid first name is required.
+                    </div>
+                </div>
+                <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="email">Email </label>
+                  <input type="email" class="form-control disabled" id="email" placeholder="you@example.com" value={{request.user.email}} disabled>
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="mobile">Mobile </label>
+                  <input type="text" class="form-control" name="mobile" id="mobile" placeholder="XXXXXXXXXX" value="{{profile.mobile}}">
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+                </div>
+        
+                <div class="mb-3">
+                  <label for="address">Address</label> 
+                  <input type="text" class="form-control" name="address" id="address" placeholder="1234 Main St" required value="{{profile.address}}">
+                  <div class="invalid-feedback">
+                    Please enter your shipping address.
+                  </div>
+                </div>
+        
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="state">State</label>
+                    <select class="custom-select d-block w-100" id="state" name="state" required>
+                      {% if profile.state%}
+                      <option value="{{profile.address}}">{{profile.state}}</option>
+                      {% else %}
+                      <option value="">Choose...</option>
+                      {% endif %}
+                      <option value="Andhra Pradesh">Andhra Pradesh</option>
+                      <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                      <option value="Assam">Assam</option>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Chandigarh">Chandigarh</option>
+                      <option value="Chhattisgarh">Chhattisgarh</option>
+                      <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                      <option value="Daman and Diu">Daman and Diu</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Lakshadweep">Lakshadweep</option>
+                      <option value="Puducherry">Puducherry</option>
+                      <option value="Goa">Goa</option>
+                      <option value="Gujarat">Gujarat</option>
+                      <option value="Haryana">Haryana</option>
+                      <option value="Himachal Pradesh">Himachal Pradesh</option>
+                      <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                      <option value="Jharkhand">Jharkhand</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Kerala">Kerala</option>
+                      <option value="Madhya Pradesh">Madhya Pradesh</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Manipur">Manipur</option>
+                      <option value="Meghalaya">Meghalaya</option>
+                      <option value="Mizoram">Mizoram</option>
+                      <option value="Nagaland">Nagaland</option>
+                      <option value="Odisha">Odisha</option>
+                      <option value="Punjab">Punjab</option>
+                      <option value="Rajasthan">Rajasthan</option>
+                      <option value="Sikkim">Sikkim</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="Telangana">Telangana</option>
+                      <option value="Tripura">Tripura</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="Uttarakhand">Uttarakhand</option>
+                      <option value="West Bengal">West Bengal</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Please provide a valid state. 
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="zip">Pincode</label>
+                    <input type="text" class="form-control" id="pincode" name="pincode" placeholder="000000" value="{{profile.pincode}}" required >
+                    <div class="invalid-feedback">
+                      Zip code required.
+                    </div>
+                  </div>
+                </div>            
+                <hr class="mb-4">        
+                <input type="hidden" name="product" value="{{product.id}}" />
+                <button class="btn btn-success btn-lg btn-block" id="rzp-button1" type="button">Proceed to pay</button>
+                
+              </form>
+            </div>
+          </div>
+          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+          <script>
+          var options = {
+              "key": "rzp_test_IBTilNsjUgCqZx", // Enter the Key ID generated from the Dashboard
+              "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+              "currency": "INR",
+              "name": "Bhaavi consultants",
+              "description": " ",
+              "image": "{%static 'assets/img/brand.png' %}",
+              "order_id": "{{ order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+              "handler": function (response){
+                if (response.razorpay_payment_id){
+                  $('#payment').append('<input type="hidden" name="razorpay_payment_id" value="'+response.razorpay_payment_id+'"/>');
+                  $('#payment').append('<input type="hidden" name="razorpay_order_id" value="'+response.razorpay_order_id+'"/>');
+                  $('#payment').append('<input type="hidden" name="razorpay_signature" value="'+response.razorpay_signature+'"/>');
+                  $('#payment').append('<input type="hidden" name="invoice" value="{{ invoice }}"/>');
+                  $('#payment').submit();
+                }
+              },
+              "prefill": {
+                  "name": "{{ request.user.full_name }}",
+                  "email": "{{ request.user.email }}",
+                  "contact": "{{ profile.mobile}}"
+              },
+              "theme": {
+                  "color": "#335eea"
+              }
+          };
+          var rzp1 = new Razorpay(options);
+          document.getElementById('rzp-button1').onclick = function(e){
+              rzp1.open();
+              e.preventDefault();
+          }
+          </script>  
+
+        </div> <!-- / .row -->
+      </div> <!-- / .container -->
+    </section>
+
   
 {% endblock content %}

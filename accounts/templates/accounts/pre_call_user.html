@@ -14,7 +14,7 @@
         <div class="col-12 col-md-5 align-self-stretch">
 
           <!-- Image (mobile) -->
-          <img src="assets/img/photos/photo-5.jpg" class="d-md-none img-cover" alt="...">
+          <img src="{% static 'assets/img/illustrations/illustration-call.jpg' %}" class="d-md-none img-cover" alt="...">
 
           <!-- Image -->
           <div class="d-none d-md-block vw-50 h-100 float-right bg-cover" style="background-image: url({% static 'assets/img/illustrations/illustration-call.jpg' %});"></div>
@@ -36,6 +36,7 @@
           <hr class="hr-sm my-6 my-md-8 border-gray-300">
 
           <!-- Form -->
+          {% if scheduled %}
           <form action="{% url 'conference' %}" method="POST">
             <div class="form-group mb-5">
               
@@ -59,26 +60,20 @@
               <input type="text" class="form-control" id="contactEmail" placeholder="Question 2">
 
             </div>
-            <div class="form-group mb-5 d-none">
-              
-              <!-- Label -->
-              <label for="contactMessage">
-                What can we help you with?
-              </label>
-
-              <!-- Input -->
-              <textarea class="form-control" id="contactMessage" rows="5" placeholder="Tell us what we can help you with!"></textarea>
-
-            </div>
             <div class="form-group mb-0">
-              
+             
               <!-- Submit -->
                 {% csrf_token %}
                 <input type="hidden" name="schedule" value="{{ schedule }}" />
                 <button type="submit" class="btn btn-block btn-success-soft lift">
                   Proceed to call <span class="fe fe-users"></span>
                 </button>
+                
+                
               </form>
+              {% else %}
+              Please comback later!
+                {% endif %}
             </div>
           </form>
 

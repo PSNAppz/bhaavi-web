@@ -103,11 +103,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     dob = models.DateField(null=True, blank=True)
+    mobile = models.CharField(max_length=15, blank=True)
     address = models.CharField(max_length=255, blank=True)
     state = models.CharField(max_length=255, blank=True)
     pincode = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{1,10}$')], null=True)
-    father = models.CharField(max_length=255, blank=True)
-    mother = models.CharField(max_length=255, blank=True)
+    qualification = models.CharField(max_length=255, blank=True)
+    stream = models.CharField(max_length=255, blank=True)
+    institute = models.CharField(max_length=255, blank=True)
+    mark = models.CharField(max_length=6, blank=True)
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
@@ -156,18 +159,7 @@ class MentorProfile(models.Model):
         if self.user.mentor:
             return 1 
         else:
-            return 2                
-
-class AcademicProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='academic')
-    dob = models.DateField()
-    qualification = models.CharField(max_length=255)
-    stream = models.CharField(max_length=255)
-    institute = models.CharField(max_length=255)
-    mark = models.CharField(max_length=6, validators=[RegexValidator(r'^\d{1,10}$')])
-
-    def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name)         
+            return 2                       
 
 class UserPurchases(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
