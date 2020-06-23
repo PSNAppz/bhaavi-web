@@ -25,7 +25,7 @@ class AgoraVideoCall(View):
             return False
 
     def checkAll(self,request):
-        if self.get_permission(request,self.permission_class) == True:
+        if self.get_permission(request,self.permission_class) is True:
             return True
         else:
             return False
