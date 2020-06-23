@@ -134,6 +134,7 @@
           <div class="form-group mb-0">
               
             <!-- Submit -->
+            {% if scheduled %}
             <form action="{% url 'conference' %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="schedule" value="{{ schedule }}" />
@@ -141,7 +142,9 @@
                 Proceed to call <span class="fe fe-users"></span>
               </button>
             </form>
-
+            {% else %}
+            Please comback later!
+              {% endif %}
 
           </div>
         </div>

@@ -36,6 +36,7 @@
           <hr class="hr-sm my-6 my-md-8 border-gray-300">
 
           <!-- Form -->
+          {% if scheduled %}
           <form action="{% url 'conference' %}" method="POST">
             <div class="form-group mb-5">
               
@@ -60,17 +61,19 @@
 
             </div>
             <div class="form-group mb-0">
-              {% if scheduled %}
+             
               <!-- Submit -->
                 {% csrf_token %}
                 <input type="hidden" name="schedule" value="{{ schedule }}" />
                 <button type="submit" class="btn btn-block btn-success-soft lift">
                   Proceed to call <span class="fe fe-users"></span>
                 </button>
-                {% else %}
-                Minutes left: {{ minutes }}
-                {% endif %}
+                
+                
               </form>
+              {% else %}
+              Please comback later!
+                {% endif %}
             </div>
           </form>
 
