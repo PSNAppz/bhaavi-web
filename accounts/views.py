@@ -16,7 +16,7 @@ import razorpay
 from decouple import config
 from django.contrib import messages
 
-utc=pytz.UTC
+utc= pytz.timezone('Asia/Kolkata')
 
 def homePage(request):
     return render(request, 'base/home.html')
