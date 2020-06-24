@@ -86,4 +86,10 @@ def sub(value, arg):
 
 @register.filter
 def integer(value):
-    return int(value)
+    try:
+        val = int(float(value))
+        return val
+    except:
+        return value    
+        
+    
