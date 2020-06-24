@@ -45,7 +45,6 @@ def createOrder(request):
             user_profile = UserProfile.objects.get(user_id = request.user.id)
         except UserProfile.DoesNotExist:
             user_profile = None
-        print("PROFILE",user_profile)    
         if product:
             if product.is_package:
                 products_in_package = ProductPackages.objects.filter(package_id = product.id)
@@ -165,20 +164,13 @@ def paymentSuccessPage(request):
                             else:
                                 UserPurchases.objects.filter(pk = item.id).update(payment_progress=0)
                 try:
-                    print("USER", user_id)
                     user_profile = UserProfile.objects.get(user_id = user_id)
-                    print("PROFILE USER", response['mobile'])
-                    print("PROFILE USER", response['state'])
-                    print("PROFILE USER", response['pincode'])
-                    print("PROFILE USER", response['address'])
-
                     UserProfile.objects.filter(pk = user_profile.id).update(
                         mobile = response['mobile'],
                         address = response['address'],
                         state = response['state'],
                         pincode = response['pincode'],
                     )
-                    print("profile updated1")
                 except UserProfile.DoesNotExist:
                     UserProfile.objects.create(
                         mobile = response['mobile'],
@@ -187,7 +179,6 @@ def paymentSuccessPage(request):
                         pincode = response['pincode'],
                         user = request.user
                     )        
-                    print("profile updated2")        
 
             context = {'payment':True}
         except :
