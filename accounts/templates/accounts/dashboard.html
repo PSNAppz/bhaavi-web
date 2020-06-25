@@ -61,18 +61,8 @@
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-0">
                     <li class="list-item">
-                      <a class="list-link text-reset" href="account-security.html">
-                        Security
-                      </a>
-                    </li>
-                    <li class="list-item">
                       <a class="list-link text-reset" href="account-notifications.html">
                         Notifications
-                      </a>
-                    </li>
-                    <li class="list-item">
-                      <a class="list-link text-reset" href="{% url 'plans'%}">
-                        Upgrade plan 
                       </a>
                     </li>
                     <li class="list-item">
@@ -237,7 +227,7 @@
              <!-- Button trigger modal -->
 
             {% endif %}
-           
+           {% if results %}
             <!-- Test History -->
             <div class="card card-bleed shadow-light-lg">
               <div class="card-header">
@@ -246,22 +236,22 @@
 
                     <!-- Heading -->
                     <h4 class="mb-0">
-                     Recent test results
+                     Recent PICSET results
                     </h4>
 
                   </div>
                   <div class="col-auto">
 
-                    <!-- Link -->
+                    <!-- 
                     <a class="small text-gray-700" href="#!">
                       View all
-                    </a>
+                    </a> -->
 
                   </div>
                 </div>
               </div>
               <div class="card-body">
-
+                {% for result in results %}
                 <!-- List group -->
                 <div class="list-group list-group-flush">
                   <div class="list-group-item">
@@ -270,8 +260,7 @@
 
                         <!-- Icon -->
                         <div class="icon icon-sm text-gray-400">
-                          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"/><path d="M8 2.5c-.69 0-1.25.56-1.25 1.25v16.5c0 .69.56 1.25 1.25 1.25h8c.69 0 1.25-.56 1.25-1.25V3.75c0-.69-.56-1.25-1.25-1.25H8z" fill="#335EEA" opacity=".3"/><path d="M8 2.5c-.69 0-1.25.56-1.25 1.25v16.5c0 .69.56 1.25 1.25 1.25h8c.69 0 1.25-.56 1.25-1.25V3.75c0-.69-.56-1.25-1.25-1.25H8zM8 1h8a2.75 2.75 0 012.75 2.75v16.5A2.75 2.75 0 0116 23H8a2.75 2.75 0 01-2.75-2.75V3.75A2.75 2.75 0 018 1zm1.5.75h5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5z" fill="#335EEA"/></g></svg>
-                        </div>
+                          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"></path><path d="M8 3v.5A1.5 1.5 0 009.5 5h5A1.5 1.5 0 0016 3.5V3h2a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h2z" fill="#335EEA" opacity=".3"></path><path d="M11 2a1 1 0 012 0h1.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5H11z" fill="#335EEA"></path><rect fill="#335EEA" opacity=".3" x="10" y="9" width="7" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="7" y="9" width="2" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="7" y="13" width="2" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="10" y="13" width="7" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="7" y="17" width="2" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="10" y="17" width="7" height="2" rx="1"></rect></g></svg>                        </div>
 
                       </div>
                       <div class="col ml-n5">
@@ -290,18 +279,23 @@
                       <div class="col-auto">
 
                         <!-- Button -->
-                        <button class="btn btn-xs btn-outline-white">
-                          Download
-                        </button>
+                        <a href="{% url 'picset_view' result.id %}" class="btn btn-xs btn-outline-info">
+                          View
+                        </a>
 
                       </div>
                     </div>
                   </div>
 
                 </div>
+                {% if not forloop.last %}
+                <hr>
+                {% endif %}
+                {% endfor %}
 
               </div>
             </div>
+            {% endif %}
 
           </div>
         </div> <!-- / .row -->

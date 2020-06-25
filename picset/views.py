@@ -6,6 +6,10 @@ from .models import *
 from accounts.models import *
 from django.http import JsonResponse
 from django.contrib import messages
+from collections import Counter 
+from io import BytesIO
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 @login_required(login_url='login')
 def takeTest(request):
@@ -65,6 +69,15 @@ def getQuestion(request):
 
             question = Question.objects.get(pk=question_id)
             count = QuestionAnswer.objects.filter(purchase_id = user_purchase.id).filter(question_id = question_id).count()
+            if count > 0:
+                QuestionAnswer.objects.filter(purchase_id = user_purchase.id).filter(question_id = question_id).update(answer = answer)
+            else:
+                QuestionAnswer.objects.create(
+                    question=question,
+                    purchase_id = user_purchase.id,
+                    user = request.user,
+                    answer = answer
+                )
             if (submit):
                 total_questions_answerd = QuestionAnswer.objects.filter(purchase_id = user_purchase.id).count()
                 total_questions = Question.objects.count()
@@ -100,18 +113,7 @@ def getQuestion(request):
                         traditional_score = t
                     )
                     UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = "PROD-1").update(status=False)
-                    return JsonResponse({'success':False,'redirect':True})
-                   
-
-            if count > 0:
-                QuestionAnswer.objects.filter(purchase_id = user_purchase.id).filter(question_id = question_id).update(answer = answer)
-            else:
-                QuestionAnswer.objects.create(
-                    question=question,
-                    purchase_id = user_purchase.id,
-                    user = request.user,
-                    answer = answer
-                )
+                    return JsonResponse({'success':False,'redirect':True})    
             last_q = Question.objects.last()
             if question_id == last_q.id:
                 return JsonResponse({'success':False,'redirect':True})
@@ -141,15 +143,80 @@ def getQuestion(request):
 
 @login_required(login_url='login')
 def getResult(request,id=None):
-
     try:
         if(id is None):
             result = Result.objects.filter(user_id = request.user.id).order_by('id').last()
         else:
-            result = Result.objects.get(pk=id)  
-        print(result.pragmatic_score)
-        
+            result = Result.objects.filter(user_id = request.user.id).get(pk=id)  
+        total = 28
+        p = int((int(result.pragmatic_score)/total)*100)
+        i = int((int(result.industrious_score)/total)*100)
+        c = int((int(result.creative_score)/total)*100)
+        s = int((int(result.socialite_score)/total)*100)
+        e = int((int(result.explorer_score)/total)*100)
+        t = int((int(result.traditional_score)/total)*100)  
+        percentage = {'P':p,'I':i,'C':c,'S':s,'E':e,'T':t} 
+        k = Counter(percentage) 
+        top = k.most_common(3)  
+        context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
+        return render(request, 'picset/result.html',context)
     except Exception as e:
         print(e)
         return redirect('dashboard')    
     
+
+@login_required(login_url='login')
+def getPDF(request,id=None):
+    try:
+        if(id is None):
+            result = Result.objects.filter(user_id = request.user.id).order_by('id').last()
+        else:
+            result = Result.objects.filter(user_id = request.user.id).get(pk=id)  
+        total = 28
+        p = int((int(result.pragmatic_score)/total)*100)
+        i = int((int(result.industrious_score)/total)*100)
+        c = int((int(result.creative_score)/total)*100)
+        s = int((int(result.socialite_score)/total)*100)
+        e = int((int(result.explorer_score)/total)*100)
+        t = int((int(result.traditional_score)/total)*100)  
+        percentage = {'P':p,'I':i,'C':c,'S':s,'E':e,'T':t} 
+        k = Counter(percentage) 
+        top = k.most_common(3)  
+        context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
+        return render(request, 'picset/pdfview.html',context)
+    except Exception as e:
+        return redirect('dashboard')    
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html  = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+@login_required(login_url='login')
+def downloadPDF(request,id=None):
+    try:
+        if(id is None):
+            result = Result.objects.filter(user_id = request.user.id).order_by('id').last()
+        else:
+            result = Result.objects.filter(user_id = request.user.id).get(pk=id)  
+        total = 28
+        p = int((int(result.pragmatic_score)/total)*100)
+        i = int((int(result.industrious_score)/total)*100)
+        c = int((int(result.creative_score)/total)*100)
+        s = int((int(result.socialite_score)/total)*100)
+        e = int((int(result.explorer_score)/total)*100)
+        t = int((int(result.traditional_score)/total)*100)  
+        user = request.user
+        percentage = {'P':p,'I':i,'C':c,'S':s,'E':e,'T':t} 
+        k = Counter(percentage) 
+        top = k.most_common(3)  
+        context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top,'user':user}
+        # return render(request, 'picset/pdfview.html',context)
+        pdf = render_to_pdf('picset/pdfview.html', context)
+        return HttpResponse(pdf, content_type='application/pdf')
+    except Exception as e:
+        print(e)
+        return redirect('dashboard')     

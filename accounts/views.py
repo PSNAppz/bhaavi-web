@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
 from .decorators import *
+from picset.models import Result
 from .models import *
 from .forms import *
 from django.contrib import messages
@@ -490,6 +491,7 @@ def userDashboard(request):
     schedules = request.user.schedule_times.none()
     user_requests = request.user.mentor_request.none()
     accepted_calls = AcceptedCallSchedule.objects.none()
+    results = Result.objects.filter(user_id = request.user.id).order_by('id')
     
     for purchase in purchases:
         if purchase.product.call_required:
@@ -502,7 +504,7 @@ def userDashboard(request):
             accepted_calls |= AcceptedCallSchedule.objects.filter(schedule_id = schedule.id)
         else:
             pass    
-    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls}
+    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls,'results':results}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')

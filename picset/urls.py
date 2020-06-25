@@ -3,8 +3,11 @@ from . import views
 
 urlpatterns = [
     path('dashboard/PICSET', views.takeTest,name="picset_test"),
-    re_path(r'PICSET/result/^(?P<album_id>[0-9])/$', views.getResult,kwargs={'id': None},name="picset_result"),
-    path('PICSET/result', views.getResult,kwargs={'id': None},name="picset_result"),
+    path('dashboard/PICSET/result', views.getResult,kwargs={'id': None},name="picset_result"),
 
     path('dashboard/PICSET/api/v1/getQuestion', views.getQuestion, name="getQuestion"),
+    path('dashboard/PICSET/pdf/<int:id>', views.getPDF,kwargs={'id': None},name="picset_view"),
+    # path('dashboard/PICSET/pdf/<int:id>/download', views.downloadPDF,kwargs={'id': None},name="picset_pdf"),
+
+
 ]
