@@ -1,0 +1,205 @@
+{% extends 'base/main.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+
+
+<section class="pt-8 pt-md-11 pb-10 pb-md-15">
+      <!-- Content -->
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 text-center">
+          
+          <!-- Heading -->
+          <h2 class="font-weight-bold">
+            PICSET TEST
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-muted mb-7 mb-md-9">
+            Please complete the test to see the results. You can complete the test anytime.
+          </p>
+
+        </div>
+      </div> <!-- / .row -->
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-16 col-md-10 col-lg-12">
+            <div class="card card-border card-border-xl border-primary">
+                <div class="card-body bg-black hljs">
+                        <div class="form-group">
+                        <label for="exampleInputEmail1" ><span class="badge badge-info-soft"><span class ="h3" id="qno">Q{{question.id}}</span></span><b class="h4" id="question"> {{question.question}}</b></label>
+                        <br><br>
+                        <div class="form-check">
+                            <input class="form-check-input" value="{{question.strongly_agree}}" type="radio" name="answer" id="radios1"  {% if answer.answer == question.strongly_agree %} checked {% endif %}>
+                            <label class="form-check-label" for="exampleRadios1">
+                              Strongly Agree
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" value="{{question.agree}}" type="radio" name="answer" id="radios2" {% if answer.answer == question.agree %} checked {% endif %}>
+                            <label class="form-check-label" for="exampleRadios2">
+                                Agree
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" value="{{question.disagree}}" type="radio" name="answer" id="radios3" {% if answer.answer == question.disagree %} checked {% endif %}>
+                            <label class="form-check-label" for="exampleRadios2">
+                                Disagree
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" value="{{question.strongly_disagree}}" type="radio" name="answer" id="radios4" {% if answer.answer == question.strongly_disagree %} checked {% endif %}>
+                            <label class="form-check-label" for="exampleRadios2">
+                                Strongly Disagree
+                            </label>
+                          </div>
+                                            
+                        </div>
+                </div>
+                <input type="hidden" id="question_id" value="{{ question.id }}"/>
+                <div class="card-footer bg-black">
+                    <button id="prev" type="submit" class="btn btn-primary">Previous</button>
+                    <button id="nxt" type="submit" class="btn btn-primary">Next</button>
+                    <button id="sub" type="submit" class="btn btn-success">Submit</button>
+                </div>
+             </div>
+             
+          </div>
+        </div>
+    </div>
+  </section>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script type="text/javascript">
+   $(document).ready(function(){
+    $("#prev").hide();
+    {% if question.id > 1 %}
+    $("#prev").show();
+    {% endif %}
+
+    {% if not final %}
+    var final = false;
+    {% else %}
+    var final = true;
+    {% endif %}
+    if (final) {
+      $("#nxt").hide();
+      $("#sub").show();
+    }else{
+      $("#nxt").show();
+      $("#sub").hide();
+    }
+
+   });
+  function getData(data, prev, sub){
+  
+  qid = data;
+  ans = $("input[name='answer']:checked").val();
+  $.ajax(
+  {
+      type:"POST",
+      url: "{% url 'getQuestion'  %}",
+      data:{
+               question_id: qid,
+               answer: ans,
+               previous: prev,
+               submit: sub,
+               csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      dataType: "JSON",
+      success: function( data ) 
+      {
+        if(data['success']){ 
+          var final = data['final']        
+          var qid = data['question'][0].id;
+          var question = data['question'][0].question;
+          var a = data['question'][0].strongly_agree;
+          var b = data['question'][0].agree;
+          var c = data['question'][0].disagree;
+          var d = data['question'][0].strongly_disagree;
+          $("#prev").show();
+          if(final){
+            $('#nxt').hide();
+            $("#sub").show();
+          }else{
+            $('#nxt').show();
+          }
+          if(qid == 1){
+            $("#prev").hide();
+          }
+          $("#radios1").attr("value", a); 
+          $("#radios2").attr("value", b); 
+          $("#radios3").attr("value", c); 
+          $("#radios4").attr("value", d); 
+          $('#qno').text("Q"+qid+" ");
+          $('#question_id').attr("value",qid);
+          $('#question').text(" "+question);
+          
+          if(data['answer'] != undefined){
+            ans = data['answer'][0].answer;
+            
+            if(ans == a){
+              $("#radios1").prop("checked","true"); 
+              $("#radios2").removeAttr("checked");
+              $("#radios3").removeAttr("checked");
+              $("#radios4").removeAttr("checked");
+            }else if (ans == b){
+              $("#radios1").removeAttr("checked");
+              $("#radios2").prop("checked","true"); 
+              $("#radios3").removeAttr("checked");
+              $("#radios4").removeAttr("checked");
+            }else if (ans == c){
+              $("#radios1").removeAttr("checked");
+              $("#radios2").removeAttr("checked");
+              $("#radios3").prop("checked","true"); 
+              $("#radios4").removeAttr("checked");
+            }else {
+              $("#radios1").removeAttr("checked");
+              $("#radios2").removeAttr("checked");
+              $("#radios3").removeAttr("checked");
+              $("#radios4").prop("checked","true"); 
+            }
+        }
+          
+         
+          
+        }else{
+          if(data['redirect']){
+            $(location).attr('href', "{% url 'picset_result' %}");
+
+          }
+        }
+
+      },
+      
+      error: function(jqXHR, textStatus, errorThrown) {
+
+alert(textStatus);
+
+alert(errorThrown);
+
+}
+   })
+  }
+
+$('#nxt').click(function(){
+  var id = $('#question_id').val();
+  var prev = 0;
+  getData(id, prev, 0);
+});
+
+$('#sub').click(function(){
+  var id = $('#question_id').val();
+  var prev = 0;
+  var sub = 1;
+  getData(id, prev, sub);
+});
+
+$('#prev').click(function(){
+  var id = $('#question_id').val() - 1;
+  var prev = 1;
+  getData(id, prev, 0);
+});
+</script>
+
+{% endif %}
+{% endblock content %}

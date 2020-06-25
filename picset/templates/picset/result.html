@@ -1,0 +1,343 @@
+{% extends 'base/main.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+
+
+<section class="pt-8 pt-md-11 pb-10 pb-md-15">
+      <!-- Content -->
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 text-center">
+          
+          <!-- Heading -->
+          <h2 class="font-weight-bold">
+            Congratulations!
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-muted mb-7 mb-md-9">
+            Note: for further detailed discussion, please register online consultation with our expert mentors at "bhaavi.in"
+          </p>
+
+        </div>
+      </div> <!-- / .row -->
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-16 col-md-10 col-lg-12">
+            <div class="card card-border card-border-xl border-primary">
+                <div class="card-body bg-black hljs">
+                    <div class="text-center">
+                    <h2 class="font-weight-bold ">
+                        Report
+                      </h2>
+                    </div>
+                    <p><i>Dear <b>{{user.full_name}}</b>,<br>
+                        Congratulations! You have successfully completed the PICSET test.
+                        This endeavor will help you to take the first step in transforming your dreams into reality. You have
+                        been scientifically evaluated and the result will help you to become aware of your overall interest
+                         and personality traits. Please be aware that this is not an absolute result, but an indication of
+                          where you're strong. Further discussions with a Career mentor will help to guide you to the respective
+                           streams.</i></p>
+
+                           <h2><b>PICSET Result</b></h2>
+
+                           <div class="row">
+                            <div class="col">
+                                <h5>Pragmatic - {{ result.pragmatic_score }}</h5>
+                                <h5>Industrious - {{ result.industrious_score }}</h5>
+                                <h5>Creative - {{ result.creative_score }}</h5>
+                                <h5>Socialite - {{ result.socialite_score }}</h5>
+                                <h5>Explorer - {{ result.explorer_score }}</h5>
+                                <h5>Traditional - {{ result.traditional_score }}</h5> 
+                            </div>
+                           
+                            <div class="col">
+                            <div class="progress" style="height: 6px; padding-top: 10;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{P}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="28"></div>
+                              </div><br>
+                              <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{I}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="28"></div>
+                              </div><br>
+                              <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{C}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="28"></div>
+                              </div><br>
+                              <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{S}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="28"></div>
+                              </div><br>
+                              <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{E}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="28"></div>
+                              </div><br>
+                              <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{T}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="28"></div>
+                              </div>
+
+                            </div>
+                        </div><br>
+                        <h2><b>Suggested professions as per PICSET</b></h2>
+
+                        {% for professions in top %}
+
+                        {% if professions.0 == 'P' %}
+
+                            <div class="card card-row shadow-light-lg">
+                                <div class="row no-gutters">
+                                 
+                                  <div class="col-12 col-md-12 order-md-1">
+                                    <!-- Body -->
+                                    <div class="card-body">
+                                        <h2 class="text-black text-center"><b>Pragmatic </b></h2>
+
+                                      <blockquote class="blockquote mb-0 text-center">
+                                        
+                                        <!-- Text -->
+                                        <p class="mb-5 mb-md-7 text-black">
+                                          “Individuals high on Pragmatic value activities 
+                                          in which they take good care of their property,
+                                          improve their abilities and work with things to
+                                          make them more practical and efficient. These people are often good at mechanical or athletic
+                                          jobs. Prospective professions for Pragmatic people are...”
+                                        </p>
+                              
+                                        <!-- Footer -->
+                                        <footer class="blockquote-footer text-left">
+                                            <ul>
+                                         <li> <span class="h6 text-uppercase">Agriculture</span></li>
+                                         <li> <span class="h6 text-uppercase">Health Assistant</span></li>
+                                         <li> <span class="h6 text-uppercase">Computers Technician, Software Tester</span></li>
+                                         <li> <span class="h6 text-uppercase">Architect, Construction</span></li>
+                                         <li> <span class="h6 text-uppercase">Mechanic/Machinist</span></li>
+                                         <li> <span class="h6 text-uppercase">Engineering</span></li>
+                                         <li> <span class="h6 text-uppercase">Food and Hospitality, Logistics Analyst</span></li>
+
+                                        </ul>
+                                        </footer>
+                              
+                                      </blockquote>
+                                    </div>
+                              
+                                  </div>
+                              
+                                </div>
+                              </div>
+                              {% elif professions.0 == 'I' %}
+                              <div class="card card-row shadow-light-lg">
+                                <div class="row no-gutters">
+                                 
+                                  <div class="col-12 col-md-12 order-md-1">
+                              
+
+                                    <!-- Body -->
+                                    <div class="card-body">
+                                        <h2 class="text-black text-center"><b>Industrious </b></h2>
+
+                                      <blockquote class="blockquote mb-0 text-center">
+                                        
+                                        <!-- Text -->
+                                        <p class="mb-5 mb-md-7 text-black">
+                                            
+
+                                          “These people like to work with others and enjoy
+                                          persuading and and performing. Prospective professions
+                                          for Industrious people are...”
+                                        </p>
+                                        <!-- Footer -->
+                                        <footer class="blockquote-footer text-left">
+                                            <ul>
+                                         <li> <span class="h6 text-uppercase">Fashion Merchandising</span></li>
+                                         <li> <span class="h6 text-uppercase">Real Estate</span></li>
+                                         <li> <span class="h6 text-uppercase">Marketing/Sales</span></li>
+                                         <li> <span class="h6 text-uppercase">Law</span></li>
+                                         <li> <span class="h6 text-uppercase">Political Science</span></li>
+                                         <li> <span class="h6 text-uppercase">International Trade</span></li>
+                                         <li> <span class="h6 text-uppercase">Customer Service</span></li>
+                                         <li> <span class="h6 text-uppercase">Purchase</span></li>
+
+                                        </ul>
+                                        </footer>
+                              
+                                      </blockquote>
+                                    </div>
+                              
+                                  </div>
+                              
+                                </div>
+                              </div>
+                              {% elif professions.0 == 'C' %}
+                              <div class="card card-row shadow-light-lg">
+                                <div class="row no-gutters">
+                                 
+                                  <div class="col-12 col-md-12 order-md-1">
+
+                                    <!-- Body -->
+                                    <div class="card-body">
+                                        <h2 class="text-black text-center"><b>Creative </b></h2>
+
+                                      <blockquote class="blockquote mb-0 text-center">
+                                        
+                                        <!-- Text -->
+                                        <p class="mb-5 mb-md-7 text-black">
+                                          “They value activities where they appreciate beauty, where they show Artistic and emotional 
+                                          sensitivity, appreciate music and arts. These people like to work in unstructured situations
+                                           where they can use their creativity. Prospective professions for Creative people are...
+                                          ”
+                                        </p>
+                                        <!-- Footer -->
+                                        <footer class="blockquote-footer text-left">
+                                            <ul>
+                                         <li> <span class="h6 text-uppercase">Graphic Designer</span></li>
+                                         <li> <span class="h6 text-uppercase">Cosmetology</span></li>
+                                         <li> <span class="h6 text-uppercase">Fine and Performing Arts</span></li>
+                                         <li> <span class="h6 text-uppercase">Photography</span></li>
+                                         <li> <span class="h6 text-uppercase">Radio and TV</span></li>
+                                         <li> <span class="h6 text-uppercase">Interior Design</span></li>
+                                         <li> <span class="h6 text-uppercase">Architecture,  Animator, commercial artist, arts professor,creative writer</span></li>
+
+                                        </ul>
+                                        </footer>
+                              
+                                      </blockquote>
+                                    </div>
+                              
+                                  </div>
+                              
+                                </div>
+                              </div>
+                              {% elif professions.0 == 'S' %}
+                              <div class="card card-row shadow-light-lg">
+                                <div class="row no-gutters">
+                                 
+                                  <div class="col-12 col-md-12 order-md-1">
+
+                                    <!-- Body -->
+                                    <div class="card-body">
+                                        <h2 class="text-black text-center"><b>Socialite </b></h2>
+
+                                      <blockquote class="blockquote mb-0 text-center">
+                                        
+                                        <!-- Text -->
+                                        <p class="mb-5 mb-md-7 text-black">
+                                          “They value activities where they can help others and appreciate the work of charitable service groups. Working with people in a friendly situation is important to such persons. These people like to work with other people,
+                                          rather than things. Good college majors for
+                                          Socialite people are...”
+                                        </p>
+
+                                        <!-- Footer -->
+                                        <footer class="blockquote-footer text-left">
+                                            <ul>
+                                         <li> <span class="h6 text-uppercase">Counseling</span></li>
+                                         <li> <span class="h6 text-uppercase">Nursing</span></li>
+                                         <li> <span class="h6 text-uppercase">Physical Therapy</span></li>
+                                         <li> <span class="h6 text-uppercase">Travel</span></li>
+                                         <li> <span class="h6 text-uppercase">Advertising</span></li>
+                                         <li> <span class="h6 text-uppercase">Public Relations</span></li>
+                                         <li> <span class="h6 text-uppercase">Teacher, Trainer, Librarian</span></li>
+
+                                        </ul>
+                                        </footer>
+                              
+                                      </blockquote>
+                                    </div>
+                              
+                                  </div>
+                              
+                                </div>
+                              </div>
+                              {% elif professions.0 == 'E' %}
+                              <div class="card card-row shadow-light-lg">
+                                <div class="row no-gutters">
+                                 
+                                  <div class="col-12 col-md-12 order-md-1">
+
+                                    <!-- Body -->
+                                    <div class="card-body">
+                                        <h2 class="text-black text-center"><b>Explorer </b></h2>
+
+                                      <blockquote class="blockquote mb-0 text-center">
+                                        
+                                        <!-- Text -->
+                                        <p class="mb-5 mb-md-7 text-black">
+                                          “These people like to watch, learn, analyze and solve
+                                          problems. Good college majors for Explorers are...”
+                                        </p>
+
+                                        <!-- Footer -->
+                                        <footer class="blockquote-footer text-left">
+                                            <ul>
+                                         <li> <span class="h6 text-uppercase">Marine Biology</span></li>
+                                         <li> <span class="h6 text-uppercase">Engineering</span></li>
+                                         <li> <span class="h6 text-uppercase">Chemist</span></li>
+                                         <li> <span class="h6 text-uppercase">Journalist, Statistician, Archeologist</span></li>
+                                         <li> <span class="h6 text-uppercase">Medicine/Surgery</span></li>
+                                         <li> <span class="h6 text-uppercase">Consumer Economics</span></li>
+                                         <li> <span class="h6 text-uppercase">Psychology</span></li>
+
+                                        </ul>
+                                        </footer>
+                              
+                                      </blockquote>
+                                    </div>
+                              
+                                  </div>
+                              
+                                </div>
+                              </div>
+                              {% else %}
+                              <div class="card card-row shadow-light-lg">
+                                <div class="row no-gutters">
+                                 
+                                  <div class="col-12 col-md-12 order-md-1">
+
+                                    <!-- Body -->
+                                    <div class="card-body">
+                                        <h2 class="text-black text-center"><b>Traditional </b></h2>
+
+                                      <blockquote class="blockquote mb-0 text-center">
+                                        
+                                        <!-- Text -->
+                                        <p class="mb-5 mb-md-7 text-black">
+                                          “They value activities in which they keep things tidy and do what they are expected to do.
+                                           They prefer to be pre-planned in their work. These people are very detail oriented, organized
+                                           and like to work with data. Prospective professions for Traditional people are...”
+                                        </p>
+                                        
+                                        <!-- Footer -->
+                                        <footer class="blockquote-footer text-left">
+                                            <ul>
+                                         <li> <span class="h6 text-uppercase">Accounting</span></li>
+                                         <li> <span class="h6 text-uppercase">Court Reporting</span></li>
+                                         <li> <span class="h6 text-uppercase">Insurance</span></li>
+                                         <li> <span class="h6 text-uppercase">Administration</span></li>
+                                         <li> <span class="h6 text-uppercase">Medical Records</span></li>
+                                         <li> <span class="h6 text-uppercase">Banking</span></li>
+                                         <li> <span class="h6 text-uppercase">Data Processing, Safety Inspector, Content Writer</span></li>
+
+                                        </ul>
+                                        </footer>
+                              
+                                      </blockquote>
+                                    </div>
+                              
+                                  </div>
+                              
+                                </div>
+                              </div>
+                              {% endif %}
+                              <br>
+
+                        {% endfor %}
+                    </div>
+                <input type="hidden" id="result" value="{{ result.id }}"/>
+                <div class="card-footer bg-black">
+                    <a href="{% url 'picset_pdf' result.id %}" type="button" class="btn btn-success-soft btn-xs mb-1">
+                        Download
+                    </a>
+                </div>
+             </div>
+             
+          </div>
+        </div>
+    </div>
+  </section>
+
+{% endif %}
+{% endblock content %}
