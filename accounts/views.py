@@ -13,8 +13,6 @@ import uuid
 import hashlib
 from .RtcTokenBuilder import buildToken
 import razorpay
-from decouple import config
-from django.contrib import messages
 
 utc= pytz.timezone('Asia/Kolkata')
 
@@ -37,8 +35,8 @@ def plansPage(request):
 def createOrder(request):
     if request.method == "POST":
         if not request.user.customer:
-            messages.warning(request, 'Mentors cannot purchase products. Please contact Admin!')
-            return redirect('plans')
+            messages.warning(request, 'You cannot purchase products!')
+            return redirect('dashboard')
         product_id = request.POST.get('product')
         product = Product.objects.filter(active=True).get(pk=product_id)
         try:
@@ -479,6 +477,14 @@ def requestSchedule(request):
 
 @login_required(login_url='login')
 def userDashboard(request):
+    if not request.user.customer:
+        if  request.user.is_jyolsyan:
+            return redirect('mentorboard') #TODO: Dashboard for Jyolsyan
+        if  request.user.is_mentor:
+            return redirect('mentorboard')
+        if  request.user.is_superuser:       
+            return redirect('admin_panel')
+
     products = Product.objects.filter(is_package=0).filter(active=1)
     purchases = request.user.user_products.filter(status=1)
     schedules = request.user.schedule_times.none()

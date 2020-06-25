@@ -121,11 +121,7 @@
                         {% if product.call_required == False %}
                         
                         {% if purchase.product_id == product.id and purchase.status %}
-                        <form action="{% url 'plans' %}" method="POST">
-                          {% csrf_token %}
-                          <input type="hidden" name="user" value="{{ user.id }}" />
-                          <input type="submit" class="btn btn-xs btn-outline-success" value="Attend Test" />
-                        </form>
+                        <a href="{% url 'picset_test' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
                         {% else %}
                         <form action="{% url 'plans' %}" method="GET">
                           {% csrf_token %}
