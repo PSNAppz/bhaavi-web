@@ -4,10 +4,10 @@
 {% if user.is_authenticated %}
 
 
-<section class="pt-8 pt-md-11 pb-10 pb-md-15">
+<section class="pt-8 pt-md-5 pb-10 pb-md-6">
       <!-- Content -->
       <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8 text-center">
+        <div class="col-12 col-md-5 col-lg-8 text-center">
           
           <!-- Heading -->
           <h2 class="font-weight-bold">
@@ -15,7 +15,7 @@
           </h2>
 
           <!-- Text -->
-          <p class="font-size-lg text-muted mb-7 mb-md-9">
+          <p class="font-size-lg text-muted mb-7 mb-md-2">
             Please complete the test to see the results.
           </p>
 
@@ -36,19 +36,19 @@
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input" value="{{question.agree}}" type="radio" name="answer" id="radios2" {% if answer.answer == question.agree %} checked {% endif %}>
+                            <input class="form-check-input"  value="{{question.agree}}" type="radio" name="answer" id="radios2" {% if answer.answer == question.agree %} checked {% endif %}>
                             <label class="form-check-label" for="exampleRadios2">
                                 Agree
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input" value="{{question.disagree}}" type="radio" name="answer" id="radios3" {% if answer.answer == question.disagree %} checked {% endif %}>
+                            <input class="form-check-input"  value="{{question.disagree}}" type="radio" name="answer" id="radios3" {% if answer.answer == question.disagree %} checked {% endif %}>
                             <label class="form-check-label" for="exampleRadios2">
                                 Disagree
                             </label>
                           </div>
                           <div class="form-check">
-                            <input class="form-check-input" value="{{question.strongly_disagree}}" type="radio" name="answer" id="radios4" {% if answer.answer == question.strongly_disagree %} checked {% endif %}>
+                            <input class="form-check-input"  value="{{question.strongly_disagree}}" type="radio" name="answer" id="radios4" {% if answer.answer == question.strongly_disagree %} checked {% endif %}>
                             <label class="form-check-label" for="exampleRadios2">
                                 Strongly Disagree
                             </label>

@@ -21,7 +21,14 @@ def takeTest(request):
     last_q = Question.objects.last()
     name = request.GET['name']
     age = request.GET['age']
-    # check if user has already submitted this info
+    print(name,age)
+    try:
+        if (int(age) < 1 or int(age) > 110):
+            messages.error(request, 'Please provide a valid attendee name and age!')
+            return redirect('picset_pre')
+    except Exception as e:
+            messages.error(request, 'Please provide a valid attendee name and age!')
+            return redirect('picset_pre') 
     try:
         info = Result.objects.filter(purchase_id = user_purchase.id).get(user_id=request.user.id)      
     except Result.DoesNotExist:
