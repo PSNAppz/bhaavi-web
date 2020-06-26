@@ -1,0 +1,88 @@
+{% extends 'base/main.html' %}
+{% block content %}
+{% load static %}
+{% if user.is_authenticated %}
+
+
+<div class="container">
+
+<div class="row">
+    <div class="col-12 aos-init aos-animate" data-aos="fade-up" data-aos-delay="200">
+
+      <!-- Video -->
+        <a href="https://www.youtube.com/watch?v=9I-Y6VQ6tyI" data-fancybox>
+            <img src="https://img.youtube.com/vi/9I-Y6VQ6tyI/maxresdefault.jpg" class="img-fluid" alt="...">
+          </a>
+
+    </div>
+  </div><br><br>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8 text-center">
+      
+      <!-- Heading -->
+      <h2 class="font-weight-bold">
+        Attendee details
+      </h2>
+
+      <!-- Text -->
+      <p class="font-size-lg text-muted mb-7 mb-md-9">
+       You cannot change the attendee details once you submit the test.
+      </p>
+
+    </div>
+  </div>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-12 col-lg-10">
+          
+          <!-- Form -->
+          <form action="{% url 'picset_test' %}" method="GET">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12 col-md-6">
+                <div class="form-group mb-5">
+                  
+                  <!-- Label -->
+                  <label for="contactName">
+                    Full name
+                  </label>
+
+                  <!-- Input -->
+                  <input type="text" class="form-control disabled" id="contactName" value="{{user.full_name}}" placeholder="Full name">
+
+                </div>
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="form-group mb-5">
+                  
+                  <!-- Label -->
+                  <label for="contactEmail">
+                    Age
+                  </label>
+
+                  <!-- Input -->
+                  <input type="text" class="form-control disabled" id="contactEmail"  placeholder="Age" >
+
+                </div>
+              </div>
+            </div> <!-- / .row -->
+            <br>
+
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                
+                <!-- Submit -->
+                <button type="submit" class="btn btn-success lift">
+                  Start test
+                </button>
+
+              </div>
+            </div> <!-- / .row -->
+          </form>
+
+        </div>
+      </div><br>
+</div>
+</div>
+
+{% endif %}
+{% endblock content %}

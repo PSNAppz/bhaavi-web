@@ -19,6 +19,13 @@ def takeTest(request):
     
     user_purchase = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = "PROD-1").get(status=True)
     last_q = Question.objects.last()
+    name = request.GET['user_name']
+    age = request.GET['age']
+    Result.objects.create(
+                        user = request.user,
+                        attendee_name = name,
+                        attendee_age = age
+                    )
     try:
         answer = QuestionAnswer.objects.filter(purchase_id=user_purchase.id).order_by('question_id').last()
         question = Question.objects.get(pk=answer.question_id)
@@ -27,7 +34,7 @@ def takeTest(request):
         else:    
             context = {'question':question,'answer':answer,'final':False}  
         return render(request, 'picset/test.html',context)
-    except:
+    except Exception as e:
         question = Question.objects.get(pk=1)
         answer = None    
         context = {'question':question,'answer':answer,'final':False}  
@@ -103,8 +110,7 @@ def getQuestion(request):
                             e += answer.answer  
                         else:  
                             t += answer.answer
-                    Result.objects.create(
-                        user = request.user,
+                    Result.objects.filter(user_id=request.user.id).last().update(
                         pragmatic_score = p,
                         industrious_score = i,
                         creative_score = c,
@@ -122,7 +128,7 @@ def getQuestion(request):
                 question = Question.objects.filter(pk=nextq).values()
                 try:
                     answer = QuestionAnswer.objects.filter(purchase_id=user_purchase.id).filter(question_id=nextq).values()
-                except: 
+                except Exception as e: 
                     answer = None    
                 return JsonResponse({'success':True, 'final':True, 'question':list(question),'answer':list(answer)})
             else:
@@ -131,7 +137,7 @@ def getQuestion(request):
                 try:
                     answer = QuestionAnswer.objects.filter(purchase_id=user_purchase.id).filter(question_id=nextq).values()
                     context = {'success':True, 'final':False, 'question':list(question),'answer':list(answer)}
-                except:
+                except Exception as e:
                     answer = None  
                     context = {'success':True, 'final':False, 'question':list(question),'answer':answer}
   
@@ -220,3 +226,12 @@ def downloadPDF(request,id=None):
     except Exception as e:
         print(e)
         return redirect('dashboard')     
+
+@login_required(login_url='login')
+def preTest(request):
+    try:
+        user_purchase = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = "PROD-1").get(status=True)
+        return render(request, 'picset/pretest.html')          
+    except Exception as e:
+        return redirect('dashboard')
+   

@@ -26,6 +26,7 @@ class QuestionAnswer(models.Model):
 class Result(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user')
     attendee_name = models.CharField(max_length=255,blank=True)
+    attendee_age = models.CharField(max_length=3,blank=True)
     pragmatic_score = models.CharField(max_length=5, blank=True)
     industrious_score = models.CharField(max_length=5, blank=True)
     creative_score = models.CharField(max_length=5, blank=True)

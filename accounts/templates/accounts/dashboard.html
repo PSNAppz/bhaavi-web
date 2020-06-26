@@ -111,7 +111,7 @@
                         {% if product.call_required == False %}
                         
                         {% if purchase.product_id == product.id and purchase.status %}
-                        <a href="{% url 'picset_test' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
+                        <a href="{% url 'picset_pre' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
                         {% else %}
                         <form action="{% url 'plans' %}" method="GET">
                           {% csrf_token %}
