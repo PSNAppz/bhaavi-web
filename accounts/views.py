@@ -565,3 +565,28 @@ def mentorDashboard(request):
     schedules = RequestedSchedules.objects.filter(mentor_id = profile.id)
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'mentor/dashboard.html',context)
+
+# ERROR HANDLING..
+def handler404(request, exception):
+    context = {}
+    response = render(request, "errors/404.html", context=context)
+    response.status_code = 404
+    return response
+
+def handler500(request,exception=None):
+    context = {}
+    response = render(request, "errors/500.html", context=context)
+    response.status_code = 500
+    return response
+
+def handler403(request,exception=None):
+    context = {}
+    response = render(request, "errors/403.html", context=context)
+    response.status_code = 403
+    return response
+
+def handler400(request,exception=None):
+    context = {}
+    response = render(request, "errors/400.html", context=context)
+    response.status_code = 400
+    return response
