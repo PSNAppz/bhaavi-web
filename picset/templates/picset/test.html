@@ -94,6 +94,7 @@
   
   qid = data;
   ans = $("input[name='answer']:checked").val();
+ 
   $.ajax(
   {
       type:"POST",
@@ -152,11 +153,14 @@
               $("#radios2").removeAttr("checked");
               $("#radios3").prop("checked","true"); 
               $("#radios4").removeAttr("checked");
-            }else {
+            }else if (ans == d) {
               $("#radios1").removeAttr("checked");
               $("#radios2").removeAttr("checked");
               $("#radios3").removeAttr("checked");
               $("#radios4").prop("checked","true"); 
+            }
+            else{
+              alert("Error");
             }
         }
           
@@ -184,7 +188,8 @@ alert(errorThrown);
 $('#nxt').click(function(){
   var id = $('#question_id').val();
   var prev = 0;
-  getData(id, prev, 0);
+  getData(id, prev, 0); 
+  $('input[name="answer"]').prop('checked', false);
 });
 
 $('#sub').click(function(){
@@ -195,6 +200,7 @@ $('#sub').click(function(){
 });
 
 $('#prev').click(function(){
+  $('input[name="answer"]').prop('checked', true);
   var id = $('#question_id').val() - 1;
   var prev = 1;
   getData(id, prev, 0);
