@@ -19,13 +19,18 @@ def takeTest(request):
     
     user_purchase = UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = "PROD-1").get(status=True)
     last_q = Question.objects.last()
-    name = request.GET['user_name']
+    name = request.GET['name']
     age = request.GET['age']
-    Result.objects.create(
-                        user = request.user,
-                        attendee_name = name,
-                        attendee_age = age
-                    )
+    # check if user has already submitted this info
+    try:
+        info = Result.objects.filter(purchase_id = user_purchase.id).get(user_id=request.user.id)      
+    except Result.DoesNotExist:
+        Result.objects.create(
+                            user = request.user,
+                            attendee_name = name,
+                            attendee_age = age,
+                            purchase = user_purchase
+                        )
     try:
         answer = QuestionAnswer.objects.filter(purchase_id=user_purchase.id).order_by('question_id').last()
         question = Question.objects.get(pk=answer.question_id)
@@ -83,7 +88,7 @@ def getQuestion(request):
                     question=question,
                     purchase_id = user_purchase.id,
                     user = request.user,
-                    answer = answer
+                    answer = answer,
                 )
             if (submit):
                 total_questions_answerd = QuestionAnswer.objects.filter(purchase_id = user_purchase.id).count()
@@ -110,13 +115,13 @@ def getQuestion(request):
                             e += answer.answer  
                         else:  
                             t += answer.answer
-                    Result.objects.filter(user_id=request.user.id).last().update(
+                    Result.objects.filter(user_id=request.user.id).filter(purchase_id = user_purchase.id).update(
                         pragmatic_score = p,
                         industrious_score = i,
                         creative_score = c,
                         socialite_score = s,
                         explorer_score = e,
-                        traditional_score = t
+                        traditional_score = t,
                     )
                     UserPurchases.objects.filter(user_id = request.user.id).filter(product_id = "PROD-1").update(status=False)
                     return JsonResponse({'success':False,'redirect':True})    
@@ -143,6 +148,7 @@ def getQuestion(request):
   
                 return JsonResponse(context)
         except Exception as e:
+            #TODO return 404
             return JsonResponse({'success':False})
     else:
         return JsonResponse({'success':False})
@@ -167,7 +173,7 @@ def getResult(request,id=None):
         context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
         return render(request, 'picset/result.html',context)
     except Exception as e:
-        print(e)
+        #TODO return 404
         return redirect('dashboard')    
     
 
@@ -191,6 +197,7 @@ def getPDF(request,id=None):
         context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
         return render(request, 'picset/pdfview.html',context)
     except Exception as e:
+        #TODO Return 404
         return redirect('dashboard')    
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
@@ -224,7 +231,7 @@ def downloadPDF(request,id=None):
         pdf = render_to_pdf('picset/pdfview.html', context)
         return HttpResponse(pdf, content_type='application/pdf')
     except Exception as e:
-        print(e)
+        #TODO: Return 404
         return redirect('dashboard')     
 
 @login_required(login_url='login')
