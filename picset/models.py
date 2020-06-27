@@ -37,4 +37,4 @@ class Result(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
-        return 'User name: {}'.format(self.user.name)        
+        return 'Result of user : {}'.format(self.user.full_name)        

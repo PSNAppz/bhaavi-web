@@ -101,7 +101,6 @@ def getQuestion(request):
                 total_questions_answerd = QuestionAnswer.objects.filter(purchase_id = user_purchase.id).count()
                 total_questions = Question.objects.count()
                 if total_questions_answerd == total_questions:
-                    print("All finished, calculating the result")
                     answers = QuestionAnswer.objects.filter(purchase_id = user_purchase.id)
                     p=0
                     i=0
@@ -180,6 +179,7 @@ def getResult(request,id=None):
         context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
         return render(request, 'picset/result.html',context)
     except Exception as e:
+        print(e)
         #TODO return 404
         return redirect('dashboard')    
     
@@ -191,7 +191,7 @@ def getPDF(request,id=None):
             result = Result.objects.filter(user_id = request.user.id).order_by('id').last()
         else:
             result = Result.objects.filter(user_id = request.user.id).get(pk=id)  
-        total = 28
+        total = 28        
         p = int((int(result.pragmatic_score)/total)*100)
         i = int((int(result.industrious_score)/total)*100)
         c = int((int(result.creative_score)/total)*100)
@@ -205,7 +205,9 @@ def getPDF(request,id=None):
         return render(request, 'picset/pdfview.html',context)
     except Exception as e:
         #TODO Return 404
-        return redirect('dashboard')    
+        print(e)
+        return redirect('dashboard')   
+
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
     html  = template.render(context_dict)
