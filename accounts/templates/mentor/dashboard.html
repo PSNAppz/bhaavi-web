@@ -103,6 +103,7 @@
                 <div class="card-body">
                   <!-- start for -->
                   {% for schedule in schedules %}
+                  {% if not schedule.request.closed %}
                   <div class="list-group list-group-flush">
                     <div class="list-group-item">
                       <div class="row align-items-center">
@@ -147,6 +148,7 @@
                   <hr>
                   {% endif %}
                   <!-- End for -->
+                  {% endif %}
                   {% endfor %}
                 </div>
               </div>
