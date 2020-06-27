@@ -142,7 +142,7 @@
                         <!-- Pincode -->
                         <div class="form-group">
                           <label for="pincode">Pincode</label>
-                          <input class="form-control" id="pincode" name="pincode" type="text" placeholder="111111" required >
+                          <input class="form-control" id="pincode" name="pincode" type="text" placeholder="111111" value="{{profile.pincode}}" required >
                         </div>
   
                       </div>
@@ -169,7 +169,7 @@
                         <!-- Name -->
                         <div class="form-group">
                             <label for="qualification">Highest qualification <span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="qualification" name="qualification" type="text" placeholder="Higher secondary education">
+                            <input class="form-control" id="qualification" value="{{profile.qualification}}" name="qualification" type="text" placeholder="Higher secondary education">
                         </div>
 
                         </div>
@@ -178,7 +178,7 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="stream">Stream <span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="stream" name="stream" type="text" placeholder="Computer Science">
+                            <input class="form-control" id="stream" name="stream" value="{{profile.stream}}" type="text" placeholder="Computer Science">
                         </div>
 
                         </div>
@@ -187,8 +187,8 @@
 
                         <!-- Phone -->
                         <div class="form-group">
-                            <label for="institute">Institute name <span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="institute" name="institute" type="text" placeholder="School/College name,place" >
+                            <label for="institute">Institute <span class="text-muted"> (Optional)</span></label>
+                            <input class="form-control" id="institute" name="institute" value="{{profile.institute}}" type="text" placeholder="School/College name,place" >
                         </div>
 
                         </div>
@@ -198,7 +198,7 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="mark">Mark/GPA<span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="mark" name="mark" type="number" placeholder="82%">
+                            <input class="form-control" id="mark" name="mark" type="number" value="{{profile.mark}}" placeholder="82%">
                         </div>
 
                         </div>                      
