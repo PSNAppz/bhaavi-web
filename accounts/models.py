@@ -147,7 +147,6 @@ class MentorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
     tags = models.CharField(max_length=255)
     experience = models.IntegerField(default=0)
-    associated_product = models.ForeignKey(Product, on_delete=models.CASCADE)
     active = models.BooleanField(default=1)
     verified = models.BooleanField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -159,7 +158,14 @@ class MentorProfile(models.Model):
         if self.user.mentor:
             return 1 
         else:
-            return 2                       
+            return 2   
+
+class MentorProducts(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Associated Product name: {}'.format(self.product.name)                                  
 
 class UserPurchases(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')

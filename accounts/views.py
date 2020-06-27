@@ -551,7 +551,11 @@ def respondCallRequest(request, id):
     try:
         call_request = MentorCallRequest.objects.get(pk=id)
         user = call_request.user
-        mentors = MentorProfile.objects.filter(associated_product_id = call_request.product.id)
+        mentor_products = MentorProducts.objects.filter(product_id = call_request.product.id)
+        mentors = MentorProfile.objects.none()
+    
+        for mentor in mentor_products:
+            mentors |= MentorProfile.objects.filter(pk = mentor.mentor_id)
         context = {'request':call_request,'request_user':user,'mentors':mentors}
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")
@@ -635,7 +639,7 @@ def viewPrivacyPolicy(request):
 
 def viewTerms(request):
     return render(request, 'base/terms.html')
-    
+
 def viewRefund(request):
     return render(request, 'base/refund.html')
 
