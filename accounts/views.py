@@ -579,6 +579,49 @@ def mentorDashboard(request):
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'mentor/dashboard.html',context)
 
+def saveProfile(request):
+    try:
+        mob = int(request.POST.get('mobile'))
+        address = request.POST.get('address')
+        state = request.POST.get('state')
+        pincode = int(request.POST.get('pincode'))
+
+        if ( (len(mob) < 10 or len(mob) > 10) or len(address) == 0  or len(state) == 0 or len(pincode) == 0):
+            messages.error(request, 'Please fill all the mandatory fields!')
+            return redirect('profile') 
+
+        qualification = request.POST.get('qualification')
+        stream = request.POST.get('stream')
+        institute = request.POST.get('institute')
+        mark = request.POST.get('mark')
+    except Exception as e:
+        messages.error(request, 'Invalid data, please enter valid data')
+        return redirect('profile')    
+    try:
+        user_profile = UserProfile.objects.get(user_id = request.user.id)
+        UserProfile.objects.filter(pk = user_profile.id).update(
+            mobile = mob,
+            address = address,
+            state = state,
+            pincode = pincode,
+            qualification = qualification,
+            stream = stream,
+            institute = institute,
+            mark = mark
+        )
+    except UserProfile.DoesNotExist:
+        UserProfile.objects.create(
+            mobile = mob,
+            address = address,
+            state = state,
+            pincode = pincode,
+            user = request.user,
+            qualification = qualification,
+            stream = stream,
+            institute = institute,
+            mark = mark
+        )            
+    return redirect('dashboard')
 def viewPrivacyPolicy(request):
     return render(request, 'base/privacy.html')
 
