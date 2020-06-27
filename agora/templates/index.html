@@ -17,6 +17,24 @@
 <body>
     <div class="container-fluid p-0">
         <div id="main-container">
+            <div id="full-screen-video"></div>
+            <div id="lower-video-bar" class="row fixed-bottom mb-1">
+                <div id="remote-streams-container" class="container col-9 ml-1">
+                    <div id="remote-streams" class="row">
+                        <!-- insert remote streams dynamically -->
+                    </div>
+                </div>
+                <div id="local-stream-container" class="col p-0">
+                    <div id="mute-overlay" class="col">
+                        <i id="mic-icon" class="fas fa-microphone-slash"></i>
+                    </div>
+                    <div id="no-local-video" class="col text-center">
+                        <i id="user-icon" class="fas fa-user"></i>
+                    </div>
+                    <div id="local-video" class="col p-0"></div>
+                </div>
+            </div>
+
             <div id="buttons-container" class="row justify-content-center mt-3">
                 <div class="col-md-2 text-center">
                     <button id="mic-btn" type="button" class="btn btn-dark btn-lg">
@@ -36,23 +54,7 @@
                     </a>
                 </div>
             </div>
-            <div id="full-screen-video"></div>
-            <div id="lower-video-bar" class="row fixed-bottom mb-1">
-                <div id="remote-streams-container" class="container col-9 ml-1">
-                    <div id="remote-streams" class="row">
-                        <!-- insert remote streams dynamically -->
-                    </div>
-                </div>
-                <div id="local-stream-container" class="col p-0">
-                    <div id="mute-overlay" class="col">
-                        <i id="mic-icon" class="fas fa-microphone-slash"></i>
-                    </div>
-                    <div id="no-local-video" class="col text-center">
-                        <i id="user-icon" class="fas fa-user"></i>
-                    </div>
-                    <div id="local-video" class="col p-0"></div>
-                </div>
-            </div>
+
         </div>
     </div>
 </body>
