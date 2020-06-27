@@ -44,7 +44,8 @@
                 <div class="card-body">
   
                   <!-- Form -->
-                  <form>
+                  <form action="{% url 'profile_save' %}" method="POST">
+                    {% csrf_token %}
                     <div class="row">
                       <div class="col-12 col-md-6">
   
@@ -70,7 +71,7 @@
                         <!-- Phone -->
                         <div class="form-group">
                           <label for="phone">Phone</label>
-                          <input class="form-control" id="phone" type="text" placeholder="9XXXXXXXXX" required>
+                          <input class="form-control" id="phone" name="phone" type="text" placeholder="9XXXXXXXXX" required>
                         </div>
   
                       </div>
@@ -80,7 +81,7 @@
                         <!-- Address -->
                         <div class="form-group">
                           <label for="address">Address</label>
-                          <input class="form-control" id="address" type="text" placeholder="XYZ, ABC Block" required>
+                          <input class="form-control" id="address" name="address" type="text" placeholder="XYZ, ABC Block" required>
                         </div>
   
                       </div>      
@@ -90,7 +91,49 @@
                         <!-- State -->
                         <div class="form-group">
                           <label for="state">State</label>
-                          <input class="form-control" id="state" type="text" placeholder="State" required>
+                          <select class="custom-select d-block w-100" id="state" name="state" required>
+                            {% if profile.state%}
+                            <option value="{{profile.address}}">{{profile.state}}</option>
+                            {% else %}
+                            <option value="">Choose...</option>
+                            {% endif %}
+                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                            <option value="Assam">Assam</option>
+                            <option value="Bihar">Bihar</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                            <option value="Chhattisgarh">Chhattisgarh</option>
+                            <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                            <option value="Daman and Diu">Daman and Diu</option>
+                            <option value="Delhi">Delhi</option>
+                            <option value="Lakshadweep">Lakshadweep</option>
+                            <option value="Puducherry">Puducherry</option>
+                            <option value="Goa">Goa</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                            <option value="Jharkhand">Jharkhand</option>
+                            <option value="Karnataka">Karnataka</option>
+                            <option value="Kerala">Kerala</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Manipur">Manipur</option>
+                            <option value="Meghalaya">Meghalaya</option>
+                            <option value="Mizoram">Mizoram</option>
+                            <option value="Nagaland">Nagaland</option>
+                            <option value="Odisha">Odisha</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Sikkim">Sikkim</option>
+                            <option value="Tamil Nadu">Tamil Nadu</option>
+                            <option value="Telangana">Telangana</option>
+                            <option value="Tripura">Tripura</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                            <option value="Uttarakhand">Uttarakhand</option>
+                            <option value="West Bengal">West Bengal</option>
+                          </select>
                         </div>
   
                       </div>
@@ -99,12 +142,12 @@
                         <!-- Pincode -->
                         <div class="form-group">
                           <label for="pincode">Pincode</label>
-                          <input class="form-control" id="pincode" type="text" placeholder="111111" required >
+                          <input class="form-control" id="pincode" name="pincode" type="text" placeholder="111111" required >
                         </div>
   
                       </div>
                     </div>
-                  </form>
+                  
   
                 </div>
               </div>
@@ -120,9 +163,6 @@
 
                     </div>
                 <div class="card-body">
-
-                    <!-- Form -->
-                    <form>
                     <div class="row">
                         <div class="col-12 col-md-6">
 
@@ -138,7 +178,7 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="stream">Stream <span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="stream" type="text" placeholder="Computer Science">
+                            <input class="form-control" id="stream" name="stream" type="text" placeholder="Computer Science">
                         </div>
 
                         </div>
@@ -148,7 +188,7 @@
                         <!-- Phone -->
                         <div class="form-group">
                             <label for="institute">Institute name <span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="institute" type="text" placeholder="School/College name" >
+                            <input class="form-control" id="institute" name="institute" type="text" placeholder="School/College name,place" >
                         </div>
 
                         </div>
@@ -158,14 +198,14 @@
                         <!-- Email -->
                         <div class="form-group">
                             <label for="mark">Mark/GPA<span class="text-muted"> (Optional)</span></label>
-                            <input class="form-control" id="mark" type="number" placeholder="82%">
+                            <input class="form-control" id="mark" name="mark" type="number" placeholder="82%">
                         </div>
 
                         </div>                      
                         
 
                     </div>
-                    </form>
+                    
 
                 </div>
                 </div>
@@ -182,6 +222,7 @@
                       </button>
 
                  </div>
+                </form>
               </div>
   
               <!-- Text -->
