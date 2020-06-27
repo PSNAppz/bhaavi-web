@@ -43,33 +43,50 @@
 
                            <div class="row">
                             <div class="col">
-                                <h5>Pragmatic - {{ result.pragmatic_score }}</h5>
-                                <h5>Industrious - {{ result.industrious_score }}</h5>
-                                <h5>Creative - {{ result.creative_score }}</h5>
-                                <h5>Socialite - {{ result.socialite_score }}</h5>
-                                <h5>Explorer - {{ result.explorer_score }}</h5>
-                                <h5>Traditional - {{ result.traditional_score }}</h5> 
-                            </div>
-                           
-                            <div class="col">
-                            <div class="progress" style="height: 6px; padding-top: 10;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{P}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="28"></div>
-                              </div><br>
-                              <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{I}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="28"></div>
-                              </div><br>
-                              <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{C}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="28"></div>
-                              </div><br>
-                              <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{S}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="28"></div>
-                              </div><br>
-                              <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{E}}%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="28"></div>
-                              </div><br>
-                              <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{T}}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="28"></div>
-                              </div>
+                              <canvas id="myChart" ></canvas>
+                              <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+                              <script>
+                                var ctx = document.getElementById('myChart');
+                                var myChart = new Chart(ctx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['Pragmatic', 'Industrious', 'Creative', 'Socialite', 'Explorer', 'Traditional'],
+                                        datasets: [{
+                                            label: '',
+                                            data: [{{P}}, {{I}}, {{C}}, {{S}}, {{E}}, {{T}}],
+                                            backgroundColor: [
+                                                'rgba(255, 99, 132, 0.2)',
+                                                'rgba(54, 162, 235, 0.2)',
+                                                'rgba(255, 206, 86, 0.2)',
+                                                'rgba(75, 192, 192, 0.2)',
+                                                'rgba(153, 102, 255, 0.2)',
+                                                'rgba(255, 159, 64, 0.2)'
+                                            ],
+                                            borderColor: [
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(255, 206, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 159, 64, 1)'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                      legend: {
+                                          display: false
+                                              },
+                                        scales: {
+                                            yAxes: [{
+                                                ticks: {
+                                                    beginAtZero: true
+                                                }
+                                            }]
+                                        }
+                                    }
+                                });
+                                </script>
 
                             </div>
                         </div><br>
@@ -328,8 +345,8 @@
                     </div>
                 <input type="hidden" id="result" value="{{ result.id }}"/>
                 <div class="card-footer bg-black">
-                    <a href="{% url 'picset_pdf' result.id %}" type="button" class="btn btn-success-soft btn-xs mb-1">
-                        Download
+                    <a href="{% url 'picset_view' result.id %}" type="button" class="btn btn-success-soft btn-xs mb-1">
+                        Print <span class="fe fe-printer"></span>
                     </a>
                 </div>
              </div>

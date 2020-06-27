@@ -111,7 +111,7 @@
                         {% if product.call_required == False %}
                         
                         {% if purchase.product_id == product.id and purchase.status %}
-                        <a href="{% url 'picset_test' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
+                        <a href="{% url 'picset_pre' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
                         {% else %}
                         <form action="{% url 'plans' %}" method="GET">
                           {% csrf_token %}
@@ -267,17 +267,16 @@
 
                         <!-- Heading -->
                         <p class="mb-0">
-                          Title
+                          PICSET RESULT - {{ result.attendee_name }}
                         </p>
 
                         <!-- Text -->
                         <small class="text-gray-700">
-                          April 20 at 4:16PM
+                          {{result.timestamp}}
                         </small>
 
                       </div>
                       <div class="col-auto">
-
                         <!-- Button -->
                         <a href="{% url 'picset_view' result.id %}" class="btn btn-xs btn-outline-info">
                           View
