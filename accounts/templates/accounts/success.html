@@ -38,12 +38,21 @@
             
             <!-- Heading -->
             <h1 class="display-5 font-weight-bold text-center">
+              {% if payment %}
               Payment Success!
+              {% else %}
+              Payment failed please try again!
+              {% endif %}
             </h1>
 
             <!-- Text -->
             <p class="mb-5 text-center text-muted">
+              {% if payment %}
               All set! Go to dashboard to use the service
+              {% else %}
+              Please retry with a different payment mode.
+              {% endif %}
+              
             </p>
 
             <!-- Link -->

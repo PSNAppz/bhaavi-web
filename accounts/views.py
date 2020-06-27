@@ -22,7 +22,13 @@ def homePage(request):
 
 @login_required(login_url='login')
 def profilePage(request):
-    return render(request, 'accounts/profile.html')
+    try:
+        profile = UserProfile.objects.get(user_id = request.user.id)
+        context = {'profile':profile}
+    except Exception as e:    
+        context = {'profile':None}
+
+    return render(request, 'accounts/profile.html', context)
 
 def plansPage(request):
     products = Product.objects.filter(active=True).filter(is_package=False)
@@ -179,7 +185,9 @@ def paymentSuccessPage(request):
                         user = request.user
                     )        
 
-            context = {'payment':True}
+                context = {'payment':True}
+            else:
+                context = {'payment':False}    
         except :
             context = {'payment':False}
 
@@ -562,9 +570,12 @@ def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
         'razorpay_signature' : razorpay_signature
     }
     # VERIFYING SIGNATURE
-    client = initPaymentClient()    
-    status = client.utility.verify_payment_signature(params_dict)
-    return True
+    try:
+        client = initPaymentClient()    
+        client.utility.verify_payment_signature(params_dict)
+        return True
+    except Exception as e:
+        return False
      
 @login_required(login_url='login')
 @mentor
@@ -573,3 +584,82 @@ def mentorDashboard(request):
     schedules = RequestedSchedules.objects.filter(mentor_id = profile.id)
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'mentor/dashboard.html',context)
+
+def saveProfile(request):
+    try:
+        mob = int(request.POST.get('mobile'))
+        address = request.POST.get('address')
+        state = request.POST.get('state')
+        pincode = int(request.POST.get('pincode'))
+
+        if ( (len(str(mob)) < 10 or len(str(mob)) > 10) or len(address) == 0  or len(state) == 0 or not (len(str(pincode)) == 6 )):
+            messages.error(request, 'Please fill all the mandatory fields!')
+            return redirect('profile') 
+
+        qualification = request.POST.get('qualification')
+        stream = request.POST.get('stream')
+        institute = request.POST.get('institute')
+        mark = request.POST.get('mark')
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Invalid data, please enter valid data')
+        return redirect('profile')    
+    try:
+        user_profile = UserProfile.objects.get(user_id = request.user.id)
+        UserProfile.objects.filter(pk = user_profile.id).update(
+            mobile = mob,
+            address = address,
+            state = state,
+            pincode = pincode,
+            qualification = qualification,
+            stream = stream,
+            institute = institute,
+            mark = mark
+        )
+    except UserProfile.DoesNotExist:
+        UserProfile.objects.create(
+            mobile = mob,
+            address = address,
+            state = state,
+            pincode = pincode,
+            user = request.user,
+            qualification = qualification,
+            stream = stream,
+            institute = institute,
+            mark = mark
+        )            
+    return redirect('dashboard')
+
+def viewPrivacyPolicy(request):
+    return render(request, 'base/privacy.html')
+
+def viewTerms(request):
+    return render(request, 'base/terms.html')
+    
+def viewRefund(request):
+    return render(request, 'base/refund.html')
+
+# ERROR HANDLING..
+def handler404(request, exception):
+    context = {}
+    response = render(request, "errors/404.html", context=context)
+    response.status_code = 404
+    return response
+
+def handler500(request,exception=None):
+    context = {}
+    response = render(request, "errors/500.html", context=context)
+    response.status_code = 500
+    return response
+
+def handler403(request,exception=None):
+    context = {}
+    response = render(request, "errors/403.html", context=context)
+    response.status_code = 403
+    return response
+
+def handler400(request,exception=None):
+    context = {}
+    response = render(request, "errors/400.html", context=context)
+    response.status_code = 400
+    return response

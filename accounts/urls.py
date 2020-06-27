@@ -6,6 +6,7 @@ urlpatterns = [
     # Basic page URLs
     path('', views.homePage,name="home"),
     path('dashboard/profile', views.profilePage, name="profile"),
+    path('dashboard/profile/save', views.saveProfile, name="profile_save"),
     path('dashboard', views.userDashboard,name="dashboard"),
     path('login', views.loginPage, name="login"),
     path('mentor/register', views.mentorRegisterPage, name="mentor_register"),
@@ -34,7 +35,12 @@ urlpatterns = [
  
     # Conference call URLs
     path('dashboard/ready', views.callDetails, name="call_details"),
-    path('dashboard/conference/',Agora.as_view(), name="conference")
+    path('dashboard/conference/',Agora.as_view(), name="conference"),
+
+    # Static pages
+    path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
+    path('terms_and_conditions', views.viewTerms, name="terms"),
+    path('refund_policy', views.viewRefund, name="refund"),
 
 
 ]
