@@ -34,6 +34,9 @@ urlpatterns = [
  
     # Conference call URLs
     path('dashboard/ready', views.callDetails, name="call_details"),
-    path('dashboard/conference/',Agora.as_view(), name="conference")
+    path('dashboard/conference/',Agora.as_view(), name="conference"),
+
+    # Static pages
+    path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
 
 ]

@@ -579,6 +579,9 @@ def mentorDashboard(request):
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'mentor/dashboard.html',context)
 
+def viewPrivacyPolicy(request):
+    return render(request, 'base/privacy.html')
+
 # ERROR HANDLING..
 def handler404(request, exception):
     context = {}
