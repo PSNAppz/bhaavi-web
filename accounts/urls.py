@@ -36,5 +36,4 @@ urlpatterns = [
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/',Agora.as_view(), name="conference")
 
-
 ]
