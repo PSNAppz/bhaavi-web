@@ -39,5 +39,8 @@ urlpatterns = [
 
     # Static pages
     path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
+    path('terms_and_conditions', views.viewTerms, name="terms"),
+    path('refund_policy', views.viewRefund, name="refund"),
+
 
 ]

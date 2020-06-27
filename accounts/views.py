@@ -629,8 +629,15 @@ def saveProfile(request):
             mark = mark
         )            
     return redirect('dashboard')
+
 def viewPrivacyPolicy(request):
     return render(request, 'base/privacy.html')
+
+def viewTerms(request):
+    return render(request, 'base/terms.html')
+
+def viewRefund(request):
+    return render(request, 'base/refund.html')
 
 # ERROR HANDLING..
 def handler404(request, exception):
