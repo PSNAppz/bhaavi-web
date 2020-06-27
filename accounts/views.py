@@ -179,7 +179,9 @@ def paymentSuccessPage(request):
                         user = request.user
                     )        
 
-            context = {'payment':True}
+                context = {'payment':True}
+            else:
+                context = {'payment':False}    
         except :
             context = {'payment':False}
 
@@ -562,9 +564,12 @@ def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
         'razorpay_signature' : razorpay_signature
     }
     # VERIFYING SIGNATURE
-    client = initPaymentClient()    
-    status = client.utility.verify_payment_signature(params_dict)
-    return True
+    try:
+        client = initPaymentClient()    
+        client.utility.verify_payment_signature(params_dict)
+        return True
+    except Exception as e:
+        return False
      
 @login_required(login_url='login')
 @mentor
