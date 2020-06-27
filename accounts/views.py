@@ -22,7 +22,13 @@ def homePage(request):
 
 @login_required(login_url='login')
 def profilePage(request):
-    return render(request, 'accounts/profile.html')
+    try:
+        profile = UserProfile.objects.get(user_id = request.user.id)
+        context = {'profile':profile}
+    except Exception as e:    
+        context = {'profile':None}
+
+    return render(request, 'accounts/profile.html', context)
 
 def plansPage(request):
     products = Product.objects.filter(active=True).filter(is_package=False)
@@ -586,7 +592,7 @@ def saveProfile(request):
         state = request.POST.get('state')
         pincode = int(request.POST.get('pincode'))
 
-        if ( (len(mob) < 10 or len(mob) > 10) or len(address) == 0  or len(state) == 0 or len(pincode) == 0):
+        if ( (len(str(mob)) < 10 or len(str(mob)) > 10) or len(address) == 0  or len(state) == 0 or not (len(str(pincode)) == 6 )):
             messages.error(request, 'Please fill all the mandatory fields!')
             return redirect('profile') 
 
@@ -595,6 +601,7 @@ def saveProfile(request):
         institute = request.POST.get('institute')
         mark = request.POST.get('mark')
     except Exception as e:
+        print(e)
         messages.error(request, 'Invalid data, please enter valid data')
         return redirect('profile')    
     try:
