@@ -70,7 +70,7 @@
                         <!-- Phone -->
                         <div class="form-group">
                           <label for="phone">Phone</label>
-                          <input class="form-control" id="phone" type="text" placeholder="9XXXXXXXXX" >
+                          <input class="form-control" id="phone" type="text" placeholder="9XXXXXXXXX" required>
                         </div>
   
                       </div>
@@ -80,7 +80,7 @@
                         <!-- Address -->
                         <div class="form-group">
                           <label for="address">Address</label>
-                          <input class="form-control" id="address" type="text" placeholder="XYZ, ABC Block" >
+                          <input class="form-control" id="address" type="text" placeholder="XYZ, ABC Block" required>
                         </div>
   
                       </div>      
@@ -90,7 +90,7 @@
                         <!-- State -->
                         <div class="form-group">
                           <label for="state">State</label>
-                          <input class="form-control" id="state" type="text" placeholder="State" >
+                          <input class="form-control" id="state" type="text" placeholder="State" required>
                         </div>
   
                       </div>
@@ -99,16 +99,8 @@
                         <!-- Pincode -->
                         <div class="form-group">
                           <label for="pincode">Pincode</label>
-                          <input class="form-control" id="pincode" type="text" placeholder="111111" >
+                          <input class="form-control" id="pincode" type="text" placeholder="111111" required >
                         </div>
-  
-                      </div>
-                      <div class="col-12 col-md-auto">
-  
-                        <!-- Button -->
-                        <button class="btn btn-block btn-primary" type="submit">
-                          Save changes
-                        </button>
   
                       </div>
                     </div>
@@ -136,7 +128,7 @@
 
                         <!-- Name -->
                         <div class="form-group">
-                            <label for="qualification">Highest qualification</label>
+                            <label for="qualification">Highest qualification <span class="text-muted"> (Optional)</span></label>
                             <input class="form-control" id="qualification" name="qualification" type="text" placeholder="Higher secondary education">
                         </div>
 
@@ -145,7 +137,7 @@
 
                         <!-- Email -->
                         <div class="form-group">
-                            <label for="stream">Stream</label>
+                            <label for="stream">Stream <span class="text-muted"> (Optional)</span></label>
                             <input class="form-control" id="stream" type="text" placeholder="Computer Science">
                         </div>
 
@@ -155,7 +147,7 @@
 
                         <!-- Phone -->
                         <div class="form-group">
-                            <label for="institute">Institute name</label>
+                            <label for="institute">Institute name <span class="text-muted"> (Optional)</span></label>
                             <input class="form-control" id="institute" type="text" placeholder="School/College name" >
                         </div>
 
@@ -165,19 +157,13 @@
 
                         <!-- Email -->
                         <div class="form-group">
-                            <label for="mark">Mark/GPA</label>
+                            <label for="mark">Mark/GPA<span class="text-muted"> (Optional)</span></label>
                             <input class="form-control" id="mark" type="number" placeholder="82%">
                         </div>
 
                         </div>                      
-                        <div class="col-12 col-md-auto">
+                        
 
-                        <!-- Button -->
-                        <button class="btn btn-block btn-primary" type="submit">
-                            Save changes
-                        </button>
-
-                        </div>
                     </div>
                     </form>
 
@@ -187,6 +173,15 @@
 
   
                 </div>
+                <div class="col-12 col-md-4"></div>
+                <div class="col-12 col-md-4">
+
+                        <!-- Button -->
+                        <button class="btn btn-block btn-primary" type="submit">
+                          Save and continue
+                      </button>
+
+                 </div>
               </div>
   
               <!-- Text -->
