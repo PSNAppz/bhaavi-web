@@ -22,6 +22,14 @@
         </div>
       </div> <!-- / .row -->
       <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <img src="{% static '/assets/img/brand-tagline.png' %}" class="navbar-brand-img" alt="...">
+          </div>
+          <div class="col-md-3 offset-md-4">
+            <h2><b><a href="https://bhaavi.in">www.bhaavi.in</a></b></h2>
+          </div>
+        </div>
         <div class="row justify-content-center">
           <div class="col-16 col-md-10 col-lg-12">
             <div class="card card-border card-border-xl border-primary">
@@ -347,6 +355,9 @@
 
                         {% endfor %}
                     </div>
+                    <div class="card-footer bg-black text-white">
+                      Note: for further detailed discussion, please register online consultation with our expert mentors at "bhaavi.in"
+                  </div>
                 <input type="hidden" id="result" value="{{ result.id }}"/>
                 <div class="card-footer bg-black">
                     <a href="{% url 'picset_view' result.id %}" type="button" class="btn btn-success-soft btn-xs mb-1">
@@ -356,6 +367,8 @@
              </div>
              
           </div>
+          <p> bhaaviconsultants@gmail.com   |   www.bhaavi.in   |   +91 79078 52804 (WhatsApp) </p>
+
         </div>
     </div>
   </section>

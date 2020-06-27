@@ -635,7 +635,7 @@ def viewPrivacyPolicy(request):
 
 def viewTerms(request):
     return render(request, 'base/terms.html')
-
+    
 def viewRefund(request):
     return render(request, 'base/refund.html')
 
