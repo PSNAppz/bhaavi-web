@@ -661,19 +661,6 @@ def requestPage(request):
             slots.append(now.strftime("%d-%m-%Y")+",No slots available")
 
         print(slots)    
-        try:
-            pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
-            messages.warning(request, 'Call already Requested')
-            return redirect('dashboard')
-        except MentorCallRequest.DoesNotExist:
-            purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
-            form = ScheduleRequestForm(request.POST)
-            if form.is_valid():
-                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
-                    
-                    messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
-                else:
-                    messages.error(request, 'An error occured!')
     context = {'slots':slots}
     return render(request, 'accounts/request.html',context)    
 
