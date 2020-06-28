@@ -106,7 +106,7 @@
                           </div>
                         <div class="form-group">
                             <label for="datepicker">Scheduled Date & Time</label>
-                            <input type='text' name="slot" id ="datepicker" class="form-control form-control-sm" />
+                            <input type='text' name="slot" id ="datepicker" class="form-control form-control-sm" required/>
                             
                         </div>
                         <div class="mt-6">
@@ -131,17 +131,18 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
 
 <script>
-var d = new Date($.now());
-    $('#datepicker').datetimepicker({
-        timepicker: true,
-        datepicker: true,
-        format: 'Y-m-d H:i',
-        value: d.getDate()+"-"+(d.getMonth() + 1)+"-"+d.getFullYear()+" "+d.getHours()+":"+d.getMinutes(), 
-        yearStart: d.getFullYear(),
-        yearEnd: 2050,
-        hours12:false,
-        mask:true
+   jQuery('#datepicker').datetimepicker({
+ formatDate: "Y.m.d", 
+ timepicker:true,
+ format: "Y-m-d H:i",
+ highlightedDates: [
+    "29.06.2020,Meeting with Pete", 
+    "24.06.2020,Christmas Eve,xdsoft_highlighted_mint", 
+    "25.06.2020,Christmas Day,xdsoft_highlighted_mint", 
+    "26.06.2020,Thanksgiving"
+ ],
+ 
+});
 
-    })
 </script> 
 {% endblock content %}

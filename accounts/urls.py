@@ -22,6 +22,7 @@ urlpatterns = [
     path('payment/done', views.paymentSuccessPage , name="success"), 
 
     path('request/mentor', views.requestCall, name="mentor_request"),
+    path('request/details', views.requestPage, name="request_details"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
 
     # Mentor Dash

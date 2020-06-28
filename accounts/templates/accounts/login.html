@@ -1,16 +1,18 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-	{%  include 'base/head.html' %}
+  {%  include 'base/head.html' %}
   <body>
     
     <!-- CONTENT
     ================================================== -->
     <section class="section-border border-primary">
+
       <div class="container d-flex flex-column">
         <div class="row align-items-center justify-content-center no-gutters min-vh-100">
           <div class="col-12 col-md-5 col-lg-4 py-8 py-md-11">
-            
+            {% include 'base/messages.html' %}
+
             <!-- Heading -->
             <h1 class="mb-0 font-weight-bold text-center">
               Sign in
@@ -44,14 +46,8 @@
               <button class="btn btn-block btn-primary" type="submit">
                 Sign in
               </button>
-			</form>
-			{% if form %}
-			<div class="alert alert-warning alert-dismissible fade show" role="alert">
-				<strong>Oops!</strong> <br>{{form}}
-			  </div>
-			{% endif %}
-			  
-			
+
+            </form>	
             <!-- Text -->
             <p class="mb-0 font-size-sm text-center text-muted">
 				Forgot password? <a href="{% url 'password_reset' %}">Reset password</a>. Don't have an account yet <a href="{%url 'register'%}">Sign up</a>.
