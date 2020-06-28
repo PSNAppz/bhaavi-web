@@ -4,6 +4,10 @@ from collections import OrderedDict
 
 from .AccessToken import *
 
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+# from django.utils import six
+import six
+
 Role_Publisher = 1 # for live broadcaster
 Role_Subscriber = 2 # default, for live audience
 
@@ -49,3 +53,13 @@ class RtcTokenBuilder:
             token.addPrivilege(kPublishAudioStream, privilegeExpiredTs)
             token.addPrivilege(kPublishDataStream, privilegeExpiredTs)
         return token.build()    
+
+# Token builder for email verification
+
+class TokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return (
+            six.text_type(user.pk) + six.text_type(timestamp) + six.text_type(user.is_active)
+        )       
+
+account_activation_token = TokenGenerator()        

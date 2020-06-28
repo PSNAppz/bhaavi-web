@@ -42,5 +42,9 @@ urlpatterns = [
     path('terms_and_conditions', views.viewTerms, name="terms"),
     path('refund_policy', views.viewRefund, name="refund"),
 
+    # email_verification
+    path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        views.activate_account, name='activate'),
+
 
 ]
