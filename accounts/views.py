@@ -301,7 +301,7 @@ def userRegisterPage(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                messages.success()(request, 'Succesfully registered!')
+                messages.success(request, 'Succesfully registered!')
                 return redirect('profile')
 
         else:
