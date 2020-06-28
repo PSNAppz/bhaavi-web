@@ -37,7 +37,7 @@
 
           <!-- Form -->
           
-          <form action="{% url 'conference' %}" method="POST">
+          <form action="{% url 'mentor_request' %}" method="POST">
             <div class="card card-bleed shadow-light-lg mb-6">
               
                 <div class="card-body">
@@ -48,219 +48,124 @@
               
               <!-- Label -->
               <label for="contactName">
-                Name:
+                Name
               </label>
 
               <!-- Input -->
-              <input type="text" class="form-control" id="contactName" placeholder="Name">
+              <input type="text" class="form-control" value={{user.full_name}} id="contactName" placeholder="Your Name" disabled>
 
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Gender:
+                  Gender
                 </label>
   
                 <!-- Input -->
                 <div class="radio">
-                    <label><input type="radio" name="gender" >Male</label>
+                    <label><input type="radio" name="gender" value="1">Male</label>
                   </div>
                   <div class="radio">
-                    <label><input type="radio" name="gender">Female</label>
+                    <label><input type="radio" name="gender" value="2">Female</label>
                   </div>
                   <div class="radio">
-                    <label><input type="radio" name="gender" >Prefer not to say</label>
+                    <label><input type="radio" name="gender" value="3">Prefer not to say</label>
                   </div>  
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Date of Birth:
+                  Date of Birth
                 </label>
   
                 <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Date of Birth">
+                <input type="text"  class="form-control" id="dobpicker" name="dob" placeholder="Date of Birth" required>
   
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Class & School:
+                  Class & School
                 </label>
   
                 <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
+                <input type="text" class="form-control" id="contactName" name="institute" placeholder="Institute/School, Class" required>
   
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Siblings:
+                  Siblings
                 </label>
   
                 <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
+                <input type="text" class="form-control" id="contactName" name="siblings" placeholder="Siblings" required>
   
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Language of Intructions
+                  Language of Intruction
                 </label>
   
                 <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
+                <input type="text" class="form-control" id="contactName" name="language" placeholder="English" required>
   
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Contact:
+                  Contact
                 </label>
   
                 <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
+                <input type="text" class="form-control" name="contact" id="contactName" placeholder="Contact" required>
   
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  Subject(s) you like teh most
+                  Hobbies & Interests
                 </label>
   
                 <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
+                <input type="text" class="form-control" name="hobbies" id="contactName" placeholder="Question 1" required>
   
             </div>
             <div class="form-group mb-5">
               
                 <!-- Label -->
                 <label for="contactName">
-                  How do you score generally in exams (average)
+                 Guardian's name
                 </label>
   
                 <!-- Input -->
-                <div class="radio">
-                    <label><input type="radio" name="score" checked>Above 90</label>
-                  </div>
-                  <div class="radio">
-                    <label><input type="radio" name="score">Above 80</label>
-                  </div>
-                  <div class="radio">
-                    <label><input type="radio" name="score" disabled>Above 50</label>
-                  </div> 
-                  <div class="radio ">
-                    <label><input type="radio" name="score" disabled>Below 50</label>
-                  </div>  
-            </div>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Extra-curricular activities
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
+                <input type="text" class="form-control" name="guardian" id="contactName" placeholder="Question 1" required>
   
             </div>
             <div class="form-group mb-5">
               
-                <!-- Label -->
-                <label for="contactName">
-                  Hobbies & Interests:
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
-            </div>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Goal/Ambition(if any)
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
+              <!-- Label -->
+              <label for="contactName">
+               Address
+              </label>
+
+              <!-- Input -->
+              <input type="text" class="form-control" name="address" id="contactName" placeholder="Question 1" required>
+
+          </div>
             </div>
             </div>
-            </div>
-            <div class="card card-bleed shadow-light-lg mb-6">
-              
-                <div class="card-body">
-            <p class="font-size-lg text-center mb-0">
-                Parent/Guardian Information
-              </p>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Name:
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
-            </div>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Contact:
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
-            </div>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Occupation:
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
-            </div>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Email:
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
-            </div>
-            <div class="form-group mb-5">
-              
-                <!-- Label -->
-                <label for="contactName">
-                  Address:
-                </label>
-  
-                <!-- Input -->
-                <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-  
-            </div>
-</div>
-</div>
-<div class="card card-bleed shadow-light-lg mb-6">
-              
-    <div class="card-body">
+            
+      <div class="card card-bleed shadow-light-lg mb-6">
+        <div class="card-body">
             <p class="font-size-lg text-center mb-0">
                 Please (Tick) those issues that are currently of concern to you. 
               </p>
@@ -274,33 +179,17 @@
   
                 <!-- Input -->
                 <div class="checkbox">
-                    <label><input type="checkbox" value="Male">Course / Higher Education</label>
+                    <label><input type="checkbox" name="career" value="1">Course / Higher Education</label>
                   </div>
                   <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Career / Job Related
+                    <label><input type="checkbox" name="career" value="2">Career / Job Related
                     </label>
                   </div>
-                  <div class="checkbox disabled">
-                    <label><input type="checkbox" value="NA">Formulation of Study/ Academic Plans</label>
+                  <div class="checkbox ">
+                    <label><input type="checkbox" name="career" value="3">Formulation of Study/ Academic Plans</label>
                   </div>
                   <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Exam Related
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Procrastination 	
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Employability Skills 
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Job Search Guidance 	
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Other
+                    <label><input type="checkbox" name="career" value="4">Other
                     </label>
                   </div>   
             </div>  
@@ -312,41 +201,21 @@
                 </label>
   
                 <!-- Input -->
-                <div class="checkbox">
-                    <label><input type="checkbox" value="Male">Anxiety, Fear, Nervousness, lack of concentration</label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Depression / Sadness
-                    </label>
-                  </div>
-                  <div class="checkbox disabled">
-                    <label><input type="checkbox" value="NA">Interpersonal Issues
+                  <div class="checkbox ">
+                    <label><input type="checkbox" name="personal" value="1">Interpersonal Issues
                     </label>
                   </div>
                   <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Family Problems
+                    <label><input type="checkbox" name="personal" value="2">Family Problems
 
                     </label>
                   </div>
                   <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Multicultural Issues	
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Self Esteem 
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Stress
-	
-                    </label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Medical & Health Related
+                    <label><input type="checkbox" name="personal" value="3">Medical & Health Related
                     </label>
                   </div>  
                   <div class="checkbox">
-                    <label><input type="checkbox" value="Female">Other
+                    <label><input type="checkbox" name="personal" value="4">Other
 	
                     </label>
                   </div>
@@ -366,13 +235,13 @@
   
                 <!-- Input -->
                 <div class="radio">
-                    <label><input type="radio" name="period" checked>9am - 1pm</label>
+                    <label><input type="radio" name="period" value="1" checked>9am - 1pm</label>
                   </div>
                   <div class="radio">
-                    <label><input type="radio" name="period">2pm - 8pm</label>
+                    <label><input type="radio" name="period" value="2" >2pm - 8pm</label>
                   </div>
                   <div class="radio">
-                    <label><input type="radio" name="period" >No preference</label>
+                    <label><input type="radio" name="period" value="0" >No preference</label>
                   </div> 
             </div>
             <small class="text-gray-700">
@@ -380,11 +249,7 @@
               </small>
               <!-- Submit -->
                 {% csrf_token %}
-                <input type="hidden" name="schedule" value="{{ schedule }}" />
-                
-                
-              </form>
-              
+                <input type="hidden" name="product" value="{{ product }}" />
             </div>
         </div>
     </div>
@@ -417,6 +282,17 @@
  });
  
  </script> 
+
+<script>
+  jQuery('#dobpicker').datetimepicker({
+formatDate: "d-m-Y", 
+timepicker:false,
+format: "d-m-Y",
+highlightedDates:{{slots|safe }},
+
+});
+
+</script> 
 
 {% endif %}
 {% endblock content %}

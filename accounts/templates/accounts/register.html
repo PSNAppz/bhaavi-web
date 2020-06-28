@@ -2,7 +2,6 @@
 <!doctype html>
 <html lang="en">
   {%  include 'base/head.html' %}
-  {% include 'base/messages.html' %}
   <body>
     
     <!-- CONTENT
@@ -17,7 +16,8 @@
 
           </div>
           <div class="col-12 col-md-5 col-lg-4 order-md-1 mb-auto mb-md-0 pb-8 py-md-11">
-            
+            {% include 'base/messages.html' %}
+
             <!-- Heading -->
             <h1 class="mb-0 font-weight-bold text-center">
               Sign up
