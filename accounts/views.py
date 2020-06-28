@@ -1,5 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from django.db.models import DateField, Count
+from django.db.models.functions import Cast
 from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
@@ -14,6 +16,7 @@ import uuid
 import hashlib
 from .RtcTokenBuilder import buildToken
 import razorpay
+from collections import Counter
 
 utc= pytz.timezone('Asia/Kolkata')
 
@@ -76,7 +79,7 @@ def createOrder(request):
                             invoice = invoice,
                             )
                 client = initPaymentClient()    
-                order_amount = product.amount * 100
+                order_amount = (product.amount - product.active_discount) * 100
                 order_currency = 'INR'
                 order_receipt = invoice
                 notes = {'Product': product.name}   
@@ -266,7 +269,6 @@ def callDetails(request):
                 
 @unauthenticated_user
 def loginPage(request):
-    messages =''
     if request.method == 'POST':
         email = request.POST.get('email')
         password =request.POST.get('password')
@@ -277,10 +279,9 @@ def loginPage(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            messages ='Email or password incorrect'
+            messages.warning(request, 'Email or password incorrect')
 
-    context = {'form':messages}
-    return render(request, 'accounts/login.html', context)   
+    return render(request, 'accounts/login.html')   
 
 def logoutUser(request):
     logout(request)
@@ -301,7 +302,12 @@ def userRegisterPage(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
+                messages.success(request, 'Succesfully registered!')
                 return redirect('profile')
+
+        else:
+            messages.warning(request, "The password must contain 6 characters with at least one letter and at least one digit or punctuation character.")
+        
 
     context = {'form':form,'type':'User'}
     return render(request, 'accounts/register.html', context)     
@@ -340,22 +346,107 @@ def requestCall(request):
     if request.method == "POST" :
         product_id = request.POST.get('product')
         user = request.user
+        dob = request.POST.get('dob')
+        institute = request.POST.get('institute')
+        gender = request.POST.get('gender')
+        siblings = request.POST.get('siblings')
+        language = request.POST.get('language')
+        contact = int(request.POST.get('contact'))  
+        hobbies = request.POST.get('hobbies')
+        address = request.POST.get('address')
+        guardian_name = request.POST.get('guardian')
+        career_concerns = request.POST.getlist('career')
+        personal_concerns = request.POST.getlist('personal')
+        suggested_date = request.POST.get('suggested_slot')  
+        suggested_time = request.POST.get('period')  
+        career_conc = []
+        personal_conc = []
+        for career_ in career_concerns:
+            if career_ == "1":
+                career_concerns.append("Course / Higher Education")
+            elif career_ == "2":
+                career_concerns.append("Career / Job Related")
+            elif career_ == "3":
+                career_concerns.append("Formulation of Study/ Academic Plans")
+            else:
+                career_concerns.append("Other")     
+
+        for personal_ in personal_concerns:
+            if personal_ == "1":
+                personal_conc.append("Interpersonal Issues")
+            elif personal_ == "2":
+                personal_conc.append("Family Problems")
+            elif personal_ == "3":
+                personal_conc.append("Medical & Health Related")
+            else:
+                personal_conc.append("Other")                   
+
+        if gender == "1":
+            gender = "Male"
+        elif gender == "2":
+            gender = "Female"  
+        else:
+            gender = "N/A" 
+
+        if suggested_time == "1":
+            suggested_time = "First half"
+        elif suggested_time == "2":
+            suggested_time = "Second half"  
+        else:
+            suggested_time = "No preference" 
+
+        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concern ==  None or personal_concern == None or suggested_date == None or suggested_time == None ):
+            messages.warning(request, 'Please fill all the required fields!')
+            return redirect('dashboard')  
+
         try:
             pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
             messages.warning(request, 'Call already Requested')
             return redirect('dashboard')
         except MentorCallRequest.DoesNotExist:
             purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
-            form = ScheduleRequestForm(request.POST)
-            if form.is_valid():
-                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
-                    MentorCallRequest.objects.create(
-                        user = user,
-                        product = purchased_product
-                    ) 
-                    messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
-                else:
-                    messages.error(request, 'An error occured!')
+            if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+
+                MentorCallRequest.objects.create(
+                    user = user,
+                    product = purchased_product,
+                    language = request.POST.get('language'),
+                    request_date = request.POST.get('suggested_slot'),  
+                    requested_slot = suggested_time  
+                ) 
+                try:
+                    profile = UserProfile.objects.get(user_id = user.id)
+                    UserProfile.objects.filter(user_id = user.id).update(
+                        gender = gender,
+                        siblings = request.POST.get('siblings'),
+                        mobile = contact,  
+                        hobbies = request.POST.get('hobbies'),
+                        guardian_name = request.POST.get('guardian'),
+                        career_concern =  career_conc,
+                        personal_concern =  personal_conc,
+                        dob = request.POST.get('dob'),
+                        institute = request.POST.get('institute'),
+                        address = request.POST.get('address')
+                    )
+                except Exception as e:
+                    UserProfile.objects.create(
+                        user_id = user.id,
+                        gender = gender,
+                        siblings = request.POST.get('siblings'),
+                        mobile = contact,  
+                        hobbies = request.POST.get('hobbies'),
+                        guardian_name = request.POST.get('guardian'),
+                        career_concern =  career_conc,
+                        personal_concern =  personal_conc,
+                        dob = request.POST.get('dob'),
+                        address = request.POST.get('address'),
+                        institute = request.POST.get('institute')
+                    )
+                    print(e)
+                messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
+            else:
+                messages.error(request, 'An error occured!')
+
 
     return redirect('dashboard')
 
@@ -368,14 +459,13 @@ def acceptCall(request):
         call_request =  MentorCallRequest.objects.get(pk=call_request_id)
         form = AcceptedSchedulesForm(request.POST)
         if form.is_valid():
-            if schedule.user_id == request.user.id and not call_request.scheduled:
+            if ((schedule.user_id == request.user.id or request.user.is_superuser) and not call_request.scheduled):
                 AcceptedCallSchedule.objects.create(
                     schedule = schedule
                 )
                 RequestedSchedules.objects.filter(pk=schedule_id).update(accepted=True) 
                 MentorCallRequest.objects.filter(pk=call_request_id).update(scheduled=True)
                 messages.success(request, 'Call Scheduled!')
-
             else:
                 messages.error(request, 'Schedule invalid!')
 
@@ -400,7 +490,6 @@ def requestSchedule(request):
         check_schedules = RequestedSchedules.objects.filter(request_id = request_id)
         clash_requests_user = MentorCallRequest.objects.filter(user_id = user_id).filter(closed=0).filter(responded=1).exclude(product_id = product_id)
         mentor_schedules = RequestedSchedules.objects.filter(mentor_id = mentor.id)
-        print(mentor_schedules)
         if form.is_valid():
             for mentor_schedule in mentor_schedules:
                 clash_request_mentor = MentorCallRequest.objects.get(pk = mentor_schedule.request_id)
@@ -633,6 +722,36 @@ def saveProfile(request):
             mark = mark
         )            
     return redirect('dashboard')
+
+def requestPage(request):
+    slots= []
+    kv = {}
+    time_slots = []
+    daily_sessions = int(config('Daily_Call_Sessions'))
+    if request.method == "POST" :
+        product_id = request.POST.get('product')
+        user = request.user
+        schedules = RequestedSchedules.objects.none()
+        accepted_requests = MentorCallRequest.objects.none()
+        product = Product.objects.get(pk=product_id)
+        related_prods = Product.objects.filter(prod_type=product.prod_type)
+
+        for product in related_prods:
+            accepted_requests |= MentorCallRequest.objects.filter(product_id = product.id).filter(scheduled=True).filter(closed=False)
+        for a_request in accepted_requests:
+            schedules |= RequestedSchedules.objects.filter(request_id=a_request.id).filter(accepted=True)
+
+        for schedule in schedules:
+            now = schedule.slot                
+            kv.update({now:now.strftime("%d-%m-%Y")+",No slots available"})
+
+        results = Counter(kv.values())
+        for result in results:
+            if results[result] >= daily_sessions:
+                slots.append(result)
+    UserProfile.objects.filter(user_id = user.id)
+    context = {'slots':slots, 'product':product.id}
+    return render(request, 'accounts/request.html',context)    
 
 def viewPrivacyPolicy(request):
     return render(request, 'base/privacy.html')
