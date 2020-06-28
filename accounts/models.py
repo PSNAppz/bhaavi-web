@@ -67,6 +67,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     admin          = models.BooleanField('admin', default=False)
     timestamp      = models.DateTimeField(auto_now_add=True)
     objects        = UserManager()
+    is_active      = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name']
     def __str__(self):

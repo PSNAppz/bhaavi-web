@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'agora',
     'accounts',
     'picset',
+    'crispy_forms'
+    
 ]
 
 MIDDLEWARE = [
@@ -142,3 +144,18 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = config('EMAIL_ID')
+# EMAIL_HOST_PASSWORD = config('EMAIL_APP_PASS')
+# EMAIL_PORT = 587
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_ID')
+EMAIL_HOST_PASSWORD = config('EMAIL_APP_PASS')

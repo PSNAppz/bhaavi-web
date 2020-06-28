@@ -15,6 +15,18 @@ import hashlib
 from .RtcTokenBuilder import buildToken
 import razorpay
 
+# from django.contrib.auth.tokens import default_token_generator
+# from django.utils.encoding import force_bytes
+# from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+# from django.template import loader
+# from django.core.mail import send_mail
+# from bhaavi.settings import EMAIL_HOST_USER
+# from django.views.generic import FormView
+# # from accounts.forms import PasswordResetRequestForm
+# from django.contrib import messages
+# from django.contrib.auth.models import User
+# from django.db.models.query_utils import Q
+
 utc= pytz.timezone('Asia/Kolkata')
 
 def homePage(request):
@@ -667,3 +679,31 @@ def handler400(request,exception=None):
     response = render(request, "errors/400.html", context=context)
     response.status_code = 400
     return response
+
+# Password Reset
+
+# class ResetPasswordRequestView(FormView):
+#     template_name = "accounts/password_reset.html"
+#     success_url = '/accounts/login'
+#     form_class = PasswordResetRequestForm
+
+#     def form_valid(self, *args, **kwargs):
+#         form = super(ResetPasswordRequestView, self).form_valid(*args, **kwargs)
+#         data= form.cleaned_data["email_or_username"]
+#         user= User.objects.filter(Q(email=data)|Q(full_name=data)).first()
+#         if user:
+#             c = {
+#                 'email': user.email,
+#                 'domain': self.request.META['HTTP_HOST'],
+#                 'site_name': 'Bhaavi.in',
+#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+#                 'user': user,
+#                 'token': default_token_generator.make_token(user),
+#                 'protocol': self.request.scheme,
+#             }
+#             email_template_name='accounts/password_reset_email.html'
+#             subject = "Reset Your Password"
+#             email = loader.render_to_string(email_template_name, c)
+#             send_mail(subject, email, EMAIL_HOST_USER , [user.email], fail_silently=False)
+#         messages.success(self.request, 'An email has been sent to ' + data +" if it is a valid user.")
+#         return form
