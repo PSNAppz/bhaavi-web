@@ -78,7 +78,7 @@ def createOrder(request):
                             invoice = invoice,
                             )
                 client = initPaymentClient()    
-                order_amount = product.amount * 100
+                order_amount = (product.amount - product.active_discount) * 100
                 order_currency = 'INR'
                 order_receipt = invoice
                 notes = {'Product': product.name}   
@@ -115,7 +115,6 @@ def createOrder(request):
                     order_receipt = invoice
                     notes = {'Product': product.name}   
                     product_name = product.name
-                    print(order_amount)
                     response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
                     order_id = response['id']
                     order_status = response['status']
