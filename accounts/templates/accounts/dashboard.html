@@ -3,7 +3,6 @@
 {% load filters %}
 {% load static %}
 {% if user.is_authenticated %}
-
     <!-- HEADER
     ================================================== -->
     <header class="bg-dark pt-9 pb-11 d-none d-md-block">
@@ -145,12 +144,18 @@
                         {% else %}
                         {% with requests|check_request_status:product.id as requested %}
                         {% if purchase.product_id == product.id and purchase.status and requested == None %}
-                        <form action="{% url 'mentor_request' %}" method="POST">
+                        <form action="{% url 'request_details' %}" method="POST">
                           {% csrf_token %}
                             <input type="hidden" name="product" value="{{ product.id }}" />
                             <input type="hidden" name="user" value="{{ user.id }}" />
-                            <input type="submit" class="btn btn-xs btn-outline-white" value="Request" />
+                           
+                            <input type="submit" class="btn btn-xs btn-outline-white" value="Request" /><br>
+                            
                         </form>
+
+ 
+    
+                       
                             {% elif requested.responded and purchase.status and not requested.scheduled%}
                             <a href="#schedules" class="btn btn-xs btn-outline-info" >Available schedules</a>
                             {% elif not requested.responded and purchase.status  %}    
@@ -344,7 +349,6 @@
       </div> <!-- / .container -->
     </main>
 
-   
 
 {% endif %}
 

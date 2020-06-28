@@ -2,6 +2,7 @@
 <!doctype html>
 <html lang="en">
   {%  include 'base/head.html' %}
+  {% include 'base/messages.html' %}
   <body>
     
     <!-- CONTENT
@@ -69,7 +70,7 @@
               </button>
 
             </form>
-			{{form.errors}}
+		
             <!-- Text -->
             <p class="mb-0 font-size-sm text-center text-muted">
               Already have an account? <a href="{% url 'login' %}">Log in</a>.

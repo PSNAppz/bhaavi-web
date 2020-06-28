@@ -1,7 +1,8 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-	{%  include 'base/head.html' %}
+  {%  include 'base/head.html' %}
+  {% include 'base/messages.html' %}
   <body>
     
     <!-- CONTENT
@@ -46,14 +47,9 @@
                 Sign in
               </button>
 
-			</form>
-			{% if form %}
-			<div class="alert alert-warning alert-dismissible fade show" role="alert">
-				<strong>Oops!</strong> <br>{{form}}
-			  </div>
-			{% endif %}
-			  
-			
+            </form>	
+
+    
             <!-- Text -->
             <p class="mb-0 font-size-sm text-center text-muted">
 				Forgot password? <a href="{%url 'register'%}">Reset password</a>. Don't have an account yet <a href="{%url 'register'%}">Sign up</a>.

@@ -1,5 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from django.db.models import DateField, Count
+from django.db.models.functions import Cast
 from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
@@ -266,7 +268,6 @@ def callDetails(request):
                 
 @unauthenticated_user
 def loginPage(request):
-    messages =''
     if request.method == 'POST':
         email = request.POST.get('email')
         password =request.POST.get('password')
@@ -277,10 +278,9 @@ def loginPage(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            messages ='Email or password incorrect'
+            messages.warning(request, 'Email or password incorrect')
 
-    context = {'form':messages}
-    return render(request, 'accounts/login.html', context)   
+    return render(request, 'accounts/login.html')   
 
 def logoutUser(request):
     logout(request)
@@ -301,7 +301,12 @@ def userRegisterPage(request):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
+                messages.success()(request, 'Succesfully registered!')
                 return redirect('profile')
+
+        else:
+            messages.warning(request, "The password must contain 6 characters with at least one letter and at least one digit or punctuation character.")
+        
 
     context = {'form':form,'type':'User'}
     return render(request, 'accounts/register.html', context)     
@@ -368,14 +373,13 @@ def acceptCall(request):
         call_request =  MentorCallRequest.objects.get(pk=call_request_id)
         form = AcceptedSchedulesForm(request.POST)
         if form.is_valid():
-            if schedule.user_id == request.user.id and not call_request.scheduled:
+            if ((schedule.user_id == request.user.id or request.user.is_superuser) and not call_request.scheduled):
                 AcceptedCallSchedule.objects.create(
                     schedule = schedule
                 )
                 RequestedSchedules.objects.filter(pk=schedule_id).update(accepted=True) 
                 MentorCallRequest.objects.filter(pk=call_request_id).update(scheduled=True)
                 messages.success(request, 'Call Scheduled!')
-
             else:
                 messages.error(request, 'Schedule invalid!')
 
@@ -633,6 +637,45 @@ def saveProfile(request):
             mark = mark
         )            
     return redirect('dashboard')
+
+def requestPage(request):
+    slots= []
+    time_slots = []
+    if request.method == "POST" :
+        product_id = request.POST.get('product')
+        user = request.user
+        schedules = RequestedSchedules.objects.none()
+        accepted_requests = MentorCallRequest.objects.none()
+        product = Product.objects.get(pk=product_id)
+        related_prods = Product.objects.filter(prod_type=product.prod_type)
+
+        for product in related_prods:
+            accepted_requests |= MentorCallRequest.objects.filter(product_id = product.id).filter(scheduled=True).filter(closed=False)
+        print(accepted_requests)
+        for request in accepted_requests:
+            schedules |= RequestedSchedules.objects.filter(request_id=request.id).filter(accepted=True)
+
+        print(schedules)
+        for schedule in schedules:
+            now = schedule.slot
+            slots.append(now.strftime("%d-%m-%Y")+",No slots available")
+
+        print(slots)    
+        try:
+            pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
+            messages.warning(request, 'Call already Requested')
+            return redirect('dashboard')
+        except MentorCallRequest.DoesNotExist:
+            purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
+            form = ScheduleRequestForm(request.POST)
+            if form.is_valid():
+                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+                    
+                    messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
+                else:
+                    messages.error(request, 'An error occured!')
+    context = {'slots':slots}
+    return render(request, 'accounts/request.html',context)    
 
 def viewPrivacyPolicy(request):
     return render(request, 'base/privacy.html')

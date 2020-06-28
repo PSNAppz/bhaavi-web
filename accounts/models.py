@@ -123,6 +123,8 @@ class Product(models.Model):
     active_discount = models.FloatField()
     call_required = models.BooleanField(default=0)
     is_package = models.BooleanField(default=0) 
+    prod_type = models.CharField(default="O", max_length=2) 
+    # O for other, M for mentoring, J for astrology
     active = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True)
 
