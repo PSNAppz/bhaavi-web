@@ -3,6 +3,7 @@
 {% load filters %}
 {% load static %}
 {% if user.is_authenticated %}
+
     <!-- HEADER
     ================================================== -->
     <header class="bg-dark pt-9 pb-11 d-none d-md-block">
@@ -24,6 +25,27 @@
           </div> <!-- / .row -->
         </div> <!-- / .container -->
       </header>
+
+      <div id="confirm"  class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Confirm call schedule?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Once you accept the schedule, it cannot be changed.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" id="confirm" data-dismiss="modal">Confirm</button>
+              <button type="button" class="btn btn-warning">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <!-- MAIN
     ================================================== -->
     <main class="pb-8 pb-md-11 mt-md-n6">
@@ -209,8 +231,29 @@
                         <form action="{% url 'accept_call' %}" method="POST">
                           {% csrf_token %}
                           <input type="hidden" name="schedule" value="{{ schedule.id }}" />
-                            <input type="submit" class="btn btn-xs btn-primary-soft" value="Accept" />
+                            <input type="submit" id="confirmCall{{schedule.id }}" class="btn btn-xs btn-primary-soft" value="Accept" />
                         </form>
+                      
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap.js"></script>
+
+                        <script>
+                           $('#confirmCall{{schedule.id }}').on('click', function(e) {
+                              var $form = $(this).closest('form');
+                              e.preventDefault();
+                              $('#confirm').modal({
+                                  backdrop: 'static',
+                                  keyboard: false
+                              })
+                              .on('click', '#confirm', function(e) {
+                                  $form.trigger('submit');
+                                });
+                              $("#cancel").on('click',function(e){
+                              e.preventDefault();
+                              $('#confirm').modal.model('hide');
+                              });
+                            });
+                        </script>
                       </div>
                     </div>
                   </div>

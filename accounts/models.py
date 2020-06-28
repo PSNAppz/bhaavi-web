@@ -152,7 +152,7 @@ class MentorProfile(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name) 
+        return 'Mentor: {}'.format(self.user.full_name) 
     @property
     def mentor_type(self):
         if self.user.mentor:
@@ -207,7 +207,7 @@ class MentorCallRequest(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
-        return 'Call Request Mentor type: {}'.format(self.product.name) 
+        return 'Request id {} Mentor type: {}'.format(self.id, self.product.name) 
 
 class RequestedSchedules(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_times', null=False)
@@ -218,7 +218,7 @@ class RequestedSchedules(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
    
     def __str__(self):
-        return 'Mentor Call Request id: {}'.format(self.request.id)   
+        return 'Mentor Call Request {} by: {} for {}'.format(self.request.id, self.user.full_name,self.mentor.user.full_name)   
 
 class AcceptedCallSchedule(models.Model):
     schedule = models.ForeignKey(RequestedSchedules, on_delete=models.CASCADE, null=False, related_name='accepted_schedule') 

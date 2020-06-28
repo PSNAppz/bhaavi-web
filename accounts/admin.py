@@ -41,5 +41,12 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Product)
+admin.site.register(ProductFeatures)
+admin.site.register(ProductPackages)
+admin.site.register(AcceptedCallSchedule)
+admin.site.register(RequestedSchedules)
+admin.site.register(MentorCallRequest)
+admin.site.register(UserPurchases)
+
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)
