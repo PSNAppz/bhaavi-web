@@ -115,6 +115,7 @@ def createOrder(request):
                     order_receipt = invoice
                     notes = {'Product': product.name}   
                     product_name = product.name
+                    print(order_amount)
                     response = client.order.create(dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0'))
                     order_id = response['id']
                     order_status = response['status']
