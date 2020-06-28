@@ -16,6 +16,7 @@ import uuid
 import hashlib
 from .RtcTokenBuilder import buildToken
 import razorpay
+from collections import Counter
 
 utc= pytz.timezone('Asia/Kolkata')
 
@@ -640,7 +641,9 @@ def saveProfile(request):
 
 def requestPage(request):
     slots= []
+    kv = {}
     time_slots = []
+    daily_sessions = int(config('Daily_Call_Sessions'))
     if request.method == "POST" :
         product_id = request.POST.get('product')
         user = request.user
@@ -651,16 +654,18 @@ def requestPage(request):
 
         for product in related_prods:
             accepted_requests |= MentorCallRequest.objects.filter(product_id = product.id).filter(scheduled=True).filter(closed=False)
-        print(accepted_requests)
-        for request in accepted_requests:
-            schedules |= RequestedSchedules.objects.filter(request_id=request.id).filter(accepted=True)
+        for a_request in accepted_requests:
+            schedules |= RequestedSchedules.objects.filter(request_id=a_request.id).filter(accepted=True)
 
-        print(schedules)
         for schedule in schedules:
-            now = schedule.slot
-            slots.append(now.strftime("%d-%m-%Y")+",No slots available")
+            now = schedule.slot                
+            kv.update({now:now.strftime("%d-%m-%Y")+",No slots available"})
 
-        print(slots)    
+        results = Counter(kv.values())
+        for result in results:
+            if results[result] >= daily_sessions:
+                slots.append(result)
+
     context = {'slots':slots}
     return render(request, 'accounts/request.html',context)    
 
