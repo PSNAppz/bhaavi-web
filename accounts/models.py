@@ -67,6 +67,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     admin          = models.BooleanField('admin', default=False)
     timestamp      = models.DateTimeField(auto_now_add=True)
     objects        = UserManager()
+    is_active      = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name']
     def __str__(self):
@@ -102,7 +103,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    dob = models.DateField(null=True, blank=True)
+    dob = models.CharField(max_length=11,null=True, blank=True)
     mobile = models.CharField(max_length=15, blank=True)
     address = models.CharField(max_length=255, blank=True)
     state = models.CharField(max_length=255, blank=True)
@@ -111,6 +112,13 @@ class UserProfile(models.Model):
     stream = models.CharField(max_length=255, blank=True)
     institute = models.CharField(max_length=255, blank=True)
     mark = models.CharField(max_length=6, blank=True)
+    gender = models.CharField(max_length=255,null=True, blank=True)
+    siblings = models.CharField(max_length=255,null=True, blank=True)
+    contact = models.CharField(max_length=255,null=True, blank=True)    
+    hobbies = models.CharField(max_length=255,null=True, blank=True)
+    guardian_name = models.CharField(max_length=255,null=True, blank=True)
+    career_concern = models.CharField(max_length=255,null=True, blank=True)
+    personal_concern = models.CharField(max_length=255,null=True, blank=True)
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
@@ -123,6 +131,8 @@ class Product(models.Model):
     active_discount = models.FloatField()
     call_required = models.BooleanField(default=0)
     is_package = models.BooleanField(default=0) 
+    prod_type = models.CharField(default="O", max_length=2) 
+    # O for other, M for mentoring, J for astrology
     active = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -152,7 +162,7 @@ class MentorProfile(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Profile of user: {}'.format(self.user.full_name) 
+        return 'Mentor: {}'.format(self.user.full_name) 
     @property
     def mentor_type(self):
         if self.user.mentor:
@@ -201,13 +211,16 @@ class RazorPayTransactions(models.Model):
 class MentorCallRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_request', null=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    request_date = models.CharField(max_length=20, blank=True)
+    requested_slot = models.CharField(max_length=20, blank=True)
+    language = models.CharField(max_length=255,null=True, blank=True)
     responded = models.BooleanField(default=0)
     scheduled = models.BooleanField(default=0)
     closed = models.BooleanField(default=0)
     timestamp = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
-        return 'Call Request Mentor type: {}'.format(self.product.name) 
+        return 'Request id {} Mentor type: {}'.format(self.id, self.product.name) 
 
 class RequestedSchedules(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_times', null=False)
@@ -218,7 +231,7 @@ class RequestedSchedules(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
    
     def __str__(self):
-        return 'Mentor Call Request id: {}'.format(self.request.id)   
+        return 'Mentor Call Request {} by: {} for {}'.format(self.request.id, self.user.full_name,self.mentor.user.full_name)   
 
 class AcceptedCallSchedule(models.Model):
     schedule = models.ForeignKey(RequestedSchedules, on_delete=models.CASCADE, null=False, related_name='accepted_schedule') 

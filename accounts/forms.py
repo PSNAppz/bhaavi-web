@@ -203,4 +203,19 @@ class AcceptedSchedulesForm(forms.ModelForm):
 		model = AcceptedCallSchedule
 		fields = ('schedule',)				
 
+# Password reset
+# class UserForgotPasswordForm(PasswordResetForm):
+#     """User forgot password, check via email form."""
+#     email = forms.EmailField(label='Email address',
+#         max_length=254,
+#         required=True,
+#         widget=forms.TextInput(
+#          attrs={'class': 'form-control',
+#                 'placeholder': 'email address',
+#                 'type': 'text',
+#                 'id': 'email_address'
+#                 }
+#         ))
 
+# class PasswordResetRequestForm(forms.Form):
+#     email_or_username = forms.CharField(label=("Email Or Username"), max_length=254)

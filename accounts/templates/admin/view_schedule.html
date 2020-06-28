@@ -113,18 +113,28 @@
                         </p>
                   
                      </div>
-                        
-                     <!-- Check -->
                      {% if not schedule.accepted %}
+                     <form action="{% url 'accept_call' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                          <input type="submit" id="confirmCall{{schedule.id }}" class="btn btn-xs btn-primary-soft" value="Assign schedule" />
+                      </form>&nbsp;&nbsp;
+                     <!-- Check -->
+                    
                      <form action="{% url 'drop_schedule' schedule.id %}" method="POST">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-xs btn-rounded-circle btn-danger-soft">
+                        <button type="submit" class="col-12 md-12 btn btn-xs btn-rounded-circle btn-danger-soft">
                            <i class="fe fe-x"></i>
                          </button>
                         
                      </form>
+
                      {% endif %}
+
+                     
+
                   </div>
+                  
                   {% endfor %}
 
                   </div>
