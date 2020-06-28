@@ -1,6 +1,7 @@
 {% extends 'base/main.html' %}
 {% load static %}
 {% block content %}
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
 <div class="container-fluid">
    <div class="row">
@@ -8,7 +9,7 @@
          <div class="sidebar-sticky pt-3">
             <ul class="nav flex-column">
                <li class="nav-item">
-                  <a class="nav-link active" href="#">
+                  <a class="nav-link active" href="{% url 'admin_panel'%}">
                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -106,6 +107,7 @@
                         <div class="form-group">
                             <label for="datepicker">Scheduled Date & Time</label>
                             <input type='text' name="slot" id ="datepicker" class="form-control form-control-sm" />
+                            
                         </div>
                         <div class="mt-6">
                            <input class="btn btn-sm btn-success lift" type="submit" value="Add schedule">
@@ -127,41 +129,19 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.4.2/umd/popper.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
-<script>
 
+<script>
+var d = new Date($.now());
     $('#datepicker').datetimepicker({
         timepicker: true,
         datepicker: true,
         format: 'Y-m-d H:i',
-        value: '2020-02-01',
-        yearStart: 2020,
+        value: d.getDate()+"-"+(d.getMonth() + 1)+"-"+d.getFullYear()+" "+d.getHours()+":"+d.getMinutes(), 
+        yearStart: d.getFullYear(),
         yearEnd: 2050,
-        hours12:true,
+        hours12:false,
         mask:true
 
     })
 </script> 
-<script type='text/javascript'>
-    function addFields(){
-        // Number of inputs to create
-        var number = 1;
-        // Container <div> where dynamic content will be placed
-        var container = document.getElementById("container");
-        // Clear previous contents of the container
-        while (container.hasChildNodes()) {
-            container.removeChild(container.lastChild);
-        }
-        for (i=0;i<number;i++){
-            // Append a node with a random text
-            container.appendChild(document.createTextNode("Member " + (i+1)));
-            // Create an <input> element, set its type and name attributes
-            var input = document.createElement("input");
-            input.type = "text";
-            input.name = "member" + i;
-            container.appendChild(input);
-            // Append a line break 
-            container.appendChild(document.createElement("br"));
-        }
-    }
-</script>
 {% endblock content %}
