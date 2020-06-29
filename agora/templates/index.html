@@ -100,11 +100,18 @@
                     </button>
                 </div>
                 <div class="col-md-2 text-center">
-                    <a href="{{channel_end_url}}">
+                  <form method="POST" action="{{channel_end_url}}">
+                    {% csrf_token %}
+                    <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
+                            <i id="exit-icon" class="fas fa-phone-slash"></i>
+                        </button>
+
+                  </form>
+                    <!-- <a href="{{channel_end_url}}">
                         <button id="exit-btn" type="button"  class="btn btn-block btn-danger btn-lg">
                             <i id="exit-icon" class="fas fa-phone-slash"></i>
                         </button>
-                    </a>
+                    </a> -->
                 </div>
             </div>
 
