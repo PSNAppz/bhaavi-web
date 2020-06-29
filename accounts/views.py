@@ -416,60 +416,6 @@ def requestCall(request):
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')          
 
-        if product_id == "PROD-3" or product_id == "PROD-4":
-            btime = request.POST.get('time')
-            bplace = request.POST.get('place')
-            latlong = request.POST.get('latlong')
-            q1 = request.POST.get('query1')
-            q2 = request.POST.get('query2')
-            dst = request.POST.get('dst')
-            if dst == "1":
-                dst = "Yes"
-            else:
-                dst = "False"  
-            if (product_id == None or user == None or dob == None or btime == None or gender == None or bplace == None or q1 == None or q2 ==  None):
-                messages.warning(request, 'Please fill all the required fields!')
-                return redirect('dashboard')  
-            try:
-                pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
-                messages.warning(request, 'Call already Requested')
-                return redirect('dashboard')
-            except MentorCallRequest.DoesNotExist:
-                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
-                    MentorCallRequest.objects.create(
-                        user = user,
-                        product = purchased_product,
-                        request_date = request.POST.get('suggested_slot'),  
-                        requested_slot = suggested_time,
-                        query1 = q1,
-                        query2 = q2,  
-                    ) 
-                    try:
-                        profile = UserProfile.objects.get(user_id = user.id)
-                        UserProfile.objects.filter(user_id = user.id).update(
-                            gender = gender,
-                            birthtime = btime,
-                            dst = dst,
-                            birthplace = bplace,
-                            latlong = latlong,
-                            dob = dob,
-                            
-                        )
-                    except Exception as e:
-                        UserProfile.objects.create(
-                            user_id = user.id,
-                            gender = gender,
-                            birthtime = btime,
-                            dst = dst,
-                            birthplace = bplace,
-                            latlong = latlong,
-                            dob = dob,
-                        )
-                    messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
-                else:
-                    messages.error(request, 'An error occured!')
-                return redirect('dashboard') 
-
         institute = request.POST.get('institute')
         siblings = request.POST.get('siblings')
         language = request.POST.get('language')
@@ -503,7 +449,6 @@ def requestCall(request):
                 personal_conc.append("Other")                   
 
         
-
         if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concern ==  None or personal_concern == None ):
             messages.warning(request, 'Please fill all the required fields!')
             return redirect('dashboard')  
@@ -556,6 +501,92 @@ def requestCall(request):
 
 
     return redirect('dashboard')
+
+@login_required(login_url='login')
+def requestCallAstro(request):
+    if request.method == "POST" :
+
+        product_id = request.POST.get('product')
+        user = request.user
+        dob = request.POST.get('dob')
+        gender = request.POST.get('gender')
+        suggested_date = request.POST.get('suggested_slot')  
+        suggested_time = request.POST.get('period')  
+
+        if gender == "1":
+            gender = "Male"
+        elif gender == "2":
+            gender = "Female"  
+        else:
+            gender = "N/A"
+
+        if suggested_time == "1":
+            suggested_time = "First half"
+        elif suggested_time == "2":
+            suggested_time = "Second half"  
+        else:
+            suggested_time = "No preference"     
+
+        try:
+            purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(product_id=product_id).product
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Invalid product!')
+            return redirect('dashboard')          
+
+        if product_id == "PROD-3" or product_id == "PROD-4":
+            btime = request.POST.get('time')
+            bplace = request.POST.get('place')
+            latlong = request.POST.get('latlong')
+            q1 = request.POST.get('query1')
+            q2 = request.POST.get('query2')
+            dst = request.POST.get('dst')
+            if dst == "1":
+                dst = "Yes"
+            else:
+                dst = "False"  
+            if (product_id == None or user == None or dob == None or btime == None or gender == None or bplace == None or q1 == None or q2 ==  None):
+                messages.warning(request, 'Please fill all the required fields!')
+                return redirect('dashboard')  
+            try:
+                pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
+                messages.warning(request, 'Call already Requested')
+                return redirect('dashboard')
+            except MentorCallRequest.DoesNotExist:
+                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+                    MentorCallRequest.objects.create(
+                        user = user,
+                        product = purchased_product,
+                        request_date = request.POST.get('suggested_slot'),  
+                        requested_slot = suggested_time,
+                        query1 = q1,
+                        query2 = q2,  
+                    ) 
+                    try:
+                        profile = UserProfile.objects.get(user_id = user.id)
+                        UserProfile.objects.filter(user_id = user.id).update(
+                            gender = gender,
+                            birthtime = btime,
+                            dst = dst,
+                            birthplace = bplace,
+                            latlong = latlong,
+                            dob = dob,
+                            
+                        )
+                    except Exception as e:
+                        UserProfile.objects.create(
+                            user_id = user.id,
+                            gender = gender,
+                            birthtime = btime,
+                            dst = dst,
+                            birthplace = bplace,
+                            latlong = latlong,
+                            dob = dob,
+                        )
+                    messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+                else:
+                    messages.error(request, 'An error occured!')
+                return redirect('dashboard')    
 
 @login_required(login_url='login')
 def acceptCall(request):
