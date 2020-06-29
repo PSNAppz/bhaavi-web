@@ -12,6 +12,9 @@
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css"  href="{% static 'agora/css/style.css' %}" />
+    <style type="text/css">
+        
+       </style>
 </head>
 
 <body>
@@ -34,6 +37,56 @@
                     <div id="local-video" class="col p-0"></div>
                 </div>
             </div>
+
+            <div id="details-view" class="border">
+                <br>
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Basic User Details
+                          </button>
+                        </h2>
+                      </div>
+                  
+                      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                          blaaashhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            User Academic details
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                          veeeenduummmmmmmmmmmmmmmmmmmmmmmmmmmm
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Other Details.
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body">
+                          BLaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhh
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+
 
             <div id="buttons-container" class="row justify-content-center mt-3">
                 <div class="col-md-2 text-center">
@@ -73,8 +126,8 @@
     $(document).ready(function () {
         var agoraAppId = '{{ agora_id }}';
         var channelName = '{{ channel }}';
-        var tokenId = '{{token}}';
-        initClientAndJoinChannel(agoraAppId, channelName, tokenId);
+        // var tokenId = '{{token}}';
+        initClientAndJoinChannel(agoraAppId, channelName);
         //initClientAndJoinChannel(agoraAppId, channelName);
     });
 </script>

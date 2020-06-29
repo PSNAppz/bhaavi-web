@@ -21,6 +21,9 @@ urlpatterns = [
     path('payment/status', views.paymentStatus, name = 'payment_status'),
     path('payment/done', views.paymentSuccessPage , name="success"), 
 
+    # 
+    path('agora/',Agora.as_view(),name="agora"),
+
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('request/details', views.requestPage, name="request_details"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
