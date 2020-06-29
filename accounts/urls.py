@@ -27,6 +27,8 @@ urlpatterns = [
 
     # Mentor Dash
     path('mentorboard/', views.mentorDashboard, name="mentorboard"),
+    # Jyolsyan Dash
+    path('astroboard', views.astroDashboard,name="astroboard"),
 
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),

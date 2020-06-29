@@ -42,6 +42,12 @@
                     Dashboard
                   </a>
                 </li>
+                {% elif user.is_jyolsyan %}
+                <li class="nav-item dropdown">
+                  <a class="nav-link" id="navbarPages"  href="{% url 'astroboard' %}" >
+                    Dashboard
+                  </a>
+                </li>
                {% else %}
                <li class="nav-item dropdown">
                 <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
