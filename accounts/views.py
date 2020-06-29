@@ -620,7 +620,7 @@ def requestSchedule(request):
 def userDashboard(request):
     if not request.user.customer:
         if  request.user.is_jyolsyan:
-            return redirect('mentorboard') #TODO: Dashboard for Jyolsyan
+            return redirect('astroboard') #TODO: Dashboard for Jyolsyan
         if  request.user.is_mentor:
             return redirect('mentorboard')
         if  request.user.is_superuser:       
@@ -720,6 +720,15 @@ def mentorDashboard(request):
     schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'mentor/dashboard.html',context)
+
+@login_required(login_url='login')
+@jyolsyan
+def astroDashboard(request):
+    profile = MentorProfile.objects.get(user_id = request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
+    context = {'schedules':schedules, 'profile':profile}
+    return render(request, 'jyothishan/dashboard.html',context)
+
 
 def saveProfile(request):
     try:
