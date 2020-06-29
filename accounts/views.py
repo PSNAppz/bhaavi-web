@@ -297,7 +297,7 @@ def loginPage(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            messages.warning(request, 'Email or password incorrect')
+            messages.warning(request, 'Email or password incorrect or email not verified')
 
     return render(request, 'accounts/login.html')   
 
@@ -394,6 +394,133 @@ def requestCall(request):
         gender = request.POST.get('gender')
         suggested_date = request.POST.get('suggested_slot')  
         suggested_time = request.POST.get('period')  
+        institute = request.POST.get('institute')
+        siblings = request.POST.get('siblings')
+        language = request.POST.get('language')
+        contact = int(request.POST.get('contact'))  
+        hobbies = request.POST.get('hobbies')
+        address = request.POST.get('address')
+        guardian_name = request.POST.get('guardian')
+        career_concerns = request.POST.getlist('career')
+        personal_concerns = request.POST.getlist('personal')
+        print("Stage 1")
+        if gender == "1":
+            gender = "Male"
+        elif gender == "2":
+            gender = "Female"  
+        else:
+            gender = "N/A"
+
+        if suggested_time == "1":
+            suggested_time = "First half"
+        elif suggested_time == "2":
+            suggested_time = "Second half"  
+        else:
+            suggested_time = "No preference"     
+        print("Stage 1")
+
+        try:
+            purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(product_id=product_id).product
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Invalid product!')
+            return redirect('dashboard')          
+        print("Stage 2")
+
+        
+        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concerns ==  None or personal_concerns == None ):
+            messages.warning(request, 'Please fill all the required fields!')
+            return redirect('dashboard') 
+        print("Stage 3")
+
+        career_conc = []
+        personal_conc = []
+        for personal_ in personal_concerns:
+            if personal_ == "1":
+                personal_conc.append("Interpersonal Issues")
+            elif personal_ == "2":
+                personal_conc.append("Family Problems")
+            elif personal_ == "3":
+                personal_conc.append("Medical & Health Related")
+            else:
+                personal_conc.append("Other")             
+        
+        print("Stage 4")
+
+        for career in career_concerns:
+            if career == "1":
+                career_conc.append("Course / Higher Education")
+            elif career == "2":
+                career_conc.append("Career / Job Related")
+            elif career == "3":
+                career_conc.append("Formulation of Study/ Academic Plans")
+            else:
+                career_conc.append("Other")
+
+        print("Stage 5")
+
+        try:
+            pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
+            messages.warning(request, 'Call already Requested')
+            return redirect('dashboard')
+
+        except MentorCallRequest.DoesNotExist:
+            if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+                print("Stage 6")
+                MentorCallRequest.objects.create(
+                    user = user,
+                    product = purchased_product,
+                    language = request.POST.get('language'),
+                    request_date = request.POST.get('suggested_slot'),  
+                    requested_slot = suggested_time  
+                ) 
+                try:
+                    profile = UserProfile.objects.get(user_id = user.id)
+                    UserProfile.objects.filter(user_id = user.id).update(
+                        gender = gender,
+                        siblings = request.POST.get('siblings'),
+                        mobile = contact,  
+                        hobbies = request.POST.get('hobbies'),
+                        guardian_name = request.POST.get('guardian'),
+                        career_concern =  career_conc,
+                        personal_concern =  personal_conc,
+                        dob = request.POST.get('dob'),
+                        institute = request.POST.get('institute'),
+                        address = address
+                    )
+                except Exception as e:
+                    UserProfile.objects.create(
+                        user_id = user.id,
+                        gender = gender,
+                        siblings = request.POST.get('siblings'),
+                        mobile = contact,  
+                        hobbies = request.POST.get('hobbies'),
+                        guardian_name = request.POST.get('guardian'),
+                        career_concern =  career_conc,
+                        personal_concern =  personal_conc,
+                        dob = request.POST.get('dob'),
+                        address = address,
+                        institute = institute
+                    )
+                messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+                print("Stage Final")
+
+            else:
+                messages.error(request, 'An error occured!')
+
+
+    return redirect('dashboard')
+
+@login_required(login_url='login')
+def requestCallAstro(request):
+    if request.method == "POST" :
+
+        product_id = request.POST.get('product')
+        user = request.user
+        dob = request.POST.get('dob')
+        gender = request.POST.get('gender')
+        suggested_date = request.POST.get('suggested_slot')  
+        suggested_time = request.POST.get('period')  
 
         if gender == "1":
             gender = "Male"
@@ -468,94 +595,7 @@ def requestCall(request):
                     messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
                 else:
                     messages.error(request, 'An error occured!')
-                return redirect('dashboard') 
-
-        institute = request.POST.get('institute')
-        siblings = request.POST.get('siblings')
-        language = request.POST.get('language')
-        contact = int(request.POST.get('contact'))  
-        hobbies = request.POST.get('hobbies')
-        address = request.POST.get('address')
-        guardian_name = request.POST.get('guardian')
-        career_concerns = request.POST.getlist('career')
-        personal_concerns = request.POST.getlist('personal')
-        
-        career_conc = []
-        personal_conc = []
-        for career_ in career_concerns:
-            if career_ == "1":
-                career_concerns.append("Course / Higher Education")
-            elif career_ == "2":
-                career_concerns.append("Career / Job Related")
-            elif career_ == "3":
-                career_concerns.append("Formulation of Study/ Academic Plans")
-            else:
-                career_concerns.append("Other")     
-
-        for personal_ in personal_concerns:
-            if personal_ == "1":
-                personal_conc.append("Interpersonal Issues")
-            elif personal_ == "2":
-                personal_conc.append("Family Problems")
-            elif personal_ == "3":
-                personal_conc.append("Medical & Health Related")
-            else:
-                personal_conc.append("Other")                   
-
-        
-
-        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concern ==  None or personal_concern == None ):
-            messages.warning(request, 'Please fill all the required fields!')
-            return redirect('dashboard')  
-
-        try:
-            pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
-            messages.warning(request, 'Call already Requested')
-            return redirect('dashboard')
-        except MentorCallRequest.DoesNotExist:
-            if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
-
-                MentorCallRequest.objects.create(
-                    user = user,
-                    product = purchased_product,
-                    language = request.POST.get('language'),
-                    request_date = request.POST.get('suggested_slot'),  
-                    requested_slot = suggested_time  
-                ) 
-                try:
-                    profile = UserProfile.objects.get(user_id = user.id)
-                    UserProfile.objects.filter(user_id = user.id).update(
-                        gender = gender,
-                        siblings = request.POST.get('siblings'),
-                        mobile = contact,  
-                        hobbies = request.POST.get('hobbies'),
-                        guardian_name = request.POST.get('guardian'),
-                        career_concern =  career_conc,
-                        personal_concern =  personal_conc,
-                        dob = request.POST.get('dob'),
-                        institute = request.POST.get('institute'),
-                        address = address
-                    )
-                except Exception as e:
-                    UserProfile.objects.create(
-                        user_id = user.id,
-                        gender = gender,
-                        siblings = request.POST.get('siblings'),
-                        mobile = contact,  
-                        hobbies = request.POST.get('hobbies'),
-                        guardian_name = request.POST.get('guardian'),
-                        career_concern =  career_conc,
-                        personal_concern =  personal_conc,
-                        dob = request.POST.get('dob'),
-                        address = address,
-                        institute = institute
-                    )
-                messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
-            else:
-                messages.error(request, 'An error occured!')
-
-
-    return redirect('dashboard')
+                return redirect('dashboard')    
 
 @login_required(login_url='login')
 def acceptCall(request):
