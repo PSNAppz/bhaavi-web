@@ -435,18 +435,6 @@ def requestCall(request):
 
         career_conc = []
         personal_conc = []
-        for career_ in career_concerns:
-            if career_ == "1":
-                career_concerns.append("Course / Higher Education")
-            elif career_ == "2":
-                career_concerns.append("Career / Job Related")
-            elif career_ == "3":
-                career_concerns.append("Formulation of Study/ Academic Plans")
-            else:
-                career_concerns.append("Other")   
-
-        print("Stage 4")
-
         for personal_ in personal_concerns:
             if personal_ == "1":
                 personal_conc.append("Interpersonal Issues")
@@ -455,7 +443,20 @@ def requestCall(request):
             elif personal_ == "3":
                 personal_conc.append("Medical & Health Related")
             else:
-                personal_conc.append("Other")                   
+                personal_conc.append("Other")             
+        
+        print("Stage 4")
+
+        for career in career_concerns:
+            if career == "1":
+                career_conc.append("Course / Higher Education")
+            elif career == "2":
+                career_conc.append("Career / Job Related")
+            elif career == "3":
+                career_conc.append("Formulation of Study/ Academic Plans")
+            else:
+                career_conc.append("Other")
+
         print("Stage 5")
 
         try:
