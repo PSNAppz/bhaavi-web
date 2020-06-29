@@ -152,10 +152,6 @@
                             <input type="submit" class="btn btn-xs btn-outline-white" value="Request" /><br>
                             
                         </form>
-
- 
-    
-                       
                             {% elif requested.responded and purchase.status and not requested.scheduled%}
                             <a href="#schedules" class="btn btn-xs btn-outline-info" >Available schedules</a>
                             {% elif not requested.responded and purchase.status  %}    

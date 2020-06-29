@@ -394,6 +394,16 @@ def requestCall(request):
         gender = request.POST.get('gender')
         suggested_date = request.POST.get('suggested_slot')  
         suggested_time = request.POST.get('period')  
+        institute = request.POST.get('institute')
+        siblings = request.POST.get('siblings')
+        language = request.POST.get('language')
+        contact = int(request.POST.get('contact'))  
+        hobbies = request.POST.get('hobbies')
+        address = request.POST.get('address')
+        guardian_name = request.POST.get('guardian')
+        career_concerns = request.POST.getlist('career')
+        personal_concerns = request.POST.getlist('personal')
+        print("Stage 1")
         if gender == "1":
             gender = "Male"
         elif gender == "2":
@@ -407,6 +417,7 @@ def requestCall(request):
             suggested_time = "Second half"  
         else:
             suggested_time = "No preference"     
+        print("Stage 1")
 
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(product_id=product_id).product
@@ -414,29 +425,16 @@ def requestCall(request):
             print(e)
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')          
+        print("Stage 2")
 
-        institute = request.POST.get('institute')
-        siblings = request.POST.get('siblings')
-        language = request.POST.get('language')
-        contact = int(request.POST.get('contact'))  
-        hobbies = request.POST.get('hobbies')
-        address = request.POST.get('address')
-        guardian_name = request.POST.get('guardian')
-        career_concerns = request.POST.getlist('career')
-        personal_concerns = request.POST.getlist('personal')
+        
+        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concerns ==  None or personal_concerns == None ):
+            messages.warning(request, 'Please fill all the required fields!')
+            return redirect('dashboard') 
+        print("Stage 3")
 
         career_conc = []
         personal_conc = []
-        for career_ in career_concerns:
-            if career_ == "1":
-                career_concerns.append("Course / Higher Education")
-            elif career_ == "2":
-                career_concerns.append("Career / Job Related")
-            elif career_ == "3":
-                career_concerns.append("Formulation of Study/ Academic Plans")
-            else:
-                career_concerns.append("Other")   
-
         for personal_ in personal_concerns:
             if personal_ == "1":
                 personal_conc.append("Interpersonal Issues")
@@ -445,20 +443,30 @@ def requestCall(request):
             elif personal_ == "3":
                 personal_conc.append("Medical & Health Related")
             else:
-                personal_conc.append("Other")                   
-
+                personal_conc.append("Other")             
         
-        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concerns ==  None or personal_concerns == None ):
-            messages.warning(request, 'Please fill all the required fields!')
-            return redirect('dashboard')  
+        print("Stage 4")
+
+        for career in career_concerns:
+            if career == "1":
+                career_conc.append("Course / Higher Education")
+            elif career == "2":
+                career_conc.append("Career / Job Related")
+            elif career == "3":
+                career_conc.append("Formulation of Study/ Academic Plans")
+            else:
+                career_conc.append("Other")
+
+        print("Stage 5")
 
         try:
             pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
             messages.warning(request, 'Call already Requested')
             return redirect('dashboard')
+
         except MentorCallRequest.DoesNotExist:
             if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
-
+                print("Stage 6")
                 MentorCallRequest.objects.create(
                     user = user,
                     product = purchased_product,
@@ -495,6 +503,7 @@ def requestCall(request):
                         institute = institute
                     )
                 messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+                print("Stage Final")
 
             else:
                 messages.error(request, 'An error occured!')
