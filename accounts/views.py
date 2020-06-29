@@ -36,7 +36,6 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .TokenBuilder import account_activation_token
-from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 
 utc= pytz.timezone('Asia/Kolkata')
@@ -293,10 +292,8 @@ def loginPage(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password =request.POST.get('password')
-        
         user = authenticate(request, email=email, password=password)
-
-        if user is not None:
+        if user is not None and user.is_active:
             login(request, user)
             return redirect('dashboard')
         else:
@@ -314,43 +311,38 @@ def userRegisterPage(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('full_name')
+            user = form.save()
+            user_name = form.cleaned_data.get('full_name')
 
             email = request.POST.get('email')
             password =request.POST.get('password1')
 
-            # email_verification..........
-            user.is_active=False
             current_site = get_current_site(request)
             email_subject = 'Activate Your Account'
-            message = render_to_string('email_verification.html', {
-                'user': user,
+            message = render_to_string('accounts/email_verification.html', {
+                'user': user_name,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'uid': urlsafe_base64_encode(force_bytes(user.id)),
                 'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(email_subject, message, to=[to_email])
             email.send()
-            # return HttpResponse('We have sent you an email, please confirm your email address to complete registration')
-
-            user = authenticate(request, email=email, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, 'Succesfully registered!')
-                return redirect('profile')
-
+            messages.success(request, 'We have sent you an email, please confirm your email address to complete registration')
+            context = {'form':form,'type':'User'}
+            return render(request, 'accounts/register.html', context)  
         else:
-            messages.warning(request, "The password must contain 6 characters with at least one letter and at least one digit or punctuation character.")
-        
-
+            errors = []
+            for error in form.errors.values():
+                errors.append(error)
+            messages.error(request,error)
     context = {'form':form,'type':'User'}
     return render(request, 'accounts/register.html', context)     
 # email verification.
 def activate_account(request, uidb64, token):
     try:
-        uid = force_bytes(urlsafe_base64_decode(uidb64))
+        uid = str(force_bytes(urlsafe_base64_decode(uidb64)),'utf-8')
+        print(uid)
         user = User.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
@@ -358,9 +350,10 @@ def activate_account(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return HttpResponse('Your account has been activate successfully')
+        messages.success(request, 'Your account has been activate successfully!')
+        return redirect('profile')
     else:
-        return HttpResponse('Activation link is invalid!')
+        return HttpResponse('Activation link is invalid or expired!')
 
 @unauthenticated_user
 def mentorRegisterPage(request):

@@ -16,6 +16,7 @@ class RegisterUserForm(UserCreationForm):
 	def save(self, commit=True):
 		user = super().save(commit=False)
 		user.customer = True
+		user.is_active=False
 		if commit:
 			user.save()
 		return user
@@ -36,7 +37,7 @@ class RegisterUserForm(UserCreationForm):
 		password1 = self.cleaned_data.get("password1")
 		password2 = self.cleaned_data.get("password2")
 		if password1 and password2 and password1 != password2:
-			raise forms.ValidationError("Passwords don't match")
+			raise forms.ValidationError("Passwords do not match")
 		return password2
 
 class RegisterMentorForm(UserCreationForm):
@@ -111,7 +112,7 @@ class UserAdminCreationForm(forms.ModelForm):
 	
 	class Meta:
 		model = User
-		fields = ('email', 'password1', 'full_name')
+		fields = ('email', 'password1', 'full_name')	
 
 	def clean_password2(self):
         # Check that the two password entries match
