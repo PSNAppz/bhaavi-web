@@ -394,7 +394,6 @@ def requestCall(request):
         gender = request.POST.get('gender')
         suggested_date = request.POST.get('suggested_slot')  
         suggested_time = request.POST.get('period')  
-
         if gender == "1":
             gender = "Male"
         elif gender == "2":
@@ -425,7 +424,7 @@ def requestCall(request):
         guardian_name = request.POST.get('guardian')
         career_concerns = request.POST.getlist('career')
         personal_concerns = request.POST.getlist('personal')
-        
+
         career_conc = []
         personal_conc = []
         for career_ in career_concerns:
@@ -436,7 +435,7 @@ def requestCall(request):
             elif career_ == "3":
                 career_concerns.append("Formulation of Study/ Academic Plans")
             else:
-                career_concerns.append("Other")     
+                career_concerns.append("Other")   
 
         for personal_ in personal_concerns:
             if personal_ == "1":
@@ -449,7 +448,7 @@ def requestCall(request):
                 personal_conc.append("Other")                   
 
         
-        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concern ==  None or personal_concern == None ):
+        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concerns ==  None or personal_concerns == None ):
             messages.warning(request, 'Please fill all the required fields!')
             return redirect('dashboard')  
 
@@ -496,6 +495,7 @@ def requestCall(request):
                         institute = institute
                     )
                 messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+
             else:
                 messages.error(request, 'An error occured!')
 
