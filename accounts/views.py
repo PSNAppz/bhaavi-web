@@ -297,7 +297,7 @@ def loginPage(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            messages.warning(request, 'Email or password incorrect')
+            messages.warning(request, 'Email or password incorrect or email not verified')
 
     return render(request, 'accounts/login.html')   
 
