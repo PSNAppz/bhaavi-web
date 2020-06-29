@@ -125,10 +125,14 @@
                           <!-- Heading -->
                           <p class="mb-0">
                             <small class="text-blue-300">
-                              Customer: 
+                              Name: 
                             </small> {{schedule.user.full_name}} 
                           </p>
-                         
+                          <p class="mb-0">
+                            <small class="text-blue-300">
+                              Service: {{schedule.request.product.name}} 
+                            </small> 
+                          </p>
                           <!-- Text -->
                           Scheduled time: 
                           <small class="text-gray-700">
@@ -139,7 +143,7 @@
                         <div class="col-auto">
   
                           <!-- Button -->
-                          <form action="{% url 'call_details' %}" method="POST">
+                          <form action="{% url 'view_details_mentor' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="schedule" value="{{ schedule.id }}" />
                             <input type="submit" class="btn btn-xs btn-primary-soft" value="View details" />

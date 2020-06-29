@@ -712,6 +712,34 @@ def userDashboard(request):
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
+@mentor
+def mentorDetailsView(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        mentor_profile = MentorProfile.objects.get(user_id = request.user.id)
+        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id = mentor_profile.id).get(accepted=True)
+        user = schedule.user
+        user_profile = UserProfile.objects.get(user_id = user.id)
+        context = {'schedule':schedule,'user':user, 'profile':user_profile}
+        return render(request, 'mentor/details.html',context)
+    else:
+        return redirect('dashboard') 
+
+@login_required(login_url='login')
+@jyolsyan
+def astroDetailsView(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        mentor_profile = MentorProfile.objects.get(user_id = request.user.id)
+        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id = mentor_profile.id).get(accepted=True)
+        user = schedule.user
+        user_profile = UserProfile.objects.get(user_id = user.id)
+        context = {'schedule':schedule,'user':user, 'profile':user_profile}
+        return render(request, 'jyothishan/details.html',context)
+    else:
+        return redirect('dashboard')            
+
+@login_required(login_url='login')
 @admin_user
 def adminDashboard(request):
     call_requests = MentorCallRequest.objects.all().order_by('-responded')
