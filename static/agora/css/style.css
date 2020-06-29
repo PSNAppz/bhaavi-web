@@ -1,13 +1,13 @@
 #buttons-container {
-    position: absolute;
+    position: bottom;
     z-index: 2;
-    width: 100vw;
+    width: 60vw;
 }
 
 #full-screen-video {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
+    position: top;
+    width: 60vw;
+    height: 60vh;
 }
 
 #lower-video-bar {

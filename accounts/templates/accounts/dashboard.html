@@ -24,6 +24,27 @@
           </div> <!-- / .row -->
         </div> <!-- / .container -->
       </header>
+
+      <div id="confirm"  class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Confirm call schedule?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Once you accept the schedule, it cannot be changed.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" id="confirm" data-dismiss="modal">Confirm</button>
+              <button type="button" class="btn btn-warning">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <!-- MAIN
     ================================================== -->
     <main class="pb-8 pb-md-11 mt-md-n6">
@@ -61,12 +82,12 @@
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-0">
                     <li class="list-item">
-                      <a class="list-link text-reset" href="account-notifications.html">
-                        Notifications
+                      <a class="list-link text-reset" href="{% url 'profile' %}">
+                        Profile
                       </a>
                     </li>
                     <li class="list-item">
-                      <a class="list-link text-reset" href="billing-users.html">
+                      <a class="list-link text-reset" href="#">
                         Payment history
                       </a>
                     </li>
@@ -123,12 +144,18 @@
                         {% else %}
                         {% with requests|check_request_status:product.id as requested %}
                         {% if purchase.product_id == product.id and purchase.status and requested == None %}
-                        <form action="{% url 'mentor_request' %}" method="POST">
+                        <form action="{% url 'request_details' %}" method="POST">
                           {% csrf_token %}
                             <input type="hidden" name="product" value="{{ product.id }}" />
                             <input type="hidden" name="user" value="{{ user.id }}" />
-                            <input type="submit" class="btn btn-xs btn-outline-white" value="Request" />
+                           
+                            <input type="submit" class="btn btn-xs btn-outline-white" value="Request" /><br>
+                            
                         </form>
+
+ 
+    
+                       
                             {% elif requested.responded and purchase.status and not requested.scheduled%}
                             <a href="#schedules" class="btn btn-xs btn-outline-info" >Available schedules</a>
                             {% elif not requested.responded and purchase.status  %}    
@@ -138,8 +165,10 @@
                               <form action="{% url 'call_details' %}" method="POST">
                                 {% csrf_token %}
                                   <input type="hidden" name="schedule" value="{{ schedule.schedule_id }}" />
-                                  <button type="submit" class="btn btn-xs btn-primary-soft" >Scheduled for: {{schedule.schedule.slot}}</button>
+                                  <button type="submit" class="btn btn-xs btn-primary-soft" >Join call<br> ({{schedule.schedule.slot}}) </button>
+                                  
                                 </form>
+                                
                               {% endwith %}
                             {% else %}
                         <form action="{% url 'plans' %}" method="GET">
@@ -209,8 +238,29 @@
                         <form action="{% url 'accept_call' %}" method="POST">
                           {% csrf_token %}
                           <input type="hidden" name="schedule" value="{{ schedule.id }}" />
-                            <input type="submit" class="btn btn-xs btn-primary-soft" value="Accept" />
+                            <input type="submit" id="confirmCall{{schedule.id }}" class="btn btn-xs btn-primary-soft" value="Accept" />
                         </form>
+                      
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap.js"></script>
+
+                        <script>
+                           $('#confirmCall{{schedule.id }}').on('click', function(e) {
+                              var $form = $(this).closest('form');
+                              e.preventDefault();
+                              $('#confirm').modal({
+                                  backdrop: 'static',
+                                  keyboard: false
+                              })
+                              .on('click', '#confirm', function(e) {
+                                  $form.trigger('submit');
+                                });
+                              $("#cancel").on('click',function(e){
+                              e.preventDefault();
+                              $('#confirm').modal.model('hide');
+                              });
+                            });
+                        </script>
                       </div>
                     </div>
                   </div>
@@ -301,7 +351,6 @@
       </div> <!-- / .container -->
     </main>
 
-   
 
 {% endif %}
 

@@ -56,7 +56,12 @@
                   <ul class="card-list list text-gray-700 mb-6">
                     <li class="list-item active">
                       <a class="list-link text-reset" href="account-general.html">
-                        Services
+                        Schedules
+                      </a>
+                    </li>
+                    <li class="list-item ">
+                      <a class="list-link text-reset" href="#">
+                        Past schedules
                       </a>
                     </li>
                     
@@ -70,15 +75,15 @@
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-0">
                     <li class="list-item">
-                      <a class="list-link text-reset" href="account-security.html">
-                        Security
+                      <a class="list-link text-reset" href="{% url 'profile' %}">
+                        Profile
                       </a>
                     </li>
-                    <li class="list-item">
+                    <!-- <li class="list-item">
                       <a class="list-link text-reset" href="account-notifications.html">
                         Notifications
                       </a>
-                    </li>
+                    </li> -->
                     
                   </ul>
 
@@ -103,6 +108,7 @@
                 <div class="card-body">
                   <!-- start for -->
                   {% for schedule in schedules %}
+                  {% if not schedule.request.closed %}
                   <div class="list-group list-group-flush">
                     <div class="list-group-item">
                       <div class="row align-items-center">
@@ -119,10 +125,14 @@
                           <!-- Heading -->
                           <p class="mb-0">
                             <small class="text-blue-300">
-                              Customer: 
+                              Name: 
                             </small> {{schedule.user.full_name}} 
                           </p>
-                         
+                          <p class="mb-0">
+                            <small class="text-blue-300">
+                              Service: {{schedule.request.product.name}} 
+                            </small> 
+                          </p>
                           <!-- Text -->
                           Scheduled time: 
                           <small class="text-gray-700">
@@ -133,11 +143,22 @@
                         <div class="col-auto">
   
                           <!-- Button -->
+                          <form action="{% url 'view_details_mentor' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                            <input type="submit" class="btn btn-xs btn-primary-soft" value="View details" />
+                          </form>
+                          
+                        </div>
+                        <div class="col-auto">
+  
+                          <!-- Button -->
                           <form action="{% url 'call_details' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="schedule" value="{{ schedule.id }}" />
                             <input type="submit" class="btn btn-xs btn-success-soft" value="Join Call" />
                           </form>
+                          
                         </div>
                       </div>
                     </div>
@@ -147,6 +168,7 @@
                   <hr>
                   {% endif %}
                   <!-- End for -->
+                  {% endif %}
                   {% endfor %}
                 </div>
               </div>

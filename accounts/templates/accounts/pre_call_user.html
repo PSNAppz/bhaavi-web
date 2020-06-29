@@ -14,7 +14,7 @@
         <div class="col-12 col-md-5 align-self-stretch">
 
           <!-- Image (mobile) -->
-          <img src="{% static 'assets/img/illustrations/illustration-call.jpg' %}" class="d-md-none img-cover" alt="...">
+          <img src="assets/img/photos/photo-5.jpg" class="d-md-none img-cover" alt="...">
 
           <!-- Image -->
           <div class="d-none d-md-block vw-50 h-100 float-right bg-cover" style="background-image: url({% static 'assets/img/illustrations/illustration-call.jpg' %});"></div>
@@ -24,7 +24,7 @@
           
           <!-- Heading -->
           <h2 class="font-weight-bold text-center mb-2">
-            Please fill the details below before proceeding the call
+            Please make sure the following before proceeding to call:
           </h2>
 
           <!-- Text -->
@@ -34,50 +34,123 @@
 
           <!-- Divider -->
           <hr class="hr-sm my-6 my-md-8 border-gray-300">
-
-          <!-- Form -->
-          {% if scheduled %}
-          <form action="{% url 'conference' %}" method="POST">
-            <div class="form-group mb-5">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item d-flex align-items-center">
               
-              <!-- Label -->
-              <label for="contactName">
-                Question 1?
-              </label>
-
-              <!-- Input -->
-              <input type="text" class="form-control" id="contactName" placeholder="Question 1">
-
+              <!-- Text -->
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Stable internet connection.
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  Make sure your internet is stable so that the call won't get interrupted.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
             </div>
-            <div class="form-group mb-5">
+            <div class="list-group-item d-flex align-items-center">
+                
+              <!-- Text -->                
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Background noise  
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  Make sure you are in a quiet place, so that you can hear what your mentor is saying properly.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
+            </div>
+            <div class="list-group-item d-flex align-items-center">
+                
+              <!-- Text -->
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Working camera and mic
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  Make sure microphone and camera is working properly.
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+          
+            </div>
+            <div class="list-group-item d-flex align-items-center">
+                
+              <!-- Text -->
+              <div class="mr-auto">
+                
+                <!-- Heading -->
+                <p class="font-weight-bold mb-1">
+                  Time 
+                </p>
+          
+                <!-- Text -->
+                <p class="font-size-sm text-muted mb-0">
+                  You are only allowed to talk for 1 hour, after that the call will be dropped. 
+                </p>
+          
+              </div>
+                
+              <!-- Check -->
+              <div class="badge badge-rounded-circle badge-success-soft ml-4">
+                <i class="fe fe-check"></i>
+              </div>
+
               
-              <!-- Label -->
-              <label for="contactEmail">
-                Question 2?
-              </label>
-
-              <!-- Input -->
-              <input type="text" class="form-control" id="contactEmail" placeholder="Question 2">
-
+          
             </div>
-            <div class="form-group mb-0">
-             
-              <!-- Submit -->
-                {% csrf_token %}
-                <input type="hidden" name="schedule" value="{{ schedule }}" />
-                <button type="submit" class="btn btn-block btn-success-soft lift">
-                  Proceed to call <span class="fe fe-users"></span>
-                </button>
-                
-                
-              </form>
-              {% else %}
-              Please comback later!
-                {% endif %}
-            </div>
-          </form>
+          </div>
+          <hr>
+          <div class="form-group mb-0">
+              
+            <!-- Submit -->
+            {% if scheduled %}
+            <form action="{% url 'conference' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="schedule" value="{{ schedule }}" />
+              <button type="submit" class="btn btn-block btn-success-soft lift">
+                Proceed to call <span class="fe fe-users"></span>
+              </button>
+            </form>
+            {% else %}
+            <a href="{% url 'dashboard'%}" class="btn btn-block btn-danger-soft">
+              Come back 5 min before the schedule to join 
+            </a>
+              {% endif %}
 
+          </div>
         </div>
+        
       </div> <!-- / .row -->
     </div>
   </section>

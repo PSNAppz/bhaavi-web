@@ -1,0 +1,223 @@
+{% extends 'base/main.html' %}
+{% block content %}
+{% load filters %}
+{% load static %}
+{% if user.is_authenticated %}
+
+  <!-- CONTENT
+  ================================================== -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+
+  <section>
+    
+    <!-- Content -->
+    <div class="container d-flex flex-column">
+      <div class="row align-items-center justify-content-between no-gutters min-vh-100">
+        <div class="col-12 col-md-5 align-self-stretch">
+
+          <!-- Image (mobile) -->
+
+          <!-- Image -->
+
+        </div>
+        <div class="col-12 col-md-12 py-8 py-md-11">
+          
+          <!-- Heading -->
+          <h2 class="font-weight-bold text-center mb-2">
+           Details of: {{user.full_name}}
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-center text-muted mb-0">
+            You can also access the details on the call page.
+          </p>
+
+          <!-- Divider -->
+          <hr class="hr-sm my-6 my-md-8 border-gray-300">
+
+          <!-- Form -->
+                      <div class="card card-bleed shadow-light-lg mb-6">
+              
+                <div class="card-body">
+                    <p class="font-size-lg text-center mb-0">
+                      </p>
+            <div class="form-group mb-5">
+              
+              <!-- Label -->
+              <label for="contactName">
+                Name
+              </label>
+
+              <!-- Input -->
+              <input type="text" class="form-control" value="{{user.full_name}}" id="contactName"  disabled>
+
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Gender
+                </label>
+  
+                <input type="text" class="form-control" value="{{profile.gender}}" id="contactName" disabled>
+ 
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Date of Birth 
+                </label>
+  
+                <!-- Input -->
+                <input type="text"  class="form-control" value="{{profile.dob}}" id="dobpicker" name="dob"  disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Class & School
+                </label>
+  
+                <!-- Input -->
+                <input type="text" class="form-control" value="{{profile.institute}}" id="contactName" name="institute"  disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Siblings
+                </label>
+  
+                <!-- Input -->
+                <input type="text" class="form-control" value="{{profile.siblings}}" id="contactName" name="siblings"  disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Language of Intruction
+                </label>
+  
+                <!-- Input -->
+                <input type="text" class="form-control" id="contactName" value="{{profile.labguage}}" name="language"disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Contact
+                </label>
+  
+                <!-- Input -->
+                <input type="text" class="form-control" name="contact" value="{{profile.contact}}" id="contactName"  disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Hobbies & Interests
+                </label>
+  
+                <!-- Input -->
+                <input type="text" class="form-control" name="hobbies" value="{{profile.hobbies}}" id="contactName" disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                 Guardian's name
+                </label>
+  
+                <!-- Input -->
+                <input type="text" class="form-control" name="guardian" value="{{profile.guardian_name}}" id="contactName"  disabled>
+  
+            </div>
+            <div class="form-group mb-5">
+              
+              <!-- Label -->
+              <label for="contactName">
+               Address
+              </label>
+
+              <!-- Input -->
+              <input type="text" class="form-control" name="address" id="contactName" value="{{profile.address}} {{user.state}}"  disabled>
+
+          </div>
+            </div>
+            </div>
+            
+      <div class="card card-bleed shadow-light-lg mb-6">
+        <div class="card-body">
+       
+              <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Career concerns:
+                </label>
+  
+                <!-- Input -->
+                <div class="checkbox">
+                    <label><input type="checkbox" name="career" value="1" {% if "1" in profile.career_concern %} checked {% endif %} >Course / Higher Education</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" name="career" value="2" {% if "3" in profile.career_concern %} checked {% endif %} >Career / Job Related
+                    </label>
+                  </div>
+                  <div class="checkbox ">
+                    <label><input type="checkbox" name="career" value="3" {% if "3" in profile.career_concern %} checked {% endif %} >Formulation of Study/ Academic Plans</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" name="career" value="4" {% if "4" in profile.career_concern %} checked {% endif %} >Other
+                    </label>
+                  </div>   
+            </div>  
+            <div class="form-group mb-5">
+              
+                <!-- Label -->
+                <label for="contactName">
+                  Personal concerns:
+                </label>
+  
+                <!-- Input -->
+                  <div class="checkbox ">
+                    <label><input type="checkbox" name="personal" value="1" {% if "1" in profile.personal_concern %} checked {% endif %} >Interpersonal Issues
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" name="personal" value="2" {% if "2" in profile.personal_concern %} checked {% endif %} >Family Problems
+
+                    </label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" name="personal" value="3" {% if "3" in profile.personal_concern %} checked {% endif %} >Medical & Health Related
+                    </label>
+                  </div>  
+                  <div class="checkbox">
+                    <label><input type="checkbox" name="personal" value="4" {% if "4" in profile.personal_concern %} checked {% endif %} >Other
+	
+                    </label>
+                  </div>
+            </div>
+
+        
+                
+            </div>
+        </div>
+   
+    </div>
+
+        </div>
+      </div> <!-- / .row -->
+    </div>
+  </section>
+
+{% endif %}
+{% endblock content %}
