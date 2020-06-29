@@ -387,11 +387,90 @@ def jyolsyanRegisterPage(request):
 @login_required(login_url='login')
 def requestCall(request):
     if request.method == "POST" :
+
         product_id = request.POST.get('product')
         user = request.user
         dob = request.POST.get('dob')
-        institute = request.POST.get('institute')
         gender = request.POST.get('gender')
+        suggested_date = request.POST.get('suggested_slot')  
+        suggested_time = request.POST.get('period')  
+
+        if gender == "1":
+            gender = "Male"
+        elif gender == "2":
+            gender = "Female"  
+        else:
+            gender = "N/A"
+
+        if suggested_time == "1":
+            suggested_time = "First half"
+        elif suggested_time == "2":
+            suggested_time = "Second half"  
+        else:
+            suggested_time = "No preference"     
+
+        try:
+            purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(product_id=product_id).product
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Invalid product!')
+            return redirect('dashboard')          
+
+        if product_id == "PROD-3" or product_id == "PROD-4":
+            btime = request.POST.get('time')
+            bplace = request.POST.get('place')
+            latlong = request.POST.get('latlong')
+            q1 = request.POST.get('query1')
+            q2 = request.POST.get('query2')
+            dst = request.POST.get('dst')
+            if dst == "1":
+                dst = "Yes"
+            else:
+                dst = "False"  
+            if (product_id == None or user == None or dob == None or btime == None or gender == None or bplace == None or q1 == None or q2 ==  None):
+                messages.warning(request, 'Please fill all the required fields!')
+                return redirect('dashboard')  
+            try:
+                pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
+                messages.warning(request, 'Call already Requested')
+                return redirect('dashboard')
+            except MentorCallRequest.DoesNotExist:
+                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+                    MentorCallRequest.objects.create(
+                        user = user,
+                        product = purchased_product,
+                        request_date = request.POST.get('suggested_slot'),  
+                        requested_slot = suggested_time,
+                        query1 = q1,
+                        query2 = q2,  
+                    ) 
+                    try:
+                        profile = UserProfile.objects.get(user_id = user.id)
+                        UserProfile.objects.filter(user_id = user.id).update(
+                            gender = gender,
+                            birthtime = btime,
+                            dst = dst,
+                            birthplace = bplace,
+                            latlong = latlong,
+                            dob = dob,
+                            
+                        )
+                    except Exception as e:
+                        UserProfile.objects.create(
+                            user_id = user.id,
+                            gender = gender,
+                            birthtime = btime,
+                            dst = dst,
+                            birthplace = bplace,
+                            latlong = latlong,
+                            dob = dob,
+                        )
+                    messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+                else:
+                    messages.error(request, 'An error occured!')
+                return redirect('dashboard') 
+
+        institute = request.POST.get('institute')
         siblings = request.POST.get('siblings')
         language = request.POST.get('language')
         contact = int(request.POST.get('contact'))  
@@ -400,8 +479,7 @@ def requestCall(request):
         guardian_name = request.POST.get('guardian')
         career_concerns = request.POST.getlist('career')
         personal_concerns = request.POST.getlist('personal')
-        suggested_date = request.POST.get('suggested_slot')  
-        suggested_time = request.POST.get('period')  
+        
         career_conc = []
         personal_conc = []
         for career_ in career_concerns:
@@ -424,21 +502,9 @@ def requestCall(request):
             else:
                 personal_conc.append("Other")                   
 
-        if gender == "1":
-            gender = "Male"
-        elif gender == "2":
-            gender = "Female"  
-        else:
-            gender = "N/A" 
+        
 
-        if suggested_time == "1":
-            suggested_time = "First half"
-        elif suggested_time == "2":
-            suggested_time = "Second half"  
-        else:
-            suggested_time = "No preference" 
-
-        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concern ==  None or personal_concern == None or suggested_date == None or suggested_time == None ):
+        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concern ==  None or personal_concern == None ):
             messages.warning(request, 'Please fill all the required fields!')
             return redirect('dashboard')  
 
@@ -447,7 +513,6 @@ def requestCall(request):
             messages.warning(request, 'Call already Requested')
             return redirect('dashboard')
         except MentorCallRequest.DoesNotExist:
-            purchased_product = user.user_products.filter(status=1).get(product_id=product_id).product
             if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
 
                 MentorCallRequest.objects.create(
@@ -469,7 +534,7 @@ def requestCall(request):
                         personal_concern =  personal_conc,
                         dob = request.POST.get('dob'),
                         institute = request.POST.get('institute'),
-                        address = request.POST.get('address')
+                        address = address
                     )
                 except Exception as e:
                     UserProfile.objects.create(
@@ -482,11 +547,10 @@ def requestCall(request):
                         career_concern =  career_conc,
                         personal_concern =  personal_conc,
                         dob = request.POST.get('dob'),
-                        address = request.POST.get('address'),
-                        institute = request.POST.get('institute')
+                        address = address,
+                        institute = institute
                     )
-                    print(e)
-                messages.success(request, 'Call Schedule requested succesfully. Please wait for admin to respond!')
+                messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
             else:
                 messages.error(request, 'An error occured!')
 
@@ -792,9 +856,15 @@ def requestPage(request):
         for result in results:
             if results[result] >= daily_sessions:
                 slots.append(result)
-    UserProfile.objects.filter(user_id = user.id)
-    context = {'slots':slots, 'product':product.id}
-    return render(request, 'accounts/request.html',context)    
+    profile = UserProfile.objects.filter(user_id = user.id)
+    # TODO Redirect to respective pages
+    if product_id == "PROD-2":
+        context = {'slots':slots, 'product':product.id, 'profile':profile}
+        return render(request, 'accounts/mentor_request.html',context)
+    else:      
+        context = {'slots':slots, 'product':product.id, 'profile':profile}
+        return render(request, 'accounts/astro_request.html',context)
+       
 
 def viewPrivacyPolicy(request):
     return render(request, 'base/privacy.html')

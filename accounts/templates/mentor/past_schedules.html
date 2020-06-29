@@ -54,16 +54,16 @@
 
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-6">
-                    <li class="list-item active">
-                      <a class="list-link text-reset" href="account-general.html">
+                    <li class="list-item">
+                      <a class="list-link text-reset" href="{% url 'dashboard' %}">
                         Schedules
                       </a>
                     </li>
-                    <li class="list-item ">
-                      <a class="list-link text-reset" href="#">
-                        Past schedules
-                      </a>
-                    </li>
+                    <li class="list-item active">
+                        <a class="list-link text-reset" href="#">
+                          Past schedules
+                        </a>
+                      </li>
                     
                   </ul>
 
@@ -142,19 +142,8 @@
                           <form action="{% url 'call_details' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="schedule" value="{{ schedule.id }}" />
-                            <input type="submit" class="btn btn-xs btn-primary-soft" value="View details" />
-                          </form>
-                          
-                        </div>
-                        <div class="col-auto">
-  
-                          <!-- Button -->
-                          <form action="{% url 'call_details' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="schedule" value="{{ schedule.id }}" />
                             <input type="submit" class="btn btn-xs btn-success-soft" value="Join Call" />
                           </form>
-                          
                         </div>
                       </div>
                     </div>

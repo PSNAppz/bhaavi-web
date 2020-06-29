@@ -104,6 +104,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     dob = models.CharField(max_length=11,null=True, blank=True)
+    birthtime = models.CharField(max_length=255,null=True, blank=True)
+    dst = models.CharField(max_length=255,null=True, blank=True)
+    birthplace = models.CharField(max_length=255,null=True, blank=True)
+    latlong = models.CharField(max_length=255,null=True, blank=True)
     mobile = models.CharField(max_length=15, blank=True)
     address = models.CharField(max_length=255, blank=True)
     state = models.CharField(max_length=255, blank=True)
@@ -186,7 +190,7 @@ class UserPurchases(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Receipt id: {}'.format(self.receipt_id) 
+        return 'Receipt id: {}'.format(self.invoice) 
 
 class RazorPayTransactions(models.Model):
     purchase = models.ForeignKey(UserPurchases, on_delete=models.CASCADE, related_name='transaction_details')
@@ -214,6 +218,26 @@ class MentorCallRequest(models.Model):
     request_date = models.CharField(max_length=20, blank=True)
     requested_slot = models.CharField(max_length=20, blank=True)
     language = models.CharField(max_length=255,null=True, blank=True)
+    query1 = models.CharField(max_length=255,null=True, blank=True)
+    query2 = models.CharField(max_length=255,null=True, blank=True)
+    # #bride details and groom details
+    # bname = models.CharField(max_length=255,null=True, blank=True)
+    # bdob = models.CharField(max_length=255,null=True, blank=True)
+    # btime = models.CharField(max_length=255,null=True, blank=True)
+    # bplace = models.CharField(max_length=255,null=True, blank=True)
+    # blatlong = models.CharField(max_length=255,null=True, blank=True)
+    # gname = models.CharField(max_length=255,null=True, blank=True)
+    # gdob = models.CharField(max_length=255,null=True, blank=True)
+    # gtime = models.CharField(max_length=255,null=True, blank=True)
+    # gplace = models.CharField(max_length=255,null=True, blank=True)
+    # glatlong = models.CharField(max_length=255,null=True, blank=True)
+    # # muhurtam details
+    # bname = models.CharField(max_length=255,null=True, blank=True)
+    # bdob = models.CharField(max_length=255,null=True, blank=True)
+    # btime = models.CharField(max_length=255,null=True, blank=True)
+    # bplace = models.CharField(max_length=255,null=True, blank=True)
+    # blatlong = models.CharField(max_length=255,null=True, blank=True)
+
     responded = models.BooleanField(default=0)
     scheduled = models.BooleanField(default=0)
     closed = models.BooleanField(default=0)

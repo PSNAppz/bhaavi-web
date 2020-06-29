@@ -82,12 +82,12 @@
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-0">
                     <li class="list-item">
-                      <a class="list-link text-reset" href="account-notifications.html">
-                        Notifications
+                      <a class="list-link text-reset" href="{% url 'profile' %}">
+                        Profile
                       </a>
                     </li>
                     <li class="list-item">
-                      <a class="list-link text-reset" href="billing-users.html">
+                      <a class="list-link text-reset" href="#">
                         Payment history
                       </a>
                     </li>
@@ -165,8 +165,10 @@
                               <form action="{% url 'call_details' %}" method="POST">
                                 {% csrf_token %}
                                   <input type="hidden" name="schedule" value="{{ schedule.schedule_id }}" />
-                                  <button type="submit" class="btn btn-xs btn-primary-soft" >Scheduled for: {{schedule.schedule.slot}}</button>
+                                  <button type="submit" class="btn btn-xs btn-primary-soft" >Join call<br> ({{schedule.schedule.slot}}) </button>
+                                  
                                 </form>
+                                
                               {% endwith %}
                             {% else %}
                         <form action="{% url 'plans' %}" method="GET">
