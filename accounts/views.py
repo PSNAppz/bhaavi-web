@@ -854,6 +854,14 @@ def mentorDashboard(request):
     return render(request, 'mentor/dashboard.html',context)
 
 @login_required(login_url='login')
+@mentor
+def mentorHistory(request):
+    profile = MentorProfile.objects.get(user_id = request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
+    context = {'schedules':schedules, 'profile':profile}
+    return render(request, 'mentor/past_schedules.html',context)    
+
+@login_required(login_url='login')
 @jyolsyan
 def astroDashboard(request):
     profile = MentorProfile.objects.get(user_id = request.user.id)
