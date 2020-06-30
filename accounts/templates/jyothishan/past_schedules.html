@@ -108,7 +108,7 @@
                 <div class="card-body">
                   <!-- start for -->
                   {% for schedule in schedules %}
-                  {% if not schedule.request.closed %}
+                  {% if schedule.request.closed %}
                   <div class="list-group list-group-flush">
                     <div class="list-group-item">
                       <div class="row align-items-center">
@@ -125,14 +125,10 @@
                           <!-- Heading -->
                           <p class="mb-0">
                             <small class="text-blue-300">
-                              Name: 
+                              Customer: 
                             </small> {{schedule.user.full_name}} 
                           </p>
-                          <p class="mb-0">
-                            <small class="text-blue-300">
-                              Service: {{schedule.request.product.name}} 
-                            </small> 
-                          </p>
+                         
                           <!-- Text -->
                           Scheduled time: 
                           <small class="text-gray-700">
@@ -140,26 +136,7 @@
                           </small>
   
                         </div>
-                        <div class="col-auto">
-  
-                          <!-- Button -->
-                          <form action="{% url 'view_details_astro' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="schedule" value="{{ schedule.id }}" />
-                            <input type="submit" class="btn btn-xs btn-primary-soft" value="View details" />
-                          </form>
-                          
-                        </div>
-                        <div class="col-auto">
-  
-                          <!-- Button -->
-                          <form action="{% url 'call_details' %}" method="POST">
-                            {% csrf_token %}
-                            <input type="hidden" name="schedule" value="{{ schedule.id }}" />
-                            <input type="submit" class="btn btn-xs btn-success-soft" value="Join Call" />
-                          </form>
-                          
-                        </div>
+                       
                       </div>
                     </div>
   

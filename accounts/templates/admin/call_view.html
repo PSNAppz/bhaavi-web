@@ -80,9 +80,13 @@
                         Requested mentor type: <span class="badge badge-primary-soft">{{request.product.name}}</span>
                      </p>
                      <!-- Text -->
-                     Date:
+                     Suggested date:
                      <small class="text-gray-700">
-                     {{request.timestamp}}
+                        <span class="badge badge-success-soft">{{request.request_date}}</span>
+                     </small><br>
+                     Suggested slot:
+                     <small class="text-gray-700">
+                        <span class="badge badge-info-soft">{{request.requested_slot}}</span>
                      </small>
                   </div>
                </div>

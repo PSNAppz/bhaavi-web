@@ -4,6 +4,7 @@ $("#join-channel").click(function (event) {
     var agoraAppId = "";
     var channelName = $('#form-channel').val();
     initClientAndJoinChannel(agoraAppId, channelName);
+    localStream.unmuteAudio();
     $("#modalForm").modal("hide");
 });
 
@@ -35,6 +36,8 @@ function enableUiControls(localStream) {
 
     $("#exit-btn").click(function () {
         leaveChannel();
+        $("#final").submit();
+
     });
 
     // keyboard listeners 

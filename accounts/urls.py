@@ -9,6 +9,11 @@ urlpatterns = [
     path('dashboard/profile', views.profilePage, name="profile"),
     path('dashboard/profile/save', views.saveProfile, name="profile_save"),
     path('dashboard', views.userDashboard,name="dashboard"),
+    path('dashboard/view', views.viewReport,name="report_view"),    
+    path('dashboard/conference/finish', views.finishCallUser,name="call_end"),
+
+    
+
     path('login', views.loginPage, name="login"),
     path('mentor/register', views.mentorRegisterPage, name="mentor_register"),
     path('jyolsyan/register', views.jyolsyanRegisterPage, name="jyolsyan_register"),
@@ -30,11 +35,14 @@ urlpatterns = [
     # Mentor Dash
     path('mentorboard/', views.mentorDashboard, name="mentorboard"),
     path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
+    path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
+    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
 
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard,name="astroboard"),
     path('astroboard/viewDetails', views.astroDetailsView, name="view_details_astro"), 
-
+    path('mentorboard/prevDetails', views.astroHistory, name="view_history_astro"),
+    path('mentorboard/endCall', views.astroFinishCall, name="astro_call_finish"),
 
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
@@ -46,6 +54,8 @@ urlpatterns = [
     # Conference call URLs
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/',Agora.as_view(), name="conference"),
+    path('dashboard/conference/end',views.endCall, name="end_call"),
+
 
     # Static pages
     path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
