@@ -61,6 +61,11 @@ urlpatterns = [
     path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
     path('terms_and_conditions', views.viewTerms, name="terms"),
     path('refund_policy', views.viewRefund, name="refund"),
+    path('about', views.viewAbout, name="about"),
+    path('mentors', views.viewMentors, name="mentors"),
+    path('contact', views.viewContact, name="contact"),
+
+    
 
     # email_verification
     path('activate/<uidb64>/<token>/', views.activate_account, name='activate'),

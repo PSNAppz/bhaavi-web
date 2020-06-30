@@ -979,6 +979,15 @@ def viewTerms(request):
 def viewRefund(request):
     return render(request, 'base/refund.html')
 
+def viewAbout(request):
+    return render(request, 'base/about.html')
+
+def viewMentors(request):
+    return render(request, 'base/mentors.html')
+
+def viewContact(request):
+    return render(request, 'base/contact.html')
+
 # ERROR HANDLING..
 def handler404(request, exception):
     context = {}
