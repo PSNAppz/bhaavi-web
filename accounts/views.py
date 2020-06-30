@@ -736,6 +736,11 @@ def userDashboard(request):
     user_requests = request.user.mentor_request.none()
     accepted_calls = AcceptedCallSchedule.objects.none()
     results = Result.objects.filter(user_id = request.user.id).order_by('id')
+    finished_calls = MentorCallRequest.objects.filter(user_id = request.user.id).filter(report_submitted = True)
+    reports = FinalMentorReport.objects.none()
+
+    for final in finished_calls:
+        reports |= FinalMentorReport.objects.get(call_id = final.id) 
     
     for purchase in purchases:
         if purchase.product.call_required:
@@ -748,7 +753,7 @@ def userDashboard(request):
             accepted_calls |= AcceptedCallSchedule.objects.filter(schedule_id = schedule.id)
         else:
             pass    
-    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls,'results':results}
+    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls,'results':results,'reports':reports}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
