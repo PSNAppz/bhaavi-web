@@ -869,6 +869,14 @@ def astroDashboard(request):
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'jyothishan/dashboard.html',context)
 
+@login_required(login_url='login')
+@jyolsyan
+def astroHistory(request):
+    profile = MentorProfile.objects.get(user_id = request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
+    context = {'schedules':schedules, 'profile':profile}
+    return render(request, 'jyothishan/past_schedules.html',context)    
+
 
 def saveProfile(request):
     try:
@@ -988,12 +996,17 @@ def handler400(request,exception=None):
 @login_required(login_url='login')   
 @mentor
 def endCall(request):
-    request_id = 28
-    try:
-        callreq = MentorCallRequest.objects.filter(pk=request_id).get()
-    except Exception as e:
-        messages.error(request, 'Invalid request')
-        return redirect('dashboard')    
-    user = callreq.user
-    context = {'user':user, 'call':callreq}
-    return render(request, 'mentor/report.html', context)
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        if not schedule.mentor.user == request.user:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        try:
+            callreq = MentorCallRequest.objects.filter(pk=schedule.request.id)
+        except Exception as e:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        user = callreq.user
+        context = {'user':user, 'call':callreq}
+        return render(request, 'mentor/report.html', context)
