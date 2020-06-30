@@ -43,11 +43,11 @@ class AgoraVideoCall(View):
                 schedule = AcceptedCallSchedule.objects.filter(schedule_id=schedule_id).get(completed=False)
                 token = schedule.token
                 if request.user.is_mentor:
-                    channel_end_url = 'dashboard/conference/end'
+                    channel_end_url = 'dashboard/conference/end/'
                 elif request.user.is_jyolsyan:
-                    channel_end_url = 'mentorboard/endCall'  
+                    channel_end_url = 'mentorboard/endCall/'  
                 else:
-                    channel_end_url = 'dashboard/conference/finish'    
+                    channel_end_url = 'dashboard/conference/finish/'    
                 channel = schedule.channel
                 profile = UserProfile.objects.get(user_id = requested_schedule.user_id)
                 return render(request,'index.html',{

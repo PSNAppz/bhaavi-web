@@ -996,22 +996,20 @@ def handler400(request,exception=None):
 
 @login_required(login_url='login')   
 @mentor
-def endCall(request):
-    if request.method == "POST":
-        schedule_id = request.POST.get('schedule')
-        schedule = RequestedSchedules.objects.get(pk=schedule_id)
-        print(schedule.mentor)
-        if not schedule.mentor.user_id == request.user.id:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')    
-        try:
-            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
-        except Exception as e:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')    
-        user = callreq.user
-        context = {'user':user, 'call':callreq, 'schedule':schedule.id}
-        return render(request, 'mentor/report.html', context)
+def endCall(request,id):
+    schedule_id = id
+    schedule = RequestedSchedules.objects.get(pk=schedule_id)
+    if not schedule.mentor.user_id == request.user.id:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
+    try:
+        callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+    except Exception as e:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
+    user = callreq.user
+    context = {'user':user, 'call':callreq, 'schedule':schedule.id}
+    return render(request, 'mentor/report.html', context)
 
 
 @login_required(login_url='login')   
