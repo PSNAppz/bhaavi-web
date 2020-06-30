@@ -872,7 +872,17 @@ def astroHistory(request):
 
 @login_required(login_url='login')
 @jyolsyan
-def astroFinishCall(request):
+def astroFinishCall(request, reqid):
+    schedule_id = reqid
+    schedule = RequestedSchedules.objects.get(pk=schedule_id)
+    if not schedule.mentor.user_id == request.user.id:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
+    try:
+        MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
+    except Exception as e:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
     return render(request, 'jyothishan/finish_call.html')  
 
 @login_required(login_url='login')
@@ -969,6 +979,15 @@ def viewTerms(request):
 def viewRefund(request):
     return render(request, 'base/refund.html')
 
+def viewAbout(request):
+    return render(request, 'base/about.html')
+
+def viewMentors(request):
+    return render(request, 'base/mentors.html')
+
+def viewContact(request):
+    return render(request, 'base/contact.html')
+
 # ERROR HANDLING..
 def handler404(request, exception):
     context = {}
@@ -996,22 +1015,20 @@ def handler400(request,exception=None):
 
 @login_required(login_url='login')   
 @mentor
-def endCall(request):
-    if request.method == "POST":
-        schedule_id = request.POST.get('schedule')
-        schedule = RequestedSchedules.objects.get(pk=schedule_id)
-        print(schedule.mentor)
-        if not schedule.mentor.user_id == request.user.id:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')    
-        try:
-            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
-        except Exception as e:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')    
-        user = callreq.user
-        context = {'user':user, 'call':callreq, 'schedule':schedule.id}
-        return render(request, 'mentor/report.html', context)
+def endCall(request,reqid):
+    schedule_id = reqid
+    schedule = RequestedSchedules.objects.get(pk=schedule_id)
+    if not schedule.mentor.user_id == request.user.id:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
+    try:
+        callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+    except Exception as e:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
+    user = callreq.user
+    context = {'user':user, 'call':callreq, 'schedule':schedule.id}
+    return render(request, 'mentor/report.html', context)
 
 
 @login_required(login_url='login')   
@@ -1064,6 +1081,6 @@ def submitReport(request):
                 suggestions = suggestions,
                 recommendation = recommendation
             )
-            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True)
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('mentorboard')

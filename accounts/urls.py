@@ -37,12 +37,13 @@ urlpatterns = [
     path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
     path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
     path('mentorboard/submitReport', views.submitReport, name="submit_report"),
+    path('dashboard/conference/end/<reqid>',views.endCall, name="end_call"),
 
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard,name="astroboard"),
     path('astroboard/viewDetails', views.astroDetailsView, name="view_details_astro"), 
     path('mentorboard/prevDetails', views.astroHistory, name="view_history_astro"),
-    path('mentorboard/endCall', views.astroFinishCall, name="astro_call_finish"),
+    path('mentorboard/endCall/<reqid>', views.astroFinishCall, name="astro_call_finish"),
 
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
@@ -54,13 +55,17 @@ urlpatterns = [
     # Conference call URLs
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/',Agora.as_view(), name="conference"),
-    path('dashboard/conference/end',views.endCall, name="end_call"),
 
 
     # Static pages
     path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
     path('terms_and_conditions', views.viewTerms, name="terms"),
     path('refund_policy', views.viewRefund, name="refund"),
+    path('about', views.viewAbout, name="about"),
+    path('mentors', views.viewMentors, name="mentors"),
+    path('contact', views.viewContact, name="contact"),
+
+    
 
     # email_verification
     path('activate/<uidb64>/<token>/', views.activate_account, name='activate'),
