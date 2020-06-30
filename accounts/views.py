@@ -1062,6 +1062,6 @@ def submitReport(request):
                 suggestions = suggestions,
                 recommendation = recommendation
             )
-            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True)
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('mentorboard')
