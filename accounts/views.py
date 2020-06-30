@@ -1015,7 +1015,7 @@ def viewReport(request):
             messages.error(request, 'Invalid request')
             return redirect('dashboard')      
         
-        context = {'user':user, 'report':report}
+        context = {'report':report}
         return render(request, 'accounts/view_report.html', context)        
 
 @login_required(login_url='login')   
