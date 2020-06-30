@@ -24,12 +24,12 @@
           
           <!-- Heading -->
           <h2 class="font-weight-bold text-center mb-2">
-            Please fill the report form.
+            Mentor report for {{user.full_name}}
           </h2>
 
           <!-- Text -->
           <p class="font-size-lg text-center text-muted mb-0">
-            Please submit the form for completing the call. You can also complete this later from dashboard.
+            
           </p>
 
           <!-- Divider -->
@@ -61,7 +61,7 @@
                 <label for="contactName">
                   Requirement/Problem/Need:
                 </label>
-                <textarea name="requirement" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                <textarea name="requirement" class="form-control" id="exampleFormControlTextarea1" rows="4" disabled></textarea>
                  
             </div>
             <div class="form-group mb-5">
@@ -70,7 +70,7 @@
                 <label for="contactName">
                   Diagnosis (Causes & Effect):
                 </label>
-                <textarea name="diagnosis" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                <textarea name="diagnosis" class="form-control" id="exampleFormControlTextarea1" rows="4" disabled></textarea>
                  
             </div>
             <div class="form-group mb-5">
@@ -79,7 +79,7 @@
                 <label for="contactName">
                   Findings:
                 </label>
-                <textarea name="findings" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                <textarea name="findings" class="form-control" id="exampleFormControlTextarea1" rows="4" disabled></textarea>
                  
             </div>
             <div class="form-group mb-5">
@@ -88,7 +88,7 @@
                 <label for="contactName">
                   Suggestions & Remarks:
                 </label>
-                <textarea name="suggestions" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                <textarea name="suggestions" class="form-control" id="exampleFormControlTextarea1" rows="4" disabled></textarea>
                  
             </div>
             <div class="form-group mb-5">
@@ -97,18 +97,11 @@
                 <label for="contactName">
                   Follow up recommendation:
                 </label>
-                <textarea name="recommendation" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                <textarea name="recommendation" class="form-control" id="exampleFormControlTextarea1" rows="4" disabled></textarea>
                  
             </div>
             
-            
         
-    <button type="submit" class="btn btn-block btn-success lift">
-        Submit final report
-     </button>
-     <input type="hidden" name="schedule" value="{{ schedule }}" />
-     {% csrf_token %}
-          </form>
 
         </div>
       </div> <!-- / .row -->

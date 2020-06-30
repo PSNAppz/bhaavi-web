@@ -31,6 +31,9 @@ urlpatterns = [
     path('mentorboard/', views.mentorDashboard, name="mentorboard"),
     path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
     path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
+    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
+
+    
 
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard,name="astroboard"),

@@ -1014,7 +1014,7 @@ def endCall(request):
             messages.error(request, 'Invalid request')
             return redirect('dashboard')    
         user = callreq.user
-        context = {'user':user, 'call':callreq}
+        context = {'user':user, 'call':callreq, 'schedule':schedule.id}
         return render(request, 'mentor/report.html', context)
 
 @login_required(login_url='login')   
