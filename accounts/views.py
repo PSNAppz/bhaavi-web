@@ -872,7 +872,17 @@ def astroHistory(request):
 
 @login_required(login_url='login')
 @jyolsyan
-def astroFinishCall(request):
+def astroFinishCall(request, reqid):
+    schedule_id = reqid
+    schedule = RequestedSchedules.objects.get(pk=schedule_id)
+    if not schedule.mentor.user_id == request.user.id:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
+    try:
+        MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
+    except Exception as e:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')    
     return render(request, 'jyothishan/finish_call.html')  
 
 @login_required(login_url='login')
