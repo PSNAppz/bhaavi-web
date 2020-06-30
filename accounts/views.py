@@ -870,6 +870,14 @@ def astroHistory(request):
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'jyothishan/past_schedules.html',context)    
 
+@login_required(login_url='login')
+@jyolsyan
+def astroFinishCall(request):
+    return render(request, 'jyothishan/finish_call.html')  
+
+@login_required(login_url='login')
+def finishCallUser(request):
+    return render(request, 'accounts/finishcall.html')      
 
 def saveProfile(request):
     try:

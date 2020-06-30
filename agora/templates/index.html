@@ -51,7 +51,30 @@
                   
                       <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                         <div class="card-body">
-                          blaaashhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+                          Name:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.user.name}}</span>
+                          </h4><br>
+                          Dob:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.dob}}</span>
+                          </h4><br>
+                          Gender:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.gender}}</span>
+                          </h4><br>
+                          Siblings:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.siblings}}</span>
+                          </h4><br>
+                          Guardian name:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.guardian}}</span>
+                          </h4><br>
+                          Address:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.address}}</span>
+                          </h4><br>
                         </div>
                       </div>
                     </div>
@@ -65,24 +88,81 @@
                       </div>
                       <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                         <div class="card-body">
-                          veeeenduummmmmmmmmmmmmmmmmmmmmmmmmmmm
+                          Class/School:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.institute}}</span>
+                          </h4><br>
+                          Stream(If any):
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.stream}}</span>
+                          </h4><br>
+                          Avg Mark(If specified):
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.mark}}</span>
+                          </h4><br>
+                          Hobbies:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.hobbies}}</span>
+                          </h4><br>
                         </div>
                       </div>
                     </div>
+                    {% if user.is_mentor %}
                     <div class="card">
                       <div class="card-header" id="headingThree">
                         <h2 class="mb-0">
                           <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Other Details.
+                            Requested details.
                           </button>
                         </h2>
                       </div>
                       <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
                         <div class="card-body">
-                          BLaaaaaaaaaaaaaaaaaaaaaaaaaaaahhhhhhhhhh
+                         
+                          Career concerns:
+                          <h4 class="text-gray-900">
+                             <span >{{profile.career_concern}}</span>
+                          </h4><br>
+                          Personal concerns:
+                          <h4 class="text-gray-900">
+                             <span>{{profile.personal_concern}}</span>
+                          </h4>
                         </div>
                       </div>
                     </div>
+                    {% endif %}
+                    {% if user.is_jyolsyan %}
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Requested details.
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body">
+                         
+                          Birth time:
+                          <h4 class="text-gray-900">
+                             <span >{{profile.birthtime}}</span>
+                          </h4><br>
+                          Birth place:
+                          <h4 class="text-gray-900">
+                             <span>{{profile.birthplace}}</span>
+                          </h4>
+                          Daylight saving applicable:
+                          <h4 class="text-gray-900">
+                             <span>{{profile.dst}}</span>
+                          </h4>
+                          Latitude/Longitude (if specified):
+                          <h4 class="text-gray-900">
+                             <span>{{profile.latlong}}</span>
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+                    {% endif %}
                   </div>
             </div>
     <!-- Data section end -->
@@ -104,6 +184,7 @@
     -->
                     <form method="POST" action="{{ channel_end_url }}">
                         {% csrf_token %}
+                        <input type="hidden" name="schedule" value="{{ schedule }}" />
                         <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
                             <i id="exit-icon" class="fas fa-phone-slash"></i>
                         </button>
