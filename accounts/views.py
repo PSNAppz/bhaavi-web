@@ -1011,3 +1011,45 @@ def endCall(request):
         user = callreq.user
         context = {'user':user, 'call':callreq}
         return render(request, 'mentor/report.html', context)
+
+@login_required(login_url='login')   
+@mentor
+def submitReport(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        requirement = request.POST.get('requirement')
+        diagnosis = request.POST.get('diagnosis')
+        findings = request.POST.get('findings')
+        suggestions = request.POST.get('suggestions')
+        recommendation = request.POST.get('recommendation')
+
+        if requirement == None or diagnosis == None or findings == None or suggestions == None or recommendation == None:
+            messages.warning(request, 'Please fill all the details!')
+            return redirect('dashboard') 
+
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        if not schedule.mentor.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        try:
+            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+        except Exception as e:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        user = callreq.user
+        try:
+            call = FinalMentorReport.objects.get(call_id = callreq.id)
+            messages.error(request, 'Report already submitted for this!')
+            return redirect('dashboard') 
+        except Exception as e:    
+            FinalMentorReport.objects.create(
+                call = callreq,
+                requirement = requirement,
+                diagnosis = diagnosis,
+                findings = findings,
+                suggestions = suggestions,
+                recommendation = recommendation
+            )
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return render(request, 'mentor/report.html', context)        
