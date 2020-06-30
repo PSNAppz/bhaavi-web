@@ -996,8 +996,8 @@ def handler400(request,exception=None):
 
 @login_required(login_url='login')   
 @mentor
-def endCall(request,id):
-    schedule_id = id
+def endCall(request,reqid):
+    schedule_id = reqid
     schedule = RequestedSchedules.objects.get(pk=schedule_id)
     if not schedule.mentor.user_id == request.user.id:
         messages.error(request, 'Invalid request')

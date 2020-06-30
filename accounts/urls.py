@@ -37,6 +37,7 @@ urlpatterns = [
     path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
     path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
     path('mentorboard/submitReport', views.submitReport, name="submit_report"),
+    path('dashboard/conference/end/<reqid>',views.endCall, name="end_call"),
 
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard,name="astroboard"),
@@ -54,7 +55,6 @@ urlpatterns = [
     # Conference call URLs
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/',Agora.as_view(), name="conference"),
-    path('dashboard/conference/end/<int:id>',views.endCall, name="end_call"),
 
 
     # Static pages
