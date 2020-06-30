@@ -67,7 +67,7 @@
             </div>
 
             <!-- Data Section -->
-
+{% if not user.is_customer %}
             <div id="details-view" class="border">
                 <br>
                 <div class="accordion" id="accordionExample">
@@ -196,6 +196,7 @@
                     {% endif %}
                   </div>
             </div>
+            {% endif %}
     <!-- Data section end -->
             <!-- <div id="buttons-container" class="row justify-content-center mt-3">
                 <div class="col-md-2 text-center">
