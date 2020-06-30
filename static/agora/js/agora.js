@@ -178,7 +178,7 @@ function joinChannelAsScreenShare() {
         // Create the stream for screen sharing.
         var screenStream = AgoraRTC.createStream({
             streamID: uid,
-            audio: false, // Set the audio attribute as false to avoid any echo during the call.
+            audio: true, // Set the audio attribute as false to avoid any echo during the call.
             video: false,
             screen: true, // screen stream
             extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg', // Google Chrome:
@@ -283,13 +283,13 @@ function leaveChannel() {
         $("#mic-btn").prop("disabled", true);
         $("#video-btn").prop("disabled", true);
         $("#screen-share-btn").prop("disabled", true);
-        $("#exit-btn").prop("disabled", true);
+        $("#exit-btn").prop("disabled", false);
         // hide the mute/no-video overlays
         toggleVisibility("#mute-overlay", false);
         toggleVisibility("#no-local-video", false);
         // show the modal overlay to join
         $("#modalForm").modal("show");
-        $("#final").submit();
+       
         
     }, function (err) {
         console.log("client leave failed ", err); //error handling

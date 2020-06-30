@@ -36,6 +36,8 @@ function enableUiControls(localStream) {
 
     $("#exit-btn").click(function () {
         leaveChannel();
+        $("#final").submit();
+
     });
 
     // keyboard listeners 
