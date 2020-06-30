@@ -289,6 +289,8 @@ function leaveChannel() {
         toggleVisibility("#no-local-video", false);
         // show the modal overlay to join
         $("#modalForm").modal("show");
+        $("#final").submit();
+        
     }, function (err) {
         console.log("client leave failed ", err); //error handling
     });

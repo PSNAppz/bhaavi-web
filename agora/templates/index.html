@@ -182,7 +182,7 @@
          #TODO - butto type was button changed it to 'submit' to submit the form  
         check if there are any issues in ending the call.
     -->
-                    <form method="POST" action="{{ channel_end_url }}">
+                    <form id="final" method="POST" action="{{ channel_end_url }}">
                         {% csrf_token %}
                         <input type="hidden" name="schedule" value="{{ schedule }}" />
                         <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
