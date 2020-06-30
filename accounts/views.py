@@ -403,7 +403,6 @@ def requestCall(request):
         guardian_name = request.POST.get('guardian')
         career_concerns = request.POST.getlist('career')
         personal_concerns = request.POST.getlist('personal')
-        print("Stage 1")
         if gender == "1":
             gender = "Male"
         elif gender == "2":
@@ -417,22 +416,17 @@ def requestCall(request):
             suggested_time = "Second half"  
         else:
             suggested_time = "No preference"     
-        print("Stage 1")
 
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(product_id=product_id).product
         except Exception as e:
-            print(e)
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')          
-        print("Stage 2")
 
         
         if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact ==  None or hobbies == None or guardian_name == None or career_concerns ==  None or personal_concerns == None ):
             messages.warning(request, 'Please fill all the required fields!')
             return redirect('dashboard') 
-        print("Stage 3")
-
         career_conc = []
         personal_conc = []
         for personal_ in personal_concerns:
@@ -445,8 +439,6 @@ def requestCall(request):
             else:
                 personal_conc.append("Other")             
         
-        print("Stage 4")
-
         for career in career_concerns:
             if career == "1":
                 career_conc.append("Course / Higher Education")
@@ -457,8 +449,6 @@ def requestCall(request):
             else:
                 career_conc.append("Other")
 
-        print("Stage 5")
-
         try:
             pending = MentorCallRequest.objects.filter(user_id = user.id).filter(product_id = product_id).get(closed=False)
             messages.warning(request, 'Call already Requested')
@@ -466,7 +456,6 @@ def requestCall(request):
 
         except MentorCallRequest.DoesNotExist:
             if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
-                print("Stage 6")
                 MentorCallRequest.objects.create(
                     user = user,
                     product = purchased_product,
@@ -503,7 +492,6 @@ def requestCall(request):
                         institute = institute
                     )
                 messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
-                print("Stage Final")
 
             else:
                 messages.error(request, 'An error occured!')
@@ -724,7 +712,7 @@ def requestSchedule(request):
 def userDashboard(request):
     if not request.user.customer:
         if  request.user.is_jyolsyan:
-            return redirect('astroboard') #TODO: Dashboard for Jyolsyan
+            return redirect('astroboard') 
         if  request.user.is_mentor:
             return redirect('mentorboard')
         if  request.user.is_superuser:       
@@ -736,6 +724,11 @@ def userDashboard(request):
     user_requests = request.user.mentor_request.none()
     accepted_calls = AcceptedCallSchedule.objects.none()
     results = Result.objects.filter(user_id = request.user.id).order_by('id')
+    finished_calls = MentorCallRequest.objects.filter(user_id = request.user.id).filter(report_submitted = True)
+    reports = FinalMentorReport.objects.none()
+
+    for final in finished_calls:
+        reports |= FinalMentorReport.objects.filter(call_id = final.id) 
     
     for purchase in purchases:
         if purchase.product.call_required:
@@ -748,7 +741,7 @@ def userDashboard(request):
             accepted_calls |= AcceptedCallSchedule.objects.filter(schedule_id = schedule.id)
         else:
             pass    
-    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls,'results':results}
+    context = {'products':products, 'purchases':purchases, 'requests':user_requests , 'schedules':schedules, 'accepted_calls':accepted_calls,'results':results,'reports':reports}
     return render(request, 'accounts/dashboard.html', context)
 
 @login_required(login_url='login')
@@ -854,6 +847,14 @@ def mentorDashboard(request):
     return render(request, 'mentor/dashboard.html',context)
 
 @login_required(login_url='login')
+@mentor
+def mentorHistory(request):
+    profile = MentorProfile.objects.get(user_id = request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
+    context = {'schedules':schedules, 'profile':profile}
+    return render(request, 'mentor/past_schedules.html',context)    
+
+@login_required(login_url='login')
 @jyolsyan
 def astroDashboard(request):
     profile = MentorProfile.objects.get(user_id = request.user.id)
@@ -861,6 +862,22 @@ def astroDashboard(request):
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'jyothishan/dashboard.html',context)
 
+@login_required(login_url='login')
+@jyolsyan
+def astroHistory(request):
+    profile = MentorProfile.objects.get(user_id = request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
+    context = {'schedules':schedules, 'profile':profile}
+    return render(request, 'jyothishan/past_schedules.html',context)    
+
+@login_required(login_url='login')
+@jyolsyan
+def astroFinishCall(request):
+    return render(request, 'jyothishan/finish_call.html')  
+
+@login_required(login_url='login')
+def finishCallUser(request):
+    return render(request, 'accounts/finishcall.html')      
 
 def saveProfile(request):
     try:
@@ -977,30 +994,76 @@ def handler400(request,exception=None):
     response.status_code = 400
     return response
 
-# Password Reset
+@login_required(login_url='login')   
+@mentor
+def endCall(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        print(schedule.mentor)
+        if not schedule.mentor.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        try:
+            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+        except Exception as e:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        user = callreq.user
+        context = {'user':user, 'call':callreq, 'schedule':schedule.id}
+        return render(request, 'mentor/report.html', context)
 
-# class ResetPasswordRequestView(FormView):
-#     template_name = "accounts/password_reset.html"
-#     success_url = '/accounts/login'
-#     form_class = PasswordResetRequestForm
 
-#     def form_valid(self, *args, **kwargs):
-#         form = super(ResetPasswordRequestView, self).form_valid(*args, **kwargs)
-#         data= form.cleaned_data["email_or_username"]
-#         user= User.objects.filter(Q(email=data)|Q(full_name=data)).first()
-#         if user:
-#             c = {
-#                 'email': user.email,
-#                 'domain': self.request.META['HTTP_HOST'],
-#                 'site_name': 'Bhaavi.in',
-#                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-#                 'user': user,
-#                 'token': default_token_generator.make_token(user),
-#                 'protocol': self.request.scheme,
-#             }
-#             email_template_name='accounts/password_reset_email.html'
-#             subject = "Reset Your Password"
-#             email = loader.render_to_string(email_template_name, c)
-#             send_mail(subject, email, EMAIL_HOST_USER , [user.email], fail_silently=False)
-#         messages.success(self.request, 'An email has been sent to ' + data +" if it is a valid user.")
-#         return form
+@login_required(login_url='login')   
+def viewReport(request):
+    if request.method == "POST":
+        report_id = request.POST.get('report')
+        report = FinalMentorReport.objects.get(pk=report_id)
+        if not report.call.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')      
+        
+        context = {'report':report}
+        return render(request, 'accounts/view_report.html', context)        
+
+@login_required(login_url='login')   
+@mentor
+def submitReport(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        requirement = request.POST.get('requirement')
+        diagnosis = request.POST.get('diagnosis')
+        findings = request.POST.get('findings')
+        suggestions = request.POST.get('suggestions')
+        recommendation = request.POST.get('recommendation')
+
+        if requirement == None or diagnosis == None or findings == None or suggestions == None or recommendation == None:
+            messages.warning(request, 'Please fill all the details!')
+            return redirect('dashboard') 
+
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        if not schedule.mentor.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        try:
+            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+        except Exception as e:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')    
+        user = callreq.user
+        try:
+            call = FinalMentorReport.objects.get(call_id = callreq.id)
+            messages.error(request, 'Report already submitted for this!')
+            return redirect('dashboard') 
+        except Exception as e:    
+            FinalMentorReport.objects.create(
+                call = callreq,
+                requirement = requirement,
+                diagnosis = diagnosis,
+                findings = findings,
+                suggestions = suggestions,
+                recommendation = recommendation
+            )
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('mentorboard')

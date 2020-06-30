@@ -42,12 +42,21 @@ class AgoraVideoCall(View):
                     return HttpResponse('Unauthenticated')
                 schedule = AcceptedCallSchedule.objects.filter(schedule_id=schedule_id).get(completed=False)
                 token = schedule.token
+                if request.user.is_mentor:
+                    channel_end_url = 'dashboard/conference/end'
+                elif request.user.is_jyolsyan:
+                    channel_end_url = 'mentorboard/endCall'  
+                else:
+                    channel_end_url = 'dashboard/conference/finish'    
                 channel = schedule.channel
+                profile = UserProfile.objects.get(user_id = requested_schedule.user_id)
                 return render(request,'index.html',{
                         'agora_id':self.app_id,
                         'channel':channel,
                         'token':token,
-                        'channel_end_url':self.channel_end_url
+                        'channel_end_url':channel_end_url,
+                        'profile':profile,
+                        'schedule':schedule_id
                         })
             except Exception as e:
                 return HttpResponse('Unknown Error')
@@ -68,4 +77,4 @@ class Agora(AgoraVideoCall):
     expiredTsInSeconds=''
     token = ''
     permission_class = 'IsAuthenticated'
-    channel_end_url = '/dashboard'
+    channel_end_url = ''
