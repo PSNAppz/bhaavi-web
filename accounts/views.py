@@ -1004,7 +1004,7 @@ def endCall(request):
             messages.error(request, 'Invalid request')
             return redirect('dashboard')    
         try:
-            callreq = MentorCallRequest.objects.filter(pk=schedule.request.id)
+            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
         except Exception as e:
             messages.error(request, 'Invalid request')
             return redirect('dashboard')    
