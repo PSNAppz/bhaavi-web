@@ -999,7 +999,7 @@ def endCall(request):
     if request.method == "POST":
         schedule_id = request.POST.get('schedule')
         schedule = RequestedSchedules.objects.get(pk=schedule_id)
-        if not schedule.mentor.user == request.user:
+        if not schedule.mentor.user_id == request.user_id:
             messages.error(request, 'Invalid request')
             return redirect('dashboard')    
         try:
