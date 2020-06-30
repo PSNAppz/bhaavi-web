@@ -178,7 +178,7 @@ function joinChannelAsScreenShare() {
         // Create the stream for screen sharing.
         var screenStream = AgoraRTC.createStream({
             streamID: uid,
-            audio: true, // Set the audio attribute as false to avoid any echo during the call.
+            audio: false, // Set the audio attribute as false to avoid any echo during the call.
             video: false,
             screen: true, // screen stream
             extensionId: 'minllpmhdgpndnkomcoccfekfegnlikg', // Google Chrome:
