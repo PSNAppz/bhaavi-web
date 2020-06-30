@@ -1005,6 +1005,19 @@ def endCall(request):
         context = {'user':user, 'call':callreq, 'schedule':schedule.id}
         return render(request, 'mentor/report.html', context)
 
+
+@login_required(login_url='login')   
+def viewReport(request):
+    if request.method == "POST":
+        report_id = request.POST.get('report')
+        report = FinalMentorReport.objects.get(pk=report_id)
+        if not report.call.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')      
+        
+        context = {'user':user, 'report':report}
+        return render(request, 'accounts/view_report.html', context)        
+
 @login_required(login_url='login')   
 @mentor
 def submitReport(request):

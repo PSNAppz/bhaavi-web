@@ -9,6 +9,8 @@ urlpatterns = [
     path('dashboard/profile', views.profilePage, name="profile"),
     path('dashboard/profile/save', views.saveProfile, name="profile_save"),
     path('dashboard', views.userDashboard,name="dashboard"),
+    path('dashboard/view', views.viewReport,name="report_view"),
+
     path('login', views.loginPage, name="login"),
     path('mentor/register', views.mentorRegisterPage, name="mentor_register"),
     path('jyolsyan/register', views.jyolsyanRegisterPage, name="jyolsyan_register"),

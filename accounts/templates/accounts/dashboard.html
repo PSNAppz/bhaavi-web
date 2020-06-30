@@ -365,9 +365,12 @@
                       </div>
                       <div class="col-auto">
                         <!-- Button -->
-                        <a href="{% url 'report_view' result.id %}" class="btn btn-xs btn-outline-info">
-                          View
-                        </a>
+                        
+                        <form action="{% url 'report_view' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="report" value="{{ report.id }}" />
+                            <input type="submit" class="btn btn-xs btn-primary-soft" value="View" />
+                        </form>
 
                       </div>
                     </div>
