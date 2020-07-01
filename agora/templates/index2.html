@@ -61,7 +61,7 @@
                         </div>
 
                         <div class="text_message">
-                            Something goes here.
+                            Note: Please do not refresh during the call! If call is not connecting, try reloading again from dashbioard! 
                         </div>
                     </div>
 
@@ -74,7 +74,7 @@
                             <div class="card-body">
                                 Name:
                                 <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.user.name}}</span>
+                                   <span class="badge badge-success-soft">{{profile.user.full_name}}</span>
                                 </h4><br>
                                 Dob:
                                 <h4 class="text-gray-700">
@@ -90,7 +90,7 @@
                                 </h4><br>
                                 Guardian name:
                                 <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.guardian}}</span>
+                                   <span class="badge badge-success-soft">{{profile.guardian_name}}</span>
                                 </h4><br>
                                 Address:
                                 <h4 class="text-gray-700">
@@ -98,46 +98,65 @@
                                 </h4><br>
                               </div>
                         </ul>
+                        <hr>
                         <ul>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
+                            <div class="card-body">
+                                Class/School:
+                                <h4 class="text-gray-700">
+                                   <span class="badge badge-success-soft">{{profile.institute}}</span>
+                                </h4><br>
+                                Stream(If any):
+                                <h4 class="text-gray-700">
+                                   <span class="badge badge-success-soft">{{profile.stream}}</span>
+                                </h4><br>
+                                Avg Mark(If specified):
+                                <h4 class="text-gray-700">
+                                   <span class="badge badge-success-soft">{{profile.mark}}</span>
+                                </h4><br>
+                                Hobbies:
+                                <h4 class="text-gray-700">
+                                   <span class="badge badge-success-soft">{{profile.hobbies}}</span>
+                                </h4><br>
+                              </div>
                         </ul>
                         <ul>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
+                            {% if user.is_mentor %}
+                            <div class="card-body">
+                                Career concerns:
+                                <h4 class="text-gray-900">
+                                   <span >{{profile.career_concern}}</span>
+                                </h4><br>
+                                Personal concerns:
+                                <h4 class="text-gray-900">
+                                   <span>{{profile.personal_concern}}</span>
+                                </h4>
+                              </div>
+                              {% endif %}
                         </ul>
                         <ul>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
+                            {% if user.is_jyolsyan %}
+                            <div class="card-body">
+                         
+                                Birth time:
+                                <h4 class="text-gray-900">
+                                   <span >{{profile.birthtime}}</span>
+                                </h4><br>
+                                Birth place:
+                                <h4 class="text-gray-900">
+                                   <span>{{profile.birthplace}}</span>
+                                </h4>
+                                Daylight saving applicable:
+                                <h4 class="text-gray-900">
+                                   <span>{{profile.dst}}</span>
+                                </h4>
+                                Latitude/Longitude (if specified):
+                                <h4 class="text-gray-900">
+                                   <span>{{profile.latlong}}</span>
+                                </h4>
+                              </div>
+                              {% endif %}
                         </ul>
-                        <ul>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                        </ul>
-                        <ul>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>jjhjhllh</li>
-                            <li>ghjgjhgjkj</li>
-                            <li>ghjgjhgjkj</li>
-                        </ul>
+                        
                     </div>
                     <div class="scroll_bottom"></div>
                 </div>
