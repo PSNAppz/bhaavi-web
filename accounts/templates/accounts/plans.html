@@ -54,7 +54,7 @@
                   {% if package.active_discount != 0 %}
                   <span class="h2 mb-0 mt-2">₹</span>
                   <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{package.amount|integer}}</s></span>
-                  <span class="h2 align-self-end mb-1">{{package.amount|sub:package.active_discount}}</span>
+                  <span class="h2 align-self-end mb-1">{{package.amount|sub:package.active_discount}}</span>*
                   {% else %}
                   <span class="h2 mb-0 mt-2">₹</span>
                   <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{package.amount|integer}}</span>
@@ -121,6 +121,7 @@
         </div> <!-- / .row -->
         <div class="row">
           {% for product in products %}
+          {% if product.id == "PROD-2"%}
           <div class="col-12 col-md-4" data-aos="fade-up">
             
             <!-- Card -->
@@ -148,7 +149,7 @@
                   {% if product.active_discount != 0 %}
                   <span class="h2 mb-0 mt-2">₹</span>
                   <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{product.amount|integer}}</s></span>
-                  <span class="h2 align-self-end mb-1">{{product.amount|sub:product.active_discount}}</span>
+                  <span class="h2 align-self-end mb-1">{{product.amount|sub:product.active_discount}}</span>*
                   {% else %}
                   <span class="h2 mb-0 mt-2">₹</span>
                   <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{product.amount|integer}}</span>
