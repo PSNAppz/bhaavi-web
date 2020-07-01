@@ -212,7 +212,7 @@ def getPDF(request,id=None):
 def showResultMentor(request,id):
     try:
         
-        result = Result.objects.get(pk=id)  
+        result = Result.objects.filter(user_id=id).latest()  
         total = 28        
         p = int((int(result.pragmatic_score)/total)*100)
         i = int((int(result.industrious_score)/total)*100)
