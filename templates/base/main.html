@@ -311,9 +311,9 @@
 					  <!-- <a class="dropdown-item" href="./account-notifications.html">
 						Notifications
 					  </a> -->
-					  <a class="dropdown-item" href="./billing-plans-and-payment.html">
+					  <!-- <a class="dropdown-item" href="./billing-plans-and-payment.html">
 						Plans & Payment
-					  </a>
+					  </a> -->
 					</div>
 				  </li>  
 				  {% endif %}
@@ -426,12 +426,12 @@
             <!-- List -->
             <ul class="list-unstyled text-muted mb-0">
               <li class="mb-3">
-                <a href="#!" class="text-reset">
+                <a href="{% url 'about' %}" class="text-reset">
                   About Us
                 </a>
               </li>
               <li class="mb-3">
-                <a href="#!" class="text-reset">
+                <a href="{% url 'contact' %}" class="text-reset">
                   Contact Us
                 </a>
               </li>
