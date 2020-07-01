@@ -532,7 +532,7 @@ def requestCallAstro(request):
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')          
 
-        if product_id == "PROD-3" or product_id == "PROD-4":
+        if purchased_product.prod_type == "J":
             btime = request.POST.get('time')
             bplace = request.POST.get('place')
             latlong = request.POST.get('latlong')
