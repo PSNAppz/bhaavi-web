@@ -61,7 +61,7 @@
                     </li>
                     <li class="list-item ">
                       <a class="list-link text-reset" href="{% url 'view_history_mentor' %}">
-                        Past schedules
+                        Previous Schedules
                       </a>
                     </li>
                     
@@ -91,6 +91,7 @@
               </div>
             </div>
           </div>
+
             <div class="col-12 col-md-9">
               <div class="card card-bleed shadow-light-lg" id="schedules">
                 <div class="card-header">
@@ -99,7 +100,7 @@
   
                       <!-- Heading -->
                       <h4 class="mb-0">
-                       Available schedules
+                       Upcoming Schedules
                       </h4>
   
                     </div>
@@ -173,6 +174,85 @@
                 </div>
               </div>
   
+
+              <!-- pending reports -->
+
+
+
+              <div class="col-12 col-md-9">
+                <div class="card card-bleed shadow-light-lg" id="schedules">
+                  <div class="card-header">
+                    <div class="row align-items-center">
+                      <div class="col">
+    
+                        <!-- Heading -->
+                        <h4 class="mb-0">
+                         Pending reports
+                        </h4>
+    
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <!-- start for -->
+                    {% for schedule in schedules %}
+                    {% if not schedule.request.report_submitted %}
+                    <div class="list-group list-group-flush">
+                      <div class="list-group-item">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+    
+                            <!-- Icon -->
+                            <div class="icon">
+                              <img src="{% static 'assets/img/icons/duotone-icons/Media/Rec.svg' %}"/>
+                            </div>
+    
+                          </div>
+                          <div class="col ml-n5">
+                            
+                            <!-- Heading -->
+                            <p class="mb-0">
+                              <small class="text-blue-300">
+                                Customer: 
+                              </small> {{schedule.user.full_name}} 
+                            </p>
+                           
+                            <!-- Text -->
+                            Scheduled time: 
+                            <small class="text-gray-700">
+                              {{schedule.slot}}
+                            </small>
+    
+                          </div>
+                          <!-- {% if not schedule.request.report_submitted %} -->
+                          <div class="col-auto">
+    
+                            <!-- Button -->
+                            <form action="{% url 'end_call' %}" method="POST">
+                              {% csrf_token %}
+                              <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                              <input type="submit" class="btn btn-xs btn-warning" value="Submit report" />
+                            </form>
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+    
+                    </div>
+                    {% if not forloop.last %}
+                    <hr>
+                    {% endif %}
+                    <!-- End for -->
+                    {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>    
+
+
+
+              <!-- pending sced end -->
+
+
             </div>
           </div> <!-- / .row -->
         </div> <!-- / .container -->

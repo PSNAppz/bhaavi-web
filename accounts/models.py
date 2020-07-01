@@ -241,7 +241,7 @@ class MentorCallRequest(models.Model):
     responded = models.BooleanField(default=0)
     scheduled = models.BooleanField(default=0)
     closed = models.BooleanField(default=0)
-    report_submitted = models.BooleanField(default=0)
+    report_submitted = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
