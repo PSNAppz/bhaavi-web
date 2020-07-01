@@ -7,6 +7,9 @@ urlpatterns = [
     path('dashboard/PICSET/info', views.preTest, name="picset_pre"),
     path('dashboard/PICSET/api/v1/getQuestion', views.getQuestion, name="getQuestion"),
     path('dashboard/PICSET/pdf/<int:id>', views.getPDF,kwargs={'id': None},name="picset_view"),
+    # Mentor picset view
+    path('dashboard/mentor/PICSET/pdf/<int:id>', views.showResultMentor,name="mentor_picset_view"),
+
     # path('dashboard/PICSET/pdf/<int:id>/download', views.downloadPDF,kwargs={'id': None},name="picset_pdf"),
 
 ]

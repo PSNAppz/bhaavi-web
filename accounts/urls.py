@@ -47,7 +47,12 @@ urlpatterns = [
 
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
+    path('dashboard/reports',views.adminReportView, name="admin_panel_reports"),
     path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call"),
+    path('dashboard/admin/report/<int:id>',views.adminShowReport, name="admin_show_report"),
+    path('dashboard/admin/report/close',views.closeReport, name="close_report"),
+
+    
     path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
     path('dashboard/admin/schedules/<int:id>',views.showSchedules, name="show_schedules"),
     path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule"),
