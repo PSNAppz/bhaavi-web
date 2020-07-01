@@ -208,6 +208,27 @@ def getPDF(request,id=None):
         print(e)
         return redirect('dashboard')   
 
+@login_required(login_url='login')
+def showResultMentor(request,id):
+    try:
+        
+        result = Result.objects.get(pk=id)  
+        total = 28        
+        p = int((int(result.pragmatic_score)/total)*100)
+        i = int((int(result.industrious_score)/total)*100)
+        c = int((int(result.creative_score)/total)*100)
+        s = int((int(result.socialite_score)/total)*100)
+        e = int((int(result.explorer_score)/total)*100)
+        t = int((int(result.traditional_score)/total)*100)  
+        percentage = {'P':p,'I':i,'C':c,'S':s,'E':e,'T':t} 
+        k = Counter(percentage) 
+        top = k.most_common(3)  
+        context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
+        return render(request, 'picset/pdfview.html',context)
+    except Exception as e:
+        #TODO Return 404
+        return redirect('dashboard')     
+
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
     html  = template.render(context_dict)

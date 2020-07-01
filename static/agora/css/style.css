@@ -1,36 +1,36 @@
 #buttons-container {
-    position: bottom;
-    /* top: 10; */
-    z-index: 2;
-    width: 60vw;
+    display: flex;
 }
 
-#details-view {
-    position: top;
-    float: right;
-    overflow-y: scroll;
-    text-align: left;
-    /* float: left; */
-    width: 45%;
-    /* border:1px solid black; */
-    /* width: 60vw; */
-    height: 74vh;
- }
+.button_wrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    padding: 1rem 0;
+    left: 50%;
+    z-index: 2;
+    transform: translateX(-50%);
+    background: linear-gradient(to top, rgba(0, 0, 0, .8), rgba(0, 0, 0, .4));
+
+    /* background: black; */
+}
+
+.text_message {
+    text-align: center;
+    color: white;
+    margin-top: 10px;
+}
 
 #full-screen-video {
-    position: top;
-    float: left;
-    /* overflow-y: scroll; */
-    text-align: left;
-    /* float: left; */
-    width: 53%;
-    /* width: 60vw; */
-    height: 73vh;
+    width: 100%;
+    height: 80vh;
 }
 
-
 #lower-video-bar {
-    height: 20vh;
+    position: relative!important;
+    width: 100%;
+    height: 100%;
+    /* height: 20vh; */
 }
 
 #local-stream-container {
@@ -100,4 +100,89 @@
 
 #screen-share-btn-container {
     z-index: 99;
+}
+
+
+.grid {
+    display: grid;
+    grid-template-columns: 8fr 2fr;
+    width: 100%;
+    position:absolute;
+    top:0;
+    left: 0;
+
+}
+
+.scroll_message {
+    color:#fff;
+    background-color: #36393f;
+    /* background-color: slategray; */
+    height: 80vh;
+}
+
+.scroll_content {
+    overflow-y: auto;
+    height: calc(100% - 107px);
+    margin: 4px;
+}
+
+.scroll_bottom {
+    padding: 13px;
+    box-shadow: 0 -2px 4px 0 rgba(0, 0, 0, 0.4);
+    background: #2f3136;
+}
+
+.scroll_content::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  .scroll_content::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  .scroll_content::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  .scroll_content::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+.scroll_message h3{
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    background: #2f3136;
+} 
+
+.left_bottom {
+    background-color:#2f3136;
+    width: 100%;
+    height: 20vh;
+}
+
+.local_stream {
+    background-color:#000
+}
+
+.full_screen_video_wrapper {
+    position: relative;
+}
+
+@media screen and (max-width: 955px) {
+    .scroll_message h3 {
+        font-size: 1.2rem;
+    }
+
+    .scroll_content {
+        height: calc(100% - 97px);
+    }
+
+    .grid {
+        grid-template-columns: 7fr 3fr;
+    }
 }

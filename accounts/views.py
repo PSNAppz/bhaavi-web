@@ -781,11 +781,34 @@ def adminDashboard(request):
 
 @login_required(login_url='login')
 @admin_user
+def adminReportView(request):
+    call_requests = MentorCallRequest.objects.filter(closed = True).filter(report_submitted = False).order_by('-responded')
+    context = {'requests':call_requests}
+    return render(request, 'admin/pending_reports.html', context) 
+       
+@login_required(login_url='login')
+@admin_user
+def adminShowReport(request, id):
+    schedule = RequestedSchedules.objects.filter(accepted=True).get(request_id=id)
+    context = {'schedule':schedule, 'call_req':id}    
+    return render(request, 'admin/view_report_data.html',context) 
+
+
+@login_required(login_url='login')
+@admin_user
 def showSchedules(request, id):
     schedules = RequestedSchedules.objects.filter(request_id=id)
     user = User.objects.get(pk=schedules[0].user_id)
     context = {'schedules':schedules,'requested_user':user}
     return render(request, 'admin/view_schedule.html', context) 
+
+@login_required(login_url='login')
+@admin_user
+def closeReport(request):
+   if request.method == "POST":
+        call_id = request.POST.get('call')
+        MentorCallRequest.objects.filter(pk=call_id).update(report_submitted=True)
+        return redirect('admin_panel')
 
 @login_required(login_url='login')
 @admin_user
@@ -880,7 +903,7 @@ def astroFinishCall(request, reqid):
         messages.error(request, 'Invalid request')
         return redirect('dashboard')    
     try:
-        MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
+        MentorCallRequest.objects.filter(pk=schedule.request.id).update(closed=True)
     except Exception as e:
         messages.error(request, 'Invalid request')
         return redirect('dashboard')    
@@ -962,8 +985,8 @@ def requestPage(request):
             if results[result] >= daily_sessions:
                 slots.append(result)
     profile = UserProfile.objects.filter(user_id = user.id)
-    # TODO Redirect to respective pages
-    if product_id == "PROD-2":
+    # TODO Redirect to respective pages, check and redirect according to product type
+    if product.prod_type == "M":
         context = {'slots':slots, 'product':product.id, 'profile':profile}
         return render(request, 'accounts/mentor_request.html',context)
     else:      
