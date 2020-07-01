@@ -121,7 +121,7 @@
         </div> <!-- / .row -->
         <div class="row">
           {% for product in products %}
-          {% if product.id == "PROD-2"%}
+          {% if product.id != "PROD-2"%}
           <div class="col-12 col-md-4" data-aos="fade-up">
             
             <!-- Card -->
@@ -192,6 +192,7 @@
             </div>
 
           </div>
+          {% endif %}
           {% endfor %}
           
         </div> <!-- / .row -->
