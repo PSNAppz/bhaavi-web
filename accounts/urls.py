@@ -42,8 +42,8 @@ urlpatterns = [
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard,name="astroboard"),
     path('astroboard/viewDetails', views.astroDetailsView, name="view_details_astro"), 
-    path('mentorboard/prevDetails', views.astroHistory, name="view_history_astro"),
-    path('mentorboard/endCall/<reqid>', views.astroFinishCall, name="astro_call_finish"),
+    path('astroboard/prevDetails', views.astroHistory, name="view_history_astro"),
+    path('astroboard/endCall/<reqid>', views.astroFinishCall, name="astro_call_finish"),
 
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
