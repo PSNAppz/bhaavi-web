@@ -46,7 +46,7 @@ class AgoraVideoCall(View):
                 channel = schedule.channel
                 profile = UserProfile.objects.get(user_id = requested_schedule.user_id)
 
-                MentorCallRequest.objects.filter(pk=requested_schedule.request.id).update(report_submitted=True, closed=False)
+                MentorCallRequest.objects.filter(pk=requested_schedule.request.id).update(report_submitted=False, closed=False)
                 return render(request,'index2.html',{
 
                         'agora_id':self.app_id,
