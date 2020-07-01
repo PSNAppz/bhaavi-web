@@ -56,7 +56,8 @@ class AgoraVideoCall(View):
                         'schedule':schedule_id
                         })
             except Exception as e:
-                return HttpResponse('Unknown Error')
+                print(e)
+                return HttpResponse(e)
         else:
             if not self.checkAppID(self.app_id):
                 return HttpResponse('Programming Error: No App ID')
