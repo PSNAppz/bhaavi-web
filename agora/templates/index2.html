@@ -119,40 +119,42 @@
                                 </h4><br>
                               </div>
                         </ul>
+                        <hr>
                         <ul>
                             {% if user.is_mentor %}
                             <div class="card-body">
                                 Career concerns:
-                                <h4 class="text-gray-900">
+                                <h6 class="text-gray-900">
                                    <span >{{profile.career_concern}}</span>
-                                </h4><br>
+                                </h6><br>
                                 Personal concerns:
-                                <h4 class="text-gray-900">
+                                <h6 class="text-gray-900">
                                    <span>{{profile.personal_concern}}</span>
-                                </h4>
+                                </h6>
                               </div>
                               {% endif %}
                         </ul>
                         <ul>
+                            <hr>
                             {% if user.is_jyolsyan %}
                             <div class="card-body">
                          
                                 Birth time:
-                                <h4 class="text-gray-900">
+                                <h5 class="text-gray-900">
                                    <span >{{profile.birthtime}}</span>
-                                </h4><br>
+                                </h5><br>
                                 Birth place:
-                                <h4 class="text-gray-900">
+                                <h5 class="text-gray-900">
                                    <span>{{profile.birthplace}}</span>
-                                </h4>
+                                </h5>
                                 Daylight saving applicable:
-                                <h4 class="text-gray-900">
+                                <h5 class="text-gray-900">
                                    <span>{{profile.dst}}</span>
-                                </h4>
+                                </h5>
                                 Latitude/Longitude (if specified):
-                                <h4 class="text-gray-900">
+                                <h5 class="text-gray-900">
                                    <span>{{profile.latlong}}</span>
-                                </h4>
+                                </h5>
                               </div>
                               {% endif %}
                         </ul>
