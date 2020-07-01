@@ -37,6 +37,16 @@
                                 </button>
                             </div>
                             <div class="col-md-2 text-center">
+                                <form method="GET" action="{% if user.is_mentor %} 
+                                        {% url 'end_call' schedule %}
+                                    {% elif user.is_customer %} 
+                                         {% url 'call_end' %}
+                                    {% else %}
+                                    {% url 'astro_call_finish' schedule %}">
+                                    <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
+                                        <i id="exit-icon" class="fas fa-phone-slash"></i>
+                                    </button> 
+                                </form>
                                 {% if user.is_mentor %} 
                                 <a href="{% url 'end_call' schedule %}"> 
                                    {% elif user.is_customer %}

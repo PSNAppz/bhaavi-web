@@ -35,8 +35,9 @@ function enableUiControls(localStream) {
     // });
 
     $("#exit-btn").click(function (e) {
-        e.preventDefault();
+        
         if (confirm('Are you sure you want to end the call?')) {
+            e.preventDefault();
             leaveChannel();
             $("#final").submit();
 
