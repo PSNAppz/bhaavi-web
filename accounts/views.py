@@ -843,6 +843,7 @@ def paymentStatus(razorpay_payment_id, razorpay_order_id,  razorpay_signature):
 def mentorDashboard(request):
     profile = MentorProfile.objects.get(user_id = request.user.id)
     schedules = RequestedSchedules.objects.filter(mentor_id = profile.id).filter(accepted=True)
+    # reports = MentorCallRequest.objects.filter(mentor_id=profile.id).filter(re)
     context = {'schedules':schedules, 'profile':profile}
     return render(request, 'mentor/dashboard.html',context)
 
