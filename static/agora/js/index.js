@@ -34,14 +34,13 @@ function enableUiControls(localStream) {
     //     }
     // });
 
-    $("#exit-btn").click(function (e) {
+    $("#exit-btn").click(function () {
         
-        if (confirm('Are you sure you want to end the call?')) {
-            e.preventDefault();
+        
             leaveChannel();
             $("#final").submit();
 
-        }
+  
         
     });
 
