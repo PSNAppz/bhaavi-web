@@ -420,6 +420,7 @@ def requestCall(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(product_id=product_id).product
         except Exception as e:
+            print(e)
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')          
 
@@ -969,13 +970,14 @@ def requestPage(request):
         schedules = RequestedSchedules.objects.none()
         accepted_requests = MentorCallRequest.objects.none()
         product = Product.objects.get(pk=product_id)
+        
         related_prods = Product.objects.filter(prod_type=product.prod_type)
 
-        for product in related_prods:
-            accepted_requests |= MentorCallRequest.objects.filter(product_id = product.id).filter(scheduled=True).filter(closed=False)
+        for product_related in related_prods:
+            accepted_requests |= MentorCallRequest.objects.filter(product_id = product_related.id).filter(scheduled=True).filter(closed=False)
         for a_request in accepted_requests:
             schedules |= RequestedSchedules.objects.filter(request_id=a_request.id).filter(accepted=True)
-
+        
         for schedule in schedules:
             now = schedule.slot                
             kv.update({now:now.strftime("%d-%m-%Y")+",No slots available"})
