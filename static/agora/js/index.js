@@ -4,6 +4,7 @@ $("#join-channel").click(function (event) {
     var agoraAppId = "";
     var channelName = $('#form-channel').val();
     initClientAndJoinChannel(agoraAppId, channelName);
+    localStream.unmuteAudio();
     $("#modalForm").modal("hide");
 });
 
@@ -23,18 +24,24 @@ function enableUiControls(localStream) {
         toggleVideo(localStream);
     });
 
-    $("#screen-share-btn").click(function () {
-        toggleScreenShareBtn(); // set screen share button icon
-        $("#screen-share-btn").prop("disabled", true); // disable the button on click
-        if (screenShareActive) {
-            stopScreenShare();
-        } else {
-            initScreenShare();
-        }
-    });
+    // $("#screen-share-btn").click(function () {
+    //     toggleScreenShareBtn(); // set screen share button icon
+    //     $("#screen-share-btn").prop("disabled", true); // disable the button on click
+    //     if (screenShareActive) {
+    //         stopScreenShare();
+    //     } else {
+    //         initScreenShare();
+    //     }
+    // });
 
     $("#exit-btn").click(function () {
-        leaveChannel();
+        
+        
+            leaveChannel();
+            $("#final").submit();
+
+  
+        
     });
 
     // keyboard listeners 
@@ -58,10 +65,10 @@ function enableUiControls(localStream) {
                     initScreenShare();
                 }
                 break;
-            case "q":
-                console.log("you quit the call");
-                leaveChannel();
-                break;
+            // case "q":
+            //     console.log("you quit the call");
+            //     leaveChannel();
+            //     break;
             default:  // do nothing
         }
 

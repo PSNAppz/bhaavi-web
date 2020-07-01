@@ -283,12 +283,14 @@ function leaveChannel() {
         $("#mic-btn").prop("disabled", true);
         $("#video-btn").prop("disabled", true);
         $("#screen-share-btn").prop("disabled", true);
-        $("#exit-btn").prop("disabled", true);
+        $("#exit-btn").prop("disabled", false);
         // hide the mute/no-video overlays
         toggleVisibility("#mute-overlay", false);
         toggleVisibility("#no-local-video", false);
         // show the modal overlay to join
         $("#modalForm").modal("show");
+       
+        
     }, function (err) {
         console.log("client leave failed ", err); //error handling
     });

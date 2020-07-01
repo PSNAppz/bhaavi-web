@@ -206,9 +206,17 @@
                     </label>
                   </div>
             </div>
-
-        
-                
+         
+            <div class="col-auto">
+  
+              <!-- Button -->
+              <form action="{% url 'mentor_picset_view' profile.user.id %}" method="GET">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-xs btn-primary-soft" value="View PICSET details" />
+              </form>
+              
+            </div>
+            
             </div>
         </div>
    

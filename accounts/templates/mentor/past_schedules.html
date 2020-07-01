@@ -54,16 +54,16 @@
 
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-6">
-                    <li class="list-item">
-                      <a class="list-link text-reset" href="{% url 'dashboard' %}">
+                    <li class="list-item ">
+                      <a class="list-link text-reset" href="{% url 'mentorboard' %}">
                         Schedules
                       </a>
                     </li>
-                    <li class="list-item active">
-                        <a class="list-link text-reset" href="#">
-                          Past schedules
-                        </a>
-                      </li>
+                    <li class="list-item active ">
+                      <a class="list-link text-reset" href="{% url 'view_history_mentor' %}">
+                        Previous Schedules
+                      </a>
+                    </li>
                     
                   </ul>
 
@@ -99,7 +99,7 @@
   
                       <!-- Heading -->
                       <h4 class="mb-0">
-                       Available schedules
+                       Previous schedules
                       </h4>
   
                     </div>
@@ -108,7 +108,7 @@
                 <div class="card-body">
                   <!-- start for -->
                   {% for schedule in schedules %}
-                  {% if not schedule.request.closed %}
+                  {% if schedule.request.closed %}
                   <div class="list-group list-group-flush">
                     <div class="list-group-item">
                       <div class="row align-items-center">
@@ -136,15 +136,17 @@
                           </small>
   
                         </div>
+                        {% if not schedule.request.report_submitted %}
                         <div class="col-auto">
   
                           <!-- Button -->
-                          <form action="{% url 'call_details' %}" method="POST">
+                          <form action="{% url 'end_call' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="schedule" value="{{ schedule.id }}" />
-                            <input type="submit" class="btn btn-xs btn-success-soft" value="Join Call" />
+                            <input type="submit" class="btn btn-xs btn-warning" value="Submit report" />
                           </form>
                         </div>
+                        {% endif %}
                       </div>
                     </div>
   

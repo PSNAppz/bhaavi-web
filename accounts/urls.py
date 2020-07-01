@@ -9,6 +9,11 @@ urlpatterns = [
     path('dashboard/profile', views.profilePage, name="profile"),
     path('dashboard/profile/save', views.saveProfile, name="profile_save"),
     path('dashboard', views.userDashboard,name="dashboard"),
+    path('dashboard/view', views.viewReport,name="report_view"),    
+    path('dashboard/conference/finish', views.finishCallUser,name="call_end"),
+
+    
+
     path('login', views.loginPage, name="login"),
     path('mentor/register', views.mentorRegisterPage, name="mentor_register"),
     path('jyolsyan/register', views.jyolsyanRegisterPage, name="jyolsyan_register"),
@@ -30,15 +35,24 @@ urlpatterns = [
     # Mentor Dash
     path('mentorboard/', views.mentorDashboard, name="mentorboard"),
     path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
+    path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
+    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
+    path('dashboard/conference/end/<reqid>',views.endCall, name="end_call"),
 
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard,name="astroboard"),
     path('astroboard/viewDetails', views.astroDetailsView, name="view_details_astro"), 
-
+    path('astroboard/prevDetails', views.astroHistory, name="view_history_astro"),
+    path('astroboard/endCall/<reqid>', views.astroFinishCall, name="astro_call_finish"),
 
     # Admin panel
     path('dashboard/admin',views.adminDashboard, name="admin_panel"),
+    path('dashboard/reports',views.adminReportView, name="admin_panel_reports"),
     path('dashboard/admin/request/<int:id>',views.respondCallRequest, name="respond_call"),
+    path('dashboard/admin/report/<int:id>',views.adminShowReport, name="admin_show_report"),
+    path('dashboard/admin/report/close',views.closeReport, name="close_report"),
+
+    
     path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
     path('dashboard/admin/schedules/<int:id>',views.showSchedules, name="show_schedules"),
     path('dashboard/admin/schedule/drop/<int:id>',views.dropSchedule, name="drop_schedule"),
@@ -47,10 +61,16 @@ urlpatterns = [
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/',Agora.as_view(), name="conference"),
 
+
     # Static pages
     path('privacy_policy', views.viewPrivacyPolicy, name="privacy"),
     path('terms_and_conditions', views.viewTerms, name="terms"),
     path('refund_policy', views.viewRefund, name="refund"),
+    path('about', views.viewAbout, name="about"),
+    path('mentors', views.viewMentors, name="mentors"),
+    path('contact', views.viewContact, name="contact"),
+
+    
 
     # email_verification
     path('activate/<uidb64>/<token>/', views.activate_account, name='activate'),

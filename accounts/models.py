@@ -241,6 +241,7 @@ class MentorCallRequest(models.Model):
     responded = models.BooleanField(default=0)
     scheduled = models.BooleanField(default=0)
     closed = models.BooleanField(default=0)
+    report_submitted = models.BooleanField(default=1)
     timestamp = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):
@@ -293,3 +294,13 @@ class UserRedeemCoupon(models.Model):
 
     def __str__(self):
         return 'User name: {}'.format(self.user.full_name) 
+
+class FinalMentorReport(models.Model): 
+
+    call = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False, related_name='report_schedule') 
+    requirement = models.CharField(max_length=255,null=True, blank=True)
+    diagnosis = models.CharField(max_length=255,null=True, blank=True)
+    findings = models.CharField(max_length=255,null=True, blank=True)
+    suggestions = models.CharField(max_length=255,null=True, blank=True)
+    recommendation = models.CharField(max_length=255,null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)

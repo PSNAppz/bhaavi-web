@@ -26,7 +26,7 @@
             </h1>
               <!-- Text -->
               <p class="font-size-lg text-white-75 mb-0">
-                Welcome to mentor dashboard.
+                Welcome to astro dashboard.
               </p>
   
             </div>
@@ -55,13 +55,13 @@
                   <!-- List -->
                   <ul class="card-list list text-gray-700 mb-6">
                     <li class="list-item active">
-                      <a class="list-link text-reset" href="account-general.html">
-                        Schedules
+                      <a class="list-link text-reset" href="{% url 'astroboard' %}">
+                        Upcoming Schedules
                       </a>
                     </li>
                     <li class="list-item ">
-                      <a class="list-link text-reset" href="#">
-                        Past schedules
+                      <a class="list-link text-reset" href="{% url 'view_history_astro' %}">
+                        Previous calls
                       </a>
                     </li>
                     
@@ -99,7 +99,7 @@
   
                       <!-- Heading -->
                       <h4 class="mb-0">
-                       Available schedules
+                       Upcoming schedules
                       </h4>
   
                     </div>

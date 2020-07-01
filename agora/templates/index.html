@@ -17,6 +17,39 @@
 <body>
     <div class="container-fluid p-0">
         <div id="main-container">
+
+
+          <div id="buttons-container" class="row justify-content-center mt-3">
+                <div class="col-md-2 text-center">
+                    <button id="mic-btn" type="button" class="btn btn-block btn-dark btn-lg">
+                        <i id="mic-icon" class="fas fa-microphone"></i>
+                    </button>
+                </div>
+                <div class="col-md-2 text-center">
+                    <button id="video-btn" type="button" class="btn btn-block btn-dark btn-lg">
+                        <i id="video-icon" class="fas fa-video"></i>
+                    </button>
+                </div>
+                <div class="col-md-2 text-center">
+                   {% if user.is_mentor %} 
+                   <a href="{% url 'end_call' schedule %}"> 
+                      {% elif user.is_customer %}
+                      <a href="{% url 'call_end' %}"> 
+                        {% else %}
+                        <a href="{% url 'astro_call_finish' schedule %}"> 
+                        {% endif %}
+                      <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
+                          <i id="exit-icon" class="fas fa-phone-slash"></i>
+                      </button>
+                    </a>
+                   
+
+                </div>
+            </div>
+
+
+
+
             <div id="full-screen-video"></div>
             <div id="lower-video-bar" class="row fixed-bottom mb-1">
                 <div id="remote-streams-container" class="container col-9 ml-1">
@@ -35,7 +68,139 @@
                 </div>
             </div>
 
-            <div id="buttons-container" class="row justify-content-center mt-3">
+            <!-- Data Section -->
+{% if not user.is_customer %}
+            <div id="details-view" class="border">
+                <br>
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Basic User Details
+                          </button>
+                        </h2>
+                      </div>
+                  
+                      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                          Name:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.user.name}}</span>
+                          </h4><br>
+                          Dob:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.dob}}</span>
+                          </h4><br>
+                          Gender:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.gender}}</span>
+                          </h4><br>
+                          Siblings:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.siblings}}</span>
+                          </h4><br>
+                          Guardian name:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.guardian}}</span>
+                          </h4><br>
+                          Address:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.address}}</span>
+                          </h4><br>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            User Academic details
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                          Class/School:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.institute}}</span>
+                          </h4><br>
+                          Stream(If any):
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.stream}}</span>
+                          </h4><br>
+                          Avg Mark(If specified):
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.mark}}</span>
+                          </h4><br>
+                          Hobbies:
+                          <h4 class="text-gray-700">
+                             <span class="badge badge-success-soft">{{profile.hobbies}}</span>
+                          </h4><br>
+                        </div>
+                      </div>
+                    </div>
+                    {% if user.is_mentor %}
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Requested details.
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body">
+                         
+                          Career concerns:
+                          <h4 class="text-gray-900">
+                             <span >{{profile.career_concern}}</span>
+                          </h4><br>
+                          Personal concerns:
+                          <h4 class="text-gray-900">
+                             <span>{{profile.personal_concern}}</span>
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+                    {% endif %}
+                    {% if user.is_jyolsyan %}
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Requested details.
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body">
+                         
+                          Birth time:
+                          <h4 class="text-gray-900">
+                             <span >{{profile.birthtime}}</span>
+                          </h4><br>
+                          Birth place:
+                          <h4 class="text-gray-900">
+                             <span>{{profile.birthplace}}</span>
+                          </h4>
+                          Daylight saving applicable:
+                          <h4 class="text-gray-900">
+                             <span>{{profile.dst}}</span>
+                          </h4>
+                          Latitude/Longitude (if specified):
+                          <h4 class="text-gray-900">
+                             <span>{{profile.latlong}}</span>
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+            </div>
+            {% endif %}
+    <!-- Data section end -->
+            <!-- <div id="buttons-container" class="row justify-content-center mt-3">
                 <div class="col-md-2 text-center">
                     <button id="mic-btn" type="button" class="btn btn-block btn-dark btn-lg">
                         <i id="mic-icon" class="fas fa-microphone"></i>
@@ -46,14 +211,27 @@
                         <i id="video-icon" class="fas fa-video"></i>
                     </button>
                 </div>
-                <div class="col-md-2 text-center">
-                    <a href="{{channel_end_url}}">
-                        <button id="exit-btn" type="button"  class="btn btn-block btn-danger btn-lg">
+                <div class="col-md-2 text-center"> -->
+     <!-- 
+         #TODO - butto type was button changed it to 'submit' to submit the form  
+        check if there are any issues in ending the call.
+    -->
+
+<!--                     <form id="final" method="POST" action="{{ channel_end_url }}">
+                        {% csrf_token %}
+                        <input type="hidden" name="schedule" value="{{ schedule }}" />
+                        <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
                             <i id="exit-icon" class="fas fa-phone-slash"></i>
                         </button>
-                    </a>
-                </div>
-            </div>
+                    </form>  -->
+<!-- 
+                    <a href="{{ channel_end_url }}">
+                        
+                    </a> -->
+
+
+                <!-- </div>
+            </div> -->
 
         </div>
     </div>
