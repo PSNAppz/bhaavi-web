@@ -48,17 +48,7 @@
                                         <i id="exit-icon" class="fas fa-phone-slash"></i>
                                     </button> 
                                 </form>
-                                {% if user.is_mentor %} 
-                                <a href="{% url 'end_call' schedule %}"> 
-                                   {% elif user.is_customer %}
-                                   <a href="{% url 'call_end' %}"> 
-                                     {% else %}
-                                     <a href="{% url 'astro_call_finish' schedule %}"> 
-                                     {% endif %}
-                                   <button id="exit-btn" type="button"  class="btn btn-block btn-danger btn-lg">
-                                       <i id="exit-icon" class="fas fa-phone-slash"></i>
-                                   </button>
-                                 </a>
+                                
                                 
              
                              </div>
