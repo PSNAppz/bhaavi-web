@@ -226,7 +226,7 @@ def showResultMentor(request,id):
         context = {'result':result,'P':p,'I':i,'C':c,'S':s,'E':e,'T':t,'top':top}
         return render(request, 'picset/pdfview.html',context)
     except Exception as e:
-        #TODO Return 404
+        messages.warning('User has not written PICSET test yet!')
         return redirect('dashboard')     
 
 def render_to_pdf(template_src, context_dict={}):
