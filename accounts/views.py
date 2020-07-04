@@ -634,7 +634,7 @@ def requestSchedule(request):
                     time_delta = (mentor_schedule.slot - slot)
                     total_seconds = time_delta.total_seconds()
                     minutes = total_seconds/60
-                    if (minutes <= 120 and minutes >= -120):
+                    if (minutes <= 89 and minutes >= -89):
                         messages.warning(request, 'Mentor Schedule clash found, please add a different time for the new schedule.')
                         return redirect('admin_panel')
 
@@ -645,7 +645,7 @@ def requestSchedule(request):
                         time_delta = (clash_req.slot - slot)
                         total_seconds = time_delta.total_seconds()
                         minutes = total_seconds/60
-                        if (minutes <= 120 and minutes >= -120):
+                        if (minutes <= 89 and minutes >= -89):
                             messages.warning(request, 'User Schedule clash found, please add a different time for the new schedule.')
                             return redirect('admin_panel')
                         else:
