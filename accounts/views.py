@@ -397,7 +397,7 @@ def requestCall(request):
         institute = request.POST.get('institute')
         siblings = request.POST.get('siblings')
         language = request.POST.get('language')
-        contact = int(request.POST.get('contact'))  
+        contact = request.POST.get('contact') 
         hobbies = request.POST.get('hobbies')
         address = request.POST.get('address')
         guardian_name = request.POST.get('guardian')
