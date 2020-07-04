@@ -298,9 +298,9 @@ class UserRedeemCoupon(models.Model):
 class FinalMentorReport(models.Model): 
 
     call = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False, related_name='report_schedule') 
-    requirement = models.CharField(max_length=255,null=True, blank=True)
-    diagnosis = models.CharField(max_length=255,null=True, blank=True)
-    findings = models.CharField(max_length=255,null=True, blank=True)
-    suggestions = models.CharField(max_length=255,null=True, blank=True)
-    recommendation = models.CharField(max_length=255,null=True, blank=True)
+    requirement = models.TextField(null=True, blank=True)
+    diagnosis = models.TextField(null=True, blank=True)
+    findings = models.TextField(null=True, blank=True)
+    suggestions = models.TextField(null=True, blank=True)
+    recommendation = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
