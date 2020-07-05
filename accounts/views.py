@@ -238,7 +238,7 @@ def callDetails(request):
                 accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
                 token = accepted_call.token
                 if not token:
-                    expiryTimeSec = 3600
+                    expiryTimeSec = 5600
                     appCert = config('AGORA_CERT_PRIMARY')
                     appID = config('AGORA_APP_ID')
                     uid = 0
