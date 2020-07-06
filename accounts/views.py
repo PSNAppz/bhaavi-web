@@ -729,7 +729,7 @@ def userDashboard(request):
     reports = FinalMentorReport.objects.none()
 
     for final in finished_calls:
-        reports |= FinalMentorReport.objects.filter(call_id = final.id) 
+        reports |= FinalMentorReport.objects.filter(call_id = final.id).filter(accepted=True) 
     
     for purchase in purchases:
         if purchase.product.call_required:

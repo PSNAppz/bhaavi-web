@@ -303,4 +303,5 @@ class FinalMentorReport(models.Model):
     findings = models.TextField(null=True, blank=True)
     suggestions = models.TextField(null=True, blank=True)
     recommendation = models.TextField(null=True, blank=True)
+    accepted = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
