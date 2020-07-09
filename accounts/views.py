@@ -1110,3 +1110,7 @@ def submitReport(request):
             MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('mentorboard')
+
+#sitemap            
+def sitemap(request):
+    return render(request,'base/sitemap.html')
