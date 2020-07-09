@@ -1113,4 +1113,4 @@ def submitReport(request):
 
 #sitemap            
 def sitemap(request):
-    return render(request,'base/sitemap.html')
+    return render(request, 'base/sitemap.xml', content_type='text/xml')
