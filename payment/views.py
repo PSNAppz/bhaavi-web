@@ -21,8 +21,10 @@ def plansPage(request):
 # Payment functions
 def initPaymentClient():
     rpay_id = config('RazorPay_ID')
-    rpay_seceret = config('RazorPay_Secret')
-    client = razorpay.Client(auth=(rpay_id, rpay_seceret))
+    rpay_id = 'rzp_test_EvjFaOqxyfaPP8'
+    # rpay_seceret = config('RazorPay_Secret')
+    rpay_secret = 'y5fv2iktTLJdMfVtXskRaJ4G'
+    client = razorpay.Client(auth=(rpay_id, rpay_secret))
     return client
 
 
