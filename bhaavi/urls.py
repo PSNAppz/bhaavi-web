@@ -22,7 +22,10 @@ urlpatterns = [
     path('', include('picset.urls')),
 
     # Mentor Dash
-    path('', include('mentor.urls'))
+    path('', include('mentor.urls')),
+
+    # Payment flow below
+    path('', include('payment.urls'))
 
 ]
 handler400 = 'accounts.views.handler400'

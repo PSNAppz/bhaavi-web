@@ -20,10 +20,6 @@ urlpatterns = [
     path('logout', views.logoutUser, name="logout"),
 
     # Payment flow below
-    path('payment/plans', views.plansPage, name='plans'),
-    path('payment/initiate', views.createOrder, name="payment"),
-    path('payment/status', views.paymentStatus, name='payment_status'),
-    path('payment/done', views.paymentSuccessPage, name="success"),
 
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('request/astro', views.requestCallAstro, name="astro_request"),
