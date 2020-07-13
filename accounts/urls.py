@@ -31,13 +31,6 @@ urlpatterns = [
     path('request/details', views.requestPage, name="request_details"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
 
-    # Mentor Dash
-    path('mentorboard/', views.mentorDashboard, name="mentorboard"),
-    path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
-    path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
-    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
-    path('dashboard/conference/end/<reqid>', views.endCall, name="end_call"),
-
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard, name="astroboard"),
     path('astroboard/viewDetails', views.astroDetailsView, name="view_details_astro"),

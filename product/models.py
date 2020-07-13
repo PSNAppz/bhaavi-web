@@ -11,6 +11,7 @@ def product_gen():
     prod_id = 'PROD-' + str(uid.hex)
     return prod_id
 
+
 class Product(models.Model):
     id = models.CharField(max_length=255, default=product_gen, primary_key=True, editable=False)
     name = models.CharField(max_length=255)
@@ -42,3 +43,33 @@ class ProductPackages(models.Model):
 
     def __str__(self):
         return 'Package name: {}'.format(self.package.name)
+
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=255)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    count = models.IntegerField(default=1)
+    multiple_usage = models.BooleanField(default=0)
+    active = models.BooleanField(default=1)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Product name: {}'.format(self.name)
+
+    @property
+    def is_siteWide(self):
+        if (self.product == ""):
+            return True
+        else:
+            return False
+
+
+class UserRedeemCoupon(models.Model):
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, related_name='coupon_details', null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_details', null=False)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'User name: {}'.format(self.user.full_name)

@@ -3,8 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.core.validators import RegexValidator
 import uuid
 
-from product.models import *
-
 
 class UserManager(BaseUserManager):
     def create_user(self, full_name, email, password=None):
@@ -56,6 +54,8 @@ def invoice_gen():
 
 
 def product_gen():
+    from product.models import Product
+
     uid = uuid.uuid4()
     last_prod = Product.objects.all().order_by('id').last()
     if not last_prod:
@@ -142,34 +142,9 @@ class UserProfile(models.Model):
         return 'Profile of user: {}'.format(self.user.full_name)
 
 
-class MentorProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
-    tags = models.CharField(max_length=255)
-    experience = models.IntegerField(default=0)
-    active = models.BooleanField(default=1)
-    verified = models.BooleanField(default=0)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'Mentor: {}'.format(self.user.full_name)
-
-    @property
-    def mentor_type(self):
-        if self.user.mentor:
-            return 1
-        else:
-            return 2
-
-
-class MentorProducts(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return 'Associated Product name: {}'.format(self.product.name)
-
-
 class UserPurchases(models.Model):
+    from product.models import Product
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     status = models.BooleanField(default=0)
@@ -204,6 +179,8 @@ class RazorPayTransactions(models.Model):
 
 
 class MentorCallRequest(models.Model):
+    from product.models import Product
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mentor_request', null=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     request_date = models.CharField(max_length=20, blank=True)
@@ -240,6 +217,8 @@ class MentorCallRequest(models.Model):
 
 
 class RequestedSchedules(models.Model):
+    from mentor.models import MentorProfile
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_times', null=False)
     mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
     request = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False,
@@ -263,36 +242,6 @@ class AcceptedCallSchedule(models.Model):
 
     def __str__(self):
         return 'Schedule id: {}'.format(self.schedule.id)
-
-
-class Coupon(models.Model):
-    code = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    count = models.IntegerField(default=1)
-    multiple_usage = models.BooleanField(default=0)
-    active = models.BooleanField(default=1)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'Product name: {}'.format(self.name)
-
-    @property
-    def is_siteWide(self):
-        if (self.product == ""):
-            return True
-        else:
-            return False
-
-
-class UserRedeemCoupon(models.Model):
-    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, related_name='coupon_details', null=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_details', null=False)
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'User name: {}'.format(self.user.full_name)
 
 
 class FinalMentorReport(models.Model):
