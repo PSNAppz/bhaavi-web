@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'agora',
+
     'accounts',
+    'product',
+    
+    
     'picset',
     'crispy_forms'
     
