@@ -4,8 +4,9 @@ from django.contrib import messages
 
 from mentor.decorators import mentor
 
-from accounts.models import RequestedSchedules, MentorCallRequest, UserProfile, FinalMentorReport
+from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport
 from mentor.models import MentorProfile
+from accounts.models import UserProfile
 
 
 @login_required(login_url='login')

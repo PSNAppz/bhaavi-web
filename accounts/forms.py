@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.forms.utils import ValidationError
 from .models import User
-from .models import RequestedSchedules, MentorCallRequest, AcceptedCallSchedule
+from schedule.models import RequestedSchedules, MentorCallRequest, AcceptedCallSchedule
 from django import forms
 
 
