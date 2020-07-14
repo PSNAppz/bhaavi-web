@@ -34,6 +34,12 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 .idea
+accounts/migrations
+mentor/migrations
+payment/migrations
+picset/migrations
+product/migrations
+schedule/migrations
 
 
 

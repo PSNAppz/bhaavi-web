@@ -1,8 +1,31 @@
+import uuid
+
 from django.db import models
 
-
 # Create your models here.
-from accounts.models import UserPurchases
+from accounts.models import User
+from product.models import Product
+
+
+def invoice_gen():
+    uid = uuid.uuid4()
+    last_invoice = UserPurchases.objects.all().order_by('id').last()
+    if not last_invoice:
+        return 'BHVI-' + uid.hex
+    new_invoice_no = 'BHVI-' + str(uid.hex)
+    return new_invoice_no
+
+
+class UserPurchases(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    status = models.BooleanField(default=0)
+    payment_progress = models.BooleanField(default=1)
+    invoice = models.CharField(max_length=255, default=invoice_gen)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Receipt id: {}'.format(self.invoice)
 
 
 class RazorPayTransactions(models.Model):
@@ -25,4 +48,3 @@ class RazorPayTransactions(models.Model):
     @property
     def transaction_success(self):
         return self.status
-

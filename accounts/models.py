@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 import uuid
 
 
+
 class UserManager(BaseUserManager):
     def create_user(self, full_name, email, password=None):
         if not full_name:
@@ -44,15 +45,6 @@ def channel_gen():
     return uid.hex
 
 
-def invoice_gen():
-    uid = uuid.uuid4()
-    last_invoice = UserPurchases.objects.all().order_by('id').last()
-    if not last_invoice:
-        return 'BHVI-' + uid.hex
-    new_invoice_no = 'BHVI-' + str(uid.hex)
-    return new_invoice_no
-
-
 def product_gen():
     from product.models import Product
 
@@ -62,6 +54,17 @@ def product_gen():
         return 'PROD-' + uid.hex
     prod_id = 'PROD-' + str(uid.hex)
     return prod_id
+
+
+def invoice_gen():
+    from payment.models import UserPurchases
+
+    uid = uuid.uuid4()
+    last_invoice = UserPurchases.objects.all().order_by('id').last()
+    if not last_invoice:
+        return 'BHVI-' + uid.hex
+    new_invoice_no = 'BHVI-' + str(uid.hex)
+    return new_invoice_no
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -140,20 +143,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
-
-
-class UserPurchases(models.Model):
-    from product.models import Product
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_products')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    status = models.BooleanField(default=0)
-    payment_progress = models.BooleanField(default=1)
-    invoice = models.CharField(max_length=255, default=invoice_gen)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return 'Receipt id: {}'.format(self.invoice)
 
 
 class MentorCallRequest(models.Model):

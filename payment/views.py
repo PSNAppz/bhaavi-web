@@ -5,8 +5,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 
 # Create your views here.
-from accounts.models import UserProfile, UserPurchases
-from payment.models import RazorPayTransactions
+from accounts.models import UserProfile
+from payment.models import RazorPayTransactions, UserPurchases
 from product.models import Product, ProductFeatures, ProductPackages
 
 

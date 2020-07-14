@@ -1,9 +1,9 @@
 from django.db import models
 
-
 # Create your models here.
 from accounts.models import User
 from product.models import Product
+
 
 class MentorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')

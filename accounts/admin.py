@@ -42,7 +42,6 @@ admin.site.register(UserProfile)
 admin.site.register(AcceptedCallSchedule)
 admin.site.register(RequestedSchedules)
 admin.site.register(MentorCallRequest)
-admin.site.register(UserPurchases)
 
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)
