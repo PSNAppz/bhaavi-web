@@ -140,7 +140,7 @@
                         <div class="col-auto">
   
                           <!-- Button -->
-                          <form action="{% url 'end_call' %}" method="POST">
+                          <form action="{% url 'end_call' schedule.id %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="schedule" value="{{ schedule.id }}" />
                             <input type="submit" class="btn btn-xs btn-warning" value="Submit report" />

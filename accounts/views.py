@@ -238,7 +238,7 @@ def callDetails(request):
                 accepted_call = AcceptedCallSchedule.objects.filter(schedule_id = schedule.id).get(completed=False)
                 token = accepted_call.token
                 if not token:
-                    expiryTimeSec = 3600
+                    expiryTimeSec = 5600
                     appCert = config('AGORA_CERT_PRIMARY')
                     appID = config('AGORA_APP_ID')
                     uid = 0
@@ -397,7 +397,7 @@ def requestCall(request):
         institute = request.POST.get('institute')
         siblings = request.POST.get('siblings')
         language = request.POST.get('language')
-        contact = int(request.POST.get('contact'))  
+        contact = request.POST.get('contact') 
         hobbies = request.POST.get('hobbies')
         address = request.POST.get('address')
         guardian_name = request.POST.get('guardian')
@@ -634,7 +634,7 @@ def requestSchedule(request):
                     time_delta = (mentor_schedule.slot - slot)
                     total_seconds = time_delta.total_seconds()
                     minutes = total_seconds/60
-                    if (minutes <= 120 and minutes >= -120):
+                    if (minutes <= 89 and minutes >= -89):
                         messages.warning(request, 'Mentor Schedule clash found, please add a different time for the new schedule.')
                         return redirect('admin_panel')
 
@@ -645,7 +645,7 @@ def requestSchedule(request):
                         time_delta = (clash_req.slot - slot)
                         total_seconds = time_delta.total_seconds()
                         minutes = total_seconds/60
-                        if (minutes <= 120 and minutes >= -120):
+                        if (minutes <= 89 and minutes >= -89):
                             messages.warning(request, 'User Schedule clash found, please add a different time for the new schedule.')
                             return redirect('admin_panel')
                         else:
@@ -729,7 +729,7 @@ def userDashboard(request):
     reports = FinalMentorReport.objects.none()
 
     for final in finished_calls:
-        reports |= FinalMentorReport.objects.filter(call_id = final.id) 
+        reports |= FinalMentorReport.objects.filter(call_id = final.id).filter(accepted=True) 
     
     for purchase in purchases:
         if purchase.product.call_required:
@@ -1110,3 +1110,7 @@ def submitReport(request):
             MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('mentorboard')
+
+#sitemap            
+def sitemap(request):
+    return render(request, 'base/sitemap.xml', content_type='text/xml')
