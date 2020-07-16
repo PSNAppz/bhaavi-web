@@ -841,6 +841,14 @@ def adminProductView(request):
 
 @login_required(login_url='login')
 @admin_user
+def adminCustomersView(request):
+    users = User.objects.all()
+    context = {'Users': users}
+    return render(request, 'admin/customers.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
 def adminShowReport(request, id):
     schedule = RequestedSchedules.objects.filter(accepted=True).get(request_id=id)
     context = {'schedule': schedule, 'call_req': id}

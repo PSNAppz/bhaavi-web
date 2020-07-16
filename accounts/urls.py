@@ -56,8 +56,9 @@ urlpatterns = [
     path('dashboard/admin/schedule/drop/<int:id>', views.dropSchedule, name="drop_schedule"),
 
     path('dashboard/admin/product', views.adminProductView, name="product"),
+    path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
 
-    # Conference call URLs
+    # Conference call URLsa
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/', Agora.as_view(), name="conference"),
 
