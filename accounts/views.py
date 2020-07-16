@@ -38,6 +38,11 @@ from .TokenBuilder import account_activation_token
 from django.core.mail import EmailMessage
 
 utc = pytz.timezone('Asia/Kolkata')
+seconds = 60
+expiryTimeSec = 5600
+number = -5
+number2 = 65
+number3 = 5
 
 
 def homePage(request):
@@ -68,17 +73,15 @@ def callDetails(request):
         schedule_id = request.POST.get('schedule')
         schedule = RequestedSchedules.objects.get(pk=schedule_id)
 
-        if (
-                schedule.accepted and schedule.user_id == request.user.id and schedule.request.scheduled and not schedule.request.closed):
+        if (schedule.accepted and schedule.user_id == request.user.id and schedule.request.scheduled and not schedule.request.closed):
             now = utc.localize(datetime.datetime.now())
             time_delta = (now - schedule.slot)
             total_seconds = time_delta.total_seconds()
-            minutes = total_seconds / 60
-            if (minutes >= -5 and minutes <= 65):
+            minutes = total_seconds / seconds
+            if (minutes >= number and minutes <= number2):
                 accepted_call = AcceptedCallSchedule.objects.filter(schedule_id=schedule.id).get(completed=False)
                 token = accepted_call.token
                 if not token:
-                    expiryTimeSec = 5600
                     appCert = config('AGORA_CERT_PRIMARY')
                     appID = config('AGORA_APP_ID')
                     uid = 0
@@ -89,7 +92,7 @@ def callDetails(request):
                 context = {'minutes': minutes, 'scheduled': True, 'schedule': schedule.id}
                 return render(request, 'accounts/pre_call_user.html', context)
             else:
-                if (minutes < -5):
+                if (minutes < number):
                     context = {'minutes': minutes, 'scheduled': False}
                     return render(request, 'accounts/pre_call_user.html', context)
                 else:
@@ -100,17 +103,15 @@ def callDetails(request):
                 profile = MentorProfile.objects.get(user_id=request.user.id)
             except MentorProfile.DoesNotExist:
                 return redirect('home')
-            if (
-                    schedule.accepted and schedule.mentor_id == profile.id and schedule.request.scheduled and not schedule.request.closed):
+            if (schedule.accepted and schedule.mentor_id == profile.id and schedule.request.scheduled and not schedule.request.closed):
                 now = utc.localize(datetime.datetime.now())
                 time_delta = (now - schedule.slot)
                 total_seconds = time_delta.total_seconds()
-                minutes = total_seconds / 60
-                if (minutes >= -5 and minutes <= 65):
+                minutes = total_seconds / seconds
+                if (minutes >= number and minutes <= number2):
                     accepted_call = AcceptedCallSchedule.objects.filter(schedule_id=schedule.id).get(completed=False)
                     token = accepted_call.token
                     if not token:
-                        expiryTimeSec = 3600
                         appCert = config('AGORA_CERT_PRIMARY')
                         appID = config('AGORA_APP_ID')
                         uid = 0
@@ -121,7 +122,7 @@ def callDetails(request):
                     context = {'minutes': minutes, 'scheduled': True, 'schedule': schedule.id}
                     return render(request, 'accounts/pre_call_mentor.html', context)
                 else:
-                    if (minutes < -5):
+                    if (minutes < number):
                         context = {'minutes': minutes, 'scheduled': False}
                         return render(request, 'accounts/pre_call_mentor.html', context)
                     else:
@@ -274,9 +275,7 @@ def requestCall(request):
             print(e)
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')
-
-        if (
-                product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact == None or hobbies == None or guardian_name == None or career_concerns == None or personal_concerns == None):
+        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact == None or hobbies == None or guardian_name == None or career_concerns == None or personal_concerns == None):
             messages.warning(request, 'Please fill all the required fields!')
             return redirect('dashboard')
         career_conc = []
@@ -489,7 +488,7 @@ def requestSchedule(request):
                 if not clash_request_mentor.closed:
                     time_delta = (mentor_schedule.slot - slot)
                     total_seconds = time_delta.total_seconds()
-                    minutes = total_seconds / 60
+                    minutes = total_seconds / seconds
                     if (minutes <= 89 and minutes >= -89):
                         messages.warning(request,
                                          'Mentor Schedule clash found, please add a different time for the new schedule.')
@@ -501,7 +500,7 @@ def requestSchedule(request):
                     for clash_req in check_clashes:
                         time_delta = (clash_req.slot - slot)
                         total_seconds = time_delta.total_seconds()
-                        minutes = total_seconds / 60
+                        minutes = total_seconds / seconds
                         if (minutes <= 89 and minutes >= -89):
                             messages.warning(request,
                                              'User Schedule clash found, please add a different time for the new schedule.')
@@ -521,8 +520,8 @@ def requestSchedule(request):
                                 for schedules in check_schedules:
                                     time_delta = (schedules.slot - slot)
                                     total_seconds = time_delta.total_seconds()
-                                    minutes = total_seconds / 60
-                                    if (minutes <= 5 and minutes >= -5):
+                                    minutes = total_seconds / seconds
+                                    if (minutes <= (number3) and minutes >= number):
                                         messages.warning(request, 'Schedule within 5 min already exist!')
                                         return redirect('admin_panel')
                                     else:
@@ -550,8 +549,8 @@ def requestSchedule(request):
                     for schedules in check_schedules:
                         time_delta = (schedules.slot - slot)
                         total_seconds = time_delta.total_seconds()
-                        minutes = total_seconds / 60
-                        if (minutes <= 5 and minutes >= -5):
+                        minutes = total_seconds / seconds
+                        if (minutes <= number3 and minutes >= number):
                             messages.warning(request, 'Schedule within 5 min already exist!')
                             return redirect('admin_panel')
                         else:
