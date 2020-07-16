@@ -57,6 +57,7 @@ urlpatterns = [
 
     path('dashboard/admin/product', views.adminProductView, name="product"),
     path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
+    path('dashboard/admin/orders', views.adminOrdersView, name="orders"),
 
     # Conference call URLsa
     path('dashboard/ready', views.callDetails, name="call_details"),
