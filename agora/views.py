@@ -6,6 +6,8 @@ from accounts.models import *
 import hashlib
 from decouple import config
 
+from schedule.models import MentorCallRequest, AcceptedCallSchedule, RequestedSchedules
+
 
 class AgoraVideoCall(View):
     app_id=''

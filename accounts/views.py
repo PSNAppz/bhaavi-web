@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
+
+from schedule.models import FinalMentorReport
 from .decorators import *
 from picset.models import Result
 from .forms import *
@@ -73,7 +75,8 @@ def callDetails(request):
         schedule_id = request.POST.get('schedule')
         schedule = RequestedSchedules.objects.get(pk=schedule_id)
 
-        if (schedule.accepted and schedule.user_id == request.user.id and schedule.request.scheduled and not schedule.request.closed):
+        if (
+                schedule.accepted and schedule.user_id == request.user.id and schedule.request.scheduled and not schedule.request.closed):
             now = utc.localize(datetime.datetime.now())
             time_delta = (now - schedule.slot)
             total_seconds = time_delta.total_seconds()
@@ -103,7 +106,8 @@ def callDetails(request):
                 profile = MentorProfile.objects.get(user_id=request.user.id)
             except MentorProfile.DoesNotExist:
                 return redirect('home')
-            if (schedule.accepted and schedule.mentor_id == profile.id and schedule.request.scheduled and not schedule.request.closed):
+            if (
+                    schedule.accepted and schedule.mentor_id == profile.id and schedule.request.scheduled and not schedule.request.closed):
                 now = utc.localize(datetime.datetime.now())
                 time_delta = (now - schedule.slot)
                 total_seconds = time_delta.total_seconds()
@@ -275,7 +279,8 @@ def requestCall(request):
             print(e)
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')
-        if (product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact == None or hobbies == None or guardian_name == None or career_concerns == None or personal_concerns == None):
+        if (
+                product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact == None or hobbies == None or guardian_name == None or career_concerns == None or personal_concerns == None):
             messages.warning(request, 'Please fill all the required fields!')
             return redirect('dashboard')
         career_conc = []
@@ -434,7 +439,8 @@ def requestCallAstro(request):
                             latlong=latlong,
                             dob=dob,
                         )
-                    messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+                    messages.success(request,
+                                            'Schedule requested succesfully. Please wait for an admin to respond!')
                 else:
                     messages.error(request, 'An error occured!')
                 return redirect('dashboard')
