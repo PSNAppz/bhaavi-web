@@ -9,184 +9,203 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap and Font Awesome CSS Libraries -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css"  href="{% static 'agora/css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'agora/css/style.css' %}"/>
 </head>
 
 <body>
-    <div class="container-fluid p-0">
-        <div id="main-container">
-            <!-- <div id="screen-share-btn-container" class="col-2 float-right text-right mt-2">
-                <button id="screen-share-btn" type="button" class="btn btn-lg">
-                    <i id="screen-share-icon" class="fas fa-share-square"></i>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"> Do you want to cancel the call?
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
-            </div> -->
-            <div class="grid">
-                <div class="full_screen_video_wrapper">
-                    <div class="button_wrapper">
-                        <div id="buttons-container" class="justify-content-center">
-                            <div class="col-md-2 text-center">
-                                <button id="mic-btn" type="button" class="btn btn-block btn-dark btn-lg">
-                                    <i id="mic-icon" class="fas fa-microphone"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <button id="video-btn" type="button" class="btn btn-block btn-dark btn-lg">
-                                    <i id="video-icon" class="fas fa-video"></i>
-                                </button>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <form method="GET" action="{% if user.is_mentor %} 
+            </div>
+            <div class="modal-body">
+                Click on confirm button to cancel the call
+            </div>
+            <div class="modal-footer">
+                <form method="GET" action="{% if user.is_mentor %}
                                         {% url 'end_call' schedule %}
-                                    {% elif user.is_customer %} 
+                                    {% elif user.is_customer %}
                                          {% url 'call_end' %}
                                     {% else %}
                                     {% url 'astro_call_finish' schedule %}
                                     {% endif %}">
-                                    <button id="exit-btn" type="submit"  class="btn btn-block btn-danger btn-lg">
-                                        <i id="exit-icon" class="fas fa-phone-slash"></i>
-                                    </button> 
-                                </form>
-                                
-                                
-             
-                             </div>
-                            <!-- <div class="col-md-2 text-center">
+                    <button id="exit-btn" type="submit" class="btn btn-danger">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid p-0">
+    <div id="main-container">
+        <!-- <div id="screen-share-btn-container" class="col-2 float-right text-right mt-2">
+            <button id="screen-share-btn" type="button" class="btn btn-lg">
+                <i id="screen-share-icon" class="fas fa-share-square"></i>
+            </button>
+        </div> -->
+        <div class="grid">
+            <div class="full_screen_video_wrapper">
+                <div class="button_wrapper">
+                    <div id="buttons-container" class="justify-content-center">
+                        <div class="col-md-2 text-center">
+                            <button id="mic-btn" type="button" class="btn btn-block btn-dark btn-lg">
+                                <i id="mic-icon" class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <button id="video-btn" type="button" class="btn btn-block btn-dark btn-lg">
+                                <i id="video-icon" class="fas fa-video"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-2 text-center">
+                            <button class="btn btn-block btn-danger btn-lg" data-toggle="modal"
+                                    data-target="#exampleModalCenter">
+                                <i id="exit-icon" class="fas fa-phone-slash"></i>
+                            </button>
+                        </div>
+                        <!-- <div class="col-md-2 text-center">
                                 <a href="{{ channel_end_url }}">
                                     <button id="exit-btn" type="button"  class="btn btn-block btn-danger btn-lg">
                                         <i id="exit-icon" class="fas fa-phone-slash"></i>
                                     </button>
                                 </a>
                             </div> -->
-                        </div>
-
-                        <div class="text_message" style="color: tomato;">
-                            Note: Please do not refresh during the call! If call is not connecting, try logging-in again from dashboard! 
-                        </div>
                     </div>
 
-                    <div id="full-screen-video"></div>
+                    <div class="text_message" style="color: tomato;">
+                        Note: Please do not refresh during the call! If call is not connecting, try logging-in again
+                        from dashboard!
+                    </div>
                 </div>
-                <div class="scroll_message">
-                    <h3>User Details</h3>
-                    <div class="scroll_content">
-                        <ul>
-                            <div class="card-body">
-                                Name:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.user.full_name}}</span>
-                                </h4><br>
-                                Dob:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.dob}}</span>
-                                </h4><br>
-                                Gender:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.gender}}</span>
-                                </h4><br>
-                                Siblings:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.siblings}}</span>
-                                </h4><br>
-                                Guardian name:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.guardian_name}}</span>
-                                </h4><br>
-                                Address:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.address}}</span>
-                                </h4><br>
-                              </div>
-                        </ul>
-                        <hr>
-                        <ul>
-                            <div class="card-body">
-                                Class/School:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.institute}}</span>
-                                </h4><br>
-                                Stream(If any):
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.stream}}</span>
-                                </h4><br>
-                                Avg Mark(If specified):
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.mark}}</span>
-                                </h4><br>
-                                Hobbies:
-                                <h4 class="text-gray-700">
-                                   <span class="badge badge-success-soft">{{profile.hobbies}}</span>
-                                </h4><br>
-                              </div>
-                        </ul>
-                        <hr>
-                        <ul>
-                            {% if user.is_mentor %}
+
+                <div id="full-screen-video"></div>
+            </div>
+            <div class="scroll_message">
+                <h3>User Details</h3>
+                <div class="scroll_content">
+                    <ul>
+                        <div class="card-body">
+                            Name:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.user.full_name }}</span>
+                            </h4><br>
+                            Dob:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.dob }}</span>
+                            </h4><br>
+                            Gender:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.gender }}</span>
+                            </h4><br>
+                            Siblings:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.siblings }}</span>
+                            </h4><br>
+                            Guardian name:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.guardian_name }}</span>
+                            </h4><br>
+                            Address:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.address }}</span>
+                            </h4><br>
+                        </div>
+                    </ul>
+                    <hr>
+                    <ul>
+                        <div class="card-body">
+                            Class/School:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.institute }}</span>
+                            </h4><br>
+                            Stream(If any):
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.stream }}</span>
+                            </h4><br>
+                            Avg Mark(If specified):
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.mark }}</span>
+                            </h4><br>
+                            Hobbies:
+                            <h4 class="text-gray-700">
+                                <span class="badge badge-success-soft">{{ profile.hobbies }}</span>
+                            </h4><br>
+                        </div>
+                    </ul>
+                    <hr>
+                    <ul>
+                        {% if user.is_mentor %}
                             <div class="card-body">
                                 Career concerns:
                                 <h6 class="text-gray-900">
-                                   <span >{{profile.career_concern}}</span>
+                                    <span>{{ profile.career_concern }}</span>
                                 </h6><br>
                                 Personal concerns:
                                 <h6 class="text-gray-900">
-                                   <span>{{profile.personal_concern}}</span>
+                                    <span>{{ profile.personal_concern }}</span>
                                 </h6>
-                              </div>
-                              {% endif %}
-                        </ul>
-                        <ul>
-                            <hr>
-                            {% if user.is_jyolsyan %}
+                            </div>
+                        {% endif %}
+                    </ul>
+                    <ul>
+                        <hr>
+                        {% if user.is_jyolsyan %}
                             <div class="card-body">
-                         
+
                                 Birth time:
                                 <h5 class="text-gray-900">
-                                   <span >{{profile.birthtime}}</span>
+                                    <span>{{ profile.birthtime }}</span>
                                 </h5><br>
                                 Birth place:
                                 <h5 class="text-gray-900">
-                                   <span>{{profile.birthplace}}</span>
+                                    <span>{{ profile.birthplace }}</span>
                                 </h5>
                                 Daylight saving applicable:
                                 <h5 class="text-gray-900">
-                                   <span>{{profile.dst}}</span>
+                                    <span>{{ profile.dst }}</span>
                                 </h5>
                                 Latitude/Longitude (if specified):
                                 <h5 class="text-gray-900">
-                                   <span>{{profile.latlong}}</span>
+                                    <span>{{ profile.latlong }}</span>
                                 </h5>
-                              </div>
-                              {% endif %}
-                        </ul>
-                        
-                    </div>
-                    <div class="scroll_bottom"></div>
-                </div>
-                <div class="left_bottom"></div>
-                <div id="local-stream-container" class="col p-0 local_stream">
-                    <div id="mute-overlay" class="col">
-                        <i id="mic-icon" class="fas fa-microphone-slash"></i>
-                    </div>
-                    <div id="no-local-video" class="col text-center">
-                        <i id="user-icon" class="fas fa-user"></i>
-                    </div>
-                    <div id="local-video" class="col p-0"></div>
-                </div>
-                <!-- <div id="lower-video-bar" class="row fixed-bottom mb-1"></div> -->
-            </div>
-            <!-- <div id="remote-streams-container" class="container col-9 ml-1">
-                <div id="remote-streams" class="row"> -->
-                    <!-- insert remote streams dynamically -->
-                <!-- </div> -->
-            <!-- </div> -->
+                            </div>
+                        {% endif %}
+                    </ul>
 
+                </div>
+                <div class="scroll_bottom"></div>
+            </div>
+            <div class="left_bottom"></div>
+            <div id="local-stream-container" class="col p-0 local_stream">
+                <div id="mute-overlay" class="col">
+                    <i id="mic-icon" class="fas fa-microphone-slash"></i>
+                </div>
+                <div id="no-local-video" class="col text-center">
+                    <i id="user-icon" class="fas fa-user"></i>
+                </div>
+                <div id="local-video" class="col p-0"></div>
+            </div>
+            <!-- <div id="lower-video-bar" class="row fixed-bottom mb-1"></div> -->
         </div>
+        <!-- <div id="remote-streams-container" class="container col-9 ml-1">
+            <div id="remote-streams" class="row"> -->
+        <!-- insert remote streams dynamically -->
+        <!-- </div> -->
+        <!-- </div> -->
+
     </div>
+</div>
 </body>
 <script src="{% static 'agora/js/AgoraRTCSDK-3.0.2.js' %}"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+      integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
