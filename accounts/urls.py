@@ -40,6 +40,10 @@ urlpatterns = [
     path('dashboard/admin/report/<int:id>', views.adminShowReport, name="admin_show_report"),
     path('dashboard/admin/report/close', views.closeReport, name="close_report"),
 
+    path('dashboard/admin/product', views.adminProductView, name="product"),
+    path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
+    path('dashboard/admin/orders', views.adminOrdersView, name="orders"),
+
     path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
     path('dashboard/admin/schedules/<int:id>', views.showSchedules, name="show_schedules"),
     path('dashboard/admin/schedule/drop/<int:id>', views.dropSchedule, name="drop_schedule"),

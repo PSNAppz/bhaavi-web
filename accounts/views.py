@@ -440,7 +440,7 @@ def requestCallAstro(request):
                             dob=dob,
                         )
                     messages.success(request,
-                                            'Schedule requested succesfully. Please wait for an admin to respond!')
+                                     'Schedule requested succesfully. Please wait for an admin to respond!')
                 else:
                     messages.error(request, 'An error occured!')
                 return redirect('dashboard')
@@ -633,6 +633,30 @@ def adminDashboard(request):
     call_requests = MentorCallRequest.objects.all().order_by('-responded')
     context = {'requests': call_requests}
     return render(request, 'admin/adminpanel.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def adminProductView(request):
+    products = Product.objects.all()
+    context = {'products': products}
+    return render(request, 'admin/product.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def adminCustomersView(request):
+    users = User.objects.all()
+    context = {'Users': users}
+    return render(request, 'admin/customers.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def adminOrdersView(request):
+    orders = UserPurchases.objects.all()
+    context = {'Orders': orders}
+    return render(request, 'admin/orders.html', context)
 
 
 @login_required(login_url='login')
