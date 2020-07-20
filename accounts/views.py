@@ -1,22 +1,23 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.db.models import DateField, Count
-from django.db.models.functions import Cast
+from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
+
+from schedule.models import FinalMentorReport
 from .decorators import *
 from picset.models import Result
-from .models import *
 from .forms import *
 from django.contrib import messages
 import datetime
 import pytz
-import uuid
-import hashlib
 from .RtcTokenBuilder import buildToken
 import razorpay
 from collections import Counter
+
+from .models import *
+from product.models import *
+from mentor.models import *
+from payment.models import *
 
 # from django.contrib.auth.tokens import default_token_generator
 # from django.utils.encoding import force_bytes
@@ -39,6 +40,11 @@ from .TokenBuilder import account_activation_token
 from django.core.mail import EmailMessage
 
 utc = pytz.timezone('Asia/Kolkata')
+seconds = 60
+expiryTimeSec = 5600
+number = -5
+number2 = 65
+number3 = 5
 
 
 def homePage(request):
@@ -56,183 +62,7 @@ def profilePage(request):
     return render(request, 'accounts/profile.html', context)
 
 
-def plansPage(request):
-    products = Product.objects.filter(active=True).filter(is_package=False)
-    features = ProductFeatures.objects.all()
-    packages = Product.objects.filter(active=True).filter(is_package=True)
-    context = {'products': products, 'packages': packages, 'features': features}
-    return render(request, 'accounts/plans.html', context)
-
-
-# Payment functions
-@login_required(login_url='login')
-def createOrder(request):
-    if request.method == "POST":
-        if not request.user.customer:
-            messages.warning(request, 'You cannot purchase products!')
-            return redirect('dashboard')
-        product_id = request.POST.get('product')
-        product = Product.objects.filter(active=True).get(pk=product_id)
-        try:
-            user_profile = UserProfile.objects.get(user_id=request.user.id)
-        except UserProfile.DoesNotExist:
-            user_profile = None
-        if product:
-            if product.is_package:
-                products_in_package = ProductPackages.objects.filter(package_id=product.id)
-                for pdt in products_in_package:
-                    try:
-                        check_product_status = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                            product_id=pdt.product.id).get(status=True)
-                        messages.warning(request, 'Product already purchased.')
-                        return redirect('plans')
-                    except UserPurchases.DoesNotExist:
-                        pass
-                try:
-                    in_progress = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                        payment_progress=True).get(product_id=product.id)
-                    invoice = in_progress.invoice
-                except UserPurchases.DoesNotExist:
-                    purchase = UserPurchases.objects.create(
-                        user=request.user,
-                        product=product,
-                    )
-                    invoice = purchase.invoice
-                    for pdt in products_in_package:
-                        purchase = UserPurchases.objects.create(
-                            user=request.user,
-                            product=pdt.product,
-                            invoice=invoice,
-                        )
-                client = initPaymentClient()
-                order_amount = (product.amount - product.active_discount) * 100
-                order_currency = 'INR'
-                order_receipt = invoice
-                notes = {'Product': product.name}
-                product_name = product.name
-                response = client.order.create(
-                    dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes,
-                         payment_capture='0'))
-                order_id = response['id']
-                order_status = response['status']
-                if order_status == 'created':
-                    context = {'order_id': order_id, 'product': product, 'amount': order_amount,
-                               'profile': user_profile, 'invoice': invoice}
-                    return render(request, 'accounts/payment.html', context)
-                else:
-                    messages.error(request, 'Some error occured, please try again!')
-                    return redirect('plans')
-
-            else:
-                # Check if user already has the product
-                try:
-                    check_product_status = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                        product_id=product.id).get(status=True)
-                    messages.warning(request, 'Product already purchased.')
-                    return redirect('plans')
-                except UserPurchases.DoesNotExist:
-                    try:
-                        in_progress = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                            payment_progress=True).get(product_id=product.id)
-                        invoice = in_progress.invoice
-                    except UserPurchases.DoesNotExist:
-                        purchase = UserPurchases.objects.create(
-                            user=request.user,
-                            product=product,
-                        )
-                        invoice = purchase.invoice
-                    client = initPaymentClient()
-                    order_amount = (product.amount - product.active_discount) * 100
-                    order_currency = 'INR'
-                    order_receipt = invoice
-                    notes = {'Product': product.name}
-                    product_name = product.name
-                    response = client.order.create(
-                        dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes,
-                             payment_capture='0'))
-                    order_id = response['id']
-                    order_status = response['status']
-                    if order_status == 'created':
-                        context = {'order_id': order_id, 'product': product, 'amount': order_amount,
-                                   'profile': user_profile, 'invoice': invoice}
-                        return render(request, 'accounts/payment.html', context)
-                    else:
-                        messages.error(request, 'Some error occured, please try again!')
-                        return redirect('plans')
-
-
-@login_required(login_url='login')
-def paymentSuccessPage(request):
-    if request.method == "POST":
-        response = request.POST
-        try:
-            response['razorpay_payment_id']
-            razorpay_payment_id = response['razorpay_payment_id']
-            razorpay_order_id = response['razorpay_order_id']
-            razorpay_signature = response['razorpay_signature']
-            status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
-            if status:
-
-                items = UserPurchases.objects.filter(invoice=response['invoice'])
-                if not items.count() > 1:
-                    purchase = UserPurchases.objects.get(invoice=response['invoice'])
-                    user_id = purchase.user_id
-                    try:
-                        check_saved = RazorPayTransactions.objects.get(purchase_id=purchase.id)
-                    except  RazorPayTransactions.DoesNotExist:
-                        RazorPayTransactions.objects.create(
-                            razorpay_payment_id=razorpay_payment_id,
-                            razorpay_order_id=razorpay_order_id,
-                            razorpay_signature=razorpay_signature,
-                            status=1,
-                            purchase=purchase
-                        )
-                        UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
-                else:
-                    try:
-                        check_saved = RazorPayTransactions.objects.get(purchase_id=items[0].id)
-                    except  RazorPayTransactions.DoesNotExist:
-                        RazorPayTransactions.objects.create(
-                            razorpay_payment_id=razorpay_payment_id,
-                            razorpay_order_id=razorpay_order_id,
-                            razorpay_signature=razorpay_signature,
-                            status=1,
-                            purchase=items[0]
-                        )
-                        user_id = items[0].user_id
-                        for item in items:
-                            if not item.product.is_package:
-                                UserPurchases.objects.filter(pk=item.id).update(payment_progress=0, status=1)
-                            else:
-                                UserPurchases.objects.filter(pk=item.id).update(payment_progress=0)
-                try:
-                    user_profile = UserProfile.objects.get(user_id=user_id)
-                    UserProfile.objects.filter(pk=user_profile.id).update(
-                        mobile=response['mobile'],
-                        address=response['address'],
-                        state=response['state'],
-                        pincode=response['pincode'],
-                    )
-                except UserProfile.DoesNotExist:
-                    UserProfile.objects.create(
-                        mobile=response['mobile'],
-                        address=response['address'],
-                        state=response['state'],
-                        pincode=response['pincode'],
-                        user=request.user
-                    )
-
-                context = {'payment': True}
-            else:
-                context = {'payment': False}
-        except:
-            context = {'payment': False}
-
-        return render(request, 'accounts/success.html', context)
-
-    # Conference call
-
-
+# Conference call
 # check if scheduled in 30 min
 @login_required(login_url='login')
 def callDetails(request):
@@ -250,12 +80,11 @@ def callDetails(request):
             now = utc.localize(datetime.datetime.now())
             time_delta = (now - schedule.slot)
             total_seconds = time_delta.total_seconds()
-            minutes = total_seconds / 60
-            if (minutes >= -5 and minutes <= 65):
+            minutes = total_seconds / seconds
+            if (minutes >= number and minutes <= number2):
                 accepted_call = AcceptedCallSchedule.objects.filter(schedule_id=schedule.id).get(completed=False)
                 token = accepted_call.token
                 if not token:
-                    expiryTimeSec = 5600
                     appCert = config('AGORA_CERT_PRIMARY')
                     appID = config('AGORA_APP_ID')
                     uid = 0
@@ -266,7 +95,7 @@ def callDetails(request):
                 context = {'minutes': minutes, 'scheduled': True, 'schedule': schedule.id}
                 return render(request, 'accounts/pre_call_user.html', context)
             else:
-                if (minutes < -5):
+                if (minutes < number):
                     context = {'minutes': minutes, 'scheduled': False}
                     return render(request, 'accounts/pre_call_user.html', context)
                 else:
@@ -282,12 +111,11 @@ def callDetails(request):
                 now = utc.localize(datetime.datetime.now())
                 time_delta = (now - schedule.slot)
                 total_seconds = time_delta.total_seconds()
-                minutes = total_seconds / 60
-                if (minutes >= -5 and minutes <= 65):
+                minutes = total_seconds / seconds
+                if (minutes >= number and minutes <= number2):
                     accepted_call = AcceptedCallSchedule.objects.filter(schedule_id=schedule.id).get(completed=False)
                     token = accepted_call.token
                     if not token:
-                        expiryTimeSec = 3600
                         appCert = config('AGORA_CERT_PRIMARY')
                         appID = config('AGORA_APP_ID')
                         uid = 0
@@ -298,7 +126,7 @@ def callDetails(request):
                     context = {'minutes': minutes, 'scheduled': True, 'schedule': schedule.id}
                     return render(request, 'accounts/pre_call_mentor.html', context)
                 else:
-                    if (minutes < -5):
+                    if (minutes < number):
                         context = {'minutes': minutes, 'scheduled': False}
                         return render(request, 'accounts/pre_call_mentor.html', context)
                     else:
@@ -451,7 +279,6 @@ def requestCall(request):
             print(e)
             messages.error(request, 'Invalid product!')
             return redirect('dashboard')
-
         if (
                 product_id == None or user == None or dob == None or institute == None or gender == None or siblings == None or language == None or contact == None or hobbies == None or guardian_name == None or career_concerns == None or personal_concerns == None):
             messages.warning(request, 'Please fill all the required fields!')
@@ -612,7 +439,8 @@ def requestCallAstro(request):
                             latlong=latlong,
                             dob=dob,
                         )
-                    messages.success(request, 'Schedule requested succesfully. Please wait for an admin to respond!')
+                    messages.success(request,
+                                            'Schedule requested succesfully. Please wait for an admin to respond!')
                 else:
                     messages.error(request, 'An error occured!')
                 return redirect('dashboard')
@@ -666,7 +494,7 @@ def requestSchedule(request):
                 if not clash_request_mentor.closed:
                     time_delta = (mentor_schedule.slot - slot)
                     total_seconds = time_delta.total_seconds()
-                    minutes = total_seconds / 60
+                    minutes = total_seconds / seconds
                     if (minutes <= 89 and minutes >= -89):
                         messages.warning(request,
                                          'Mentor Schedule clash found, please add a different time for the new schedule.')
@@ -678,7 +506,7 @@ def requestSchedule(request):
                     for clash_req in check_clashes:
                         time_delta = (clash_req.slot - slot)
                         total_seconds = time_delta.total_seconds()
-                        minutes = total_seconds / 60
+                        minutes = total_seconds / seconds
                         if (minutes <= 89 and minutes >= -89):
                             messages.warning(request,
                                              'User Schedule clash found, please add a different time for the new schedule.')
@@ -698,8 +526,8 @@ def requestSchedule(request):
                                 for schedules in check_schedules:
                                     time_delta = (schedules.slot - slot)
                                     total_seconds = time_delta.total_seconds()
-                                    minutes = total_seconds / 60
-                                    if (minutes <= 5 and minutes >= -5):
+                                    minutes = total_seconds / seconds
+                                    if (minutes <= (number3) and minutes >= number):
                                         messages.warning(request, 'Schedule within 5 min already exist!')
                                         return redirect('admin_panel')
                                     else:
@@ -727,8 +555,8 @@ def requestSchedule(request):
                     for schedules in check_schedules:
                         time_delta = (schedules.slot - slot)
                         total_seconds = time_delta.total_seconds()
-                        minutes = total_seconds / 60
-                        if (minutes <= 5 and minutes >= -5):
+                        minutes = total_seconds / seconds
+                        if (minutes <= number3 and minutes >= number):
                             messages.warning(request, 'Schedule within 5 min already exist!')
                             return redirect('admin_panel')
                         else:
@@ -784,22 +612,6 @@ def userDashboard(request):
 
 
 @login_required(login_url='login')
-@mentor
-def mentorDetailsView(request):
-    if request.method == "POST":
-        schedule_id = request.POST.get('schedule')
-        mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
-        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
-            accepted=True)
-        user = schedule.user
-        user_profile = UserProfile.objects.get(user_id=user.id)
-        context = {'schedule': schedule, 'user': user, 'profile': user_profile}
-        return render(request, 'mentor/details.html', context)
-    else:
-        return redirect('dashboard')
-
-
-@login_required(login_url='login')
 @jyolsyan
 def astroDetailsView(request):
     if request.method == "POST":
@@ -829,30 +641,6 @@ def adminReportView(request):
     call_requests = MentorCallRequest.objects.filter(closed=True).filter(report_submitted=False).order_by('-responded')
     context = {'requests': call_requests}
     return render(request, 'admin/pending_reports.html', context)
-
-
-@login_required(login_url='login')
-@admin_user
-def adminProductView(request):
-    products = Product.objects.all()
-    context = {'products': products}
-    return render(request, 'admin/product.html', context)
-
-
-@login_required(login_url='login')
-@admin_user
-def adminCustomersView(request):
-    users = User.objects.all()
-    context = {'Users': users}
-    return render(request, 'admin/customers.html', context)
-
-
-@login_required(login_url='login')
-@admin_user
-def adminOrdersView(request):
-    orders = UserPurchases.objects.all()
-    context = {'Orders': orders}
-    return render(request, 'admin/orders.html', context)
 
 
 @login_required(login_url='login')
@@ -912,47 +700,6 @@ def respondCallRequest(request, id):
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")
     return render(request, 'admin/call_view.html', context)
-
-
-def initPaymentClient():
-    rpay_id = config('RazorPay_ID')
-    rpay_seceret = config('RazorPay_Secret')
-    client = razorpay.Client(auth=(rpay_id, rpay_seceret))
-    return client
-
-
-def paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature):
-    params_dict = {
-        'razorpay_payment_id': razorpay_payment_id,
-        'razorpay_order_id': razorpay_order_id,
-        'razorpay_signature': razorpay_signature
-    }
-    # VERIFYING SIGNATURE
-    try:
-        client = initPaymentClient()
-        client.utility.verify_payment_signature(params_dict)
-        return True
-    except Exception as e:
-        return False
-
-
-@login_required(login_url='login')
-@mentor
-def mentorDashboard(request):
-    profile = MentorProfile.objects.get(user_id=request.user.id)
-    schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
-    # reports = MentorCallRequest.objects.filter(mentor_id=profile.id).filter(re)
-    context = {'schedules': schedules, 'profile': profile}
-    return render(request, 'mentor/dashboard.html', context)
-
-
-@login_required(login_url='login')
-@mentor
-def mentorHistory(request):
-    profile = MentorProfile.objects.get(user_id=request.user.id)
-    schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
-    context = {'schedules': schedules, 'profile': profile}
-    return render(request, 'mentor/past_schedules.html', context)
 
 
 @login_required(login_url='login')
@@ -1133,24 +880,6 @@ def handler400(request, exception=None):
 
 
 @login_required(login_url='login')
-@mentor
-def endCall(request, reqid):
-    schedule_id = reqid
-    schedule = RequestedSchedules.objects.get(pk=schedule_id)
-    if not schedule.mentor.user_id == request.user.id:
-        messages.error(request, 'Invalid request')
-        return redirect('dashboard')
-    try:
-        callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
-    except Exception as e:
-        messages.error(request, 'Invalid request')
-        return redirect('dashboard')
-    user = callreq.user
-    context = {'user': user, 'call': callreq, 'schedule': schedule.id}
-    return render(request, 'mentor/report.html', context)
-
-
-@login_required(login_url='login')
 def viewReport(request):
     if request.method == "POST":
         report_id = request.POST.get('report')
@@ -1161,49 +890,6 @@ def viewReport(request):
 
         context = {'report': report}
         return render(request, 'accounts/view_report.html', context)
-
-
-@login_required(login_url='login')
-@mentor
-def submitReport(request):
-    if request.method == "POST":
-        schedule_id = request.POST.get('schedule')
-        requirement = request.POST.get('requirement')
-        diagnosis = request.POST.get('diagnosis')
-        findings = request.POST.get('findings')
-        suggestions = request.POST.get('suggestions')
-        recommendation = request.POST.get('recommendation')
-
-        if requirement == None or diagnosis == None or findings == None or suggestions == None or recommendation == None:
-            messages.warning(request, 'Please fill all the details!')
-            return redirect('dashboard')
-
-        schedule = RequestedSchedules.objects.get(pk=schedule_id)
-        if not schedule.mentor.user_id == request.user.id:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')
-        try:
-            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
-        except Exception as e:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')
-        user = callreq.user
-        try:
-            call = FinalMentorReport.objects.get(call_id=callreq.id)
-            messages.error(request, 'Report already submitted for this!')
-            return redirect('dashboard')
-        except Exception as e:
-            FinalMentorReport.objects.create(
-                call=callreq,
-                requirement=requirement,
-                diagnosis=diagnosis,
-                findings=findings,
-                suggestions=suggestions,
-                recommendation=recommendation
-            )
-            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
-            messages.success(request, 'Thank you! Report sumbitted succesfully!')
-            return redirect('mentorboard')
 
 
 # sitemap

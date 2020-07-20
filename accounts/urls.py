@@ -20,23 +20,12 @@ urlpatterns = [
     path('logout', views.logoutUser, name="logout"),
 
     # Payment flow below
-    path('payment/plans', views.plansPage, name='plans'),
-    path('payment/initiate', views.createOrder, name="payment"),
-    path('payment/status', views.paymentStatus, name='payment_status'),
-    path('payment/done', views.paymentSuccessPage, name="success"),
 
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('request/astro', views.requestCallAstro, name="astro_request"),
 
     path('request/details', views.requestPage, name="request_details"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
-
-    # Mentor Dash
-    path('mentorboard/', views.mentorDashboard, name="mentorboard"),
-    path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
-    path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
-    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
-    path('dashboard/conference/end/<reqid>', views.endCall, name="end_call"),
 
     # Jyolsyan Dash
     path('astroboard', views.astroDashboard, name="astroboard"),
@@ -55,11 +44,7 @@ urlpatterns = [
     path('dashboard/admin/schedules/<int:id>', views.showSchedules, name="show_schedules"),
     path('dashboard/admin/schedule/drop/<int:id>', views.dropSchedule, name="drop_schedule"),
 
-    path('dashboard/admin/product', views.adminProductView, name="product"),
-    path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
-    path('dashboard/admin/orders', views.adminOrdersView, name="orders"),
-
-    # Conference call URLsa
+    # Conference call URLs
     path('dashboard/ready', views.callDetails, name="call_details"),
     path('dashboard/conference/', Agora.as_view(), name="conference"),
 
