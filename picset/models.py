@@ -11,30 +11,36 @@ class Question(models.Model):
     category = models.CharField(max_length=2, blank=True)
 
     def __str__(self):
-        return 'Question category: {}'.format(self.category)      
+        return 'Question category: {}'.format(self.category)
+
 
 class QuestionAnswer(models.Model):
+    from payment.models import UserPurchases
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answer_user')
     purchase = models.ForeignKey(UserPurchases, on_delete=models.CASCADE, related_name='picset_purchase')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.IntegerField(default=2, null=False)
-    timestamp = models.DateTimeField(auto_now_add=True) 
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'User: {}'.format(self.user.full_name)              
+        return 'User: {}'.format(self.user.full_name)
+
 
 class Result(models.Model):
+    from payment.models import UserPurchases
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='result_user')
     purchase = models.ForeignKey(UserPurchases, on_delete=models.CASCADE, related_name='result_purchase')
-    attendee_name = models.CharField(max_length=255,blank=True)
-    attendee_age = models.CharField(max_length=3,blank=True)
+    attendee_name = models.CharField(max_length=255, blank=True)
+    attendee_age = models.CharField(max_length=3, blank=True)
     pragmatic_score = models.CharField(max_length=5, blank=True)
     industrious_score = models.CharField(max_length=5, blank=True)
     creative_score = models.CharField(max_length=5, blank=True)
     socialite_score = models.CharField(max_length=5, blank=True)
     explorer_score = models.CharField(max_length=5, blank=True)
     traditional_score = models.CharField(max_length=5, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True) 
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Result of user : {}'.format(self.user.full_name)        
+        return 'Result of user : {}'.format(self.user.full_name)

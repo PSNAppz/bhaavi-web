@@ -4,11 +4,9 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import *
 
-
 from .forms import UserAdminCreationForm, UserAdminChangeForm
 
 User = get_user_model()
-
 
 
 class UserAdmin(BaseUserAdmin):
@@ -23,16 +21,16 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('customer', 'jyolsyan', 'mentor', 'admin')
     fieldsets = (
         (None, {'fields': ('full_name', 'email', 'password')}),
-       # ('Full name', {'fields': ()}),
-        ('Permissions', {'fields': ('customer', 'jyolsyan', 'mentor','admin')}),
+        # ('Full name', {'fields': ()}),
+        ('Permissions', {'fields': ('customer', 'jyolsyan', 'mentor', 'admin')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('full_name','email', 'password1', 'password2', 'customer', 'jyolsyan', 'mentor', 'admin')}
-        ),
+            'fields': ('full_name', 'email', 'password1', 'password2', 'customer', 'jyolsyan', 'mentor', 'admin')}
+         ),
     )
     search_fields = ('email', 'full_name',)
     ordering = ('email',)
@@ -40,13 +38,8 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Product)
-admin.site.register(ProductFeatures)
-admin.site.register(ProductPackages)
-admin.site.register(AcceptedCallSchedule)
-admin.site.register(RequestedSchedules)
-admin.site.register(MentorCallRequest)
-admin.site.register(UserPurchases)
+admin.site.register(UserProfile)
+
 
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)
