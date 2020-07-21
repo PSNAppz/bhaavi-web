@@ -47,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     jyolsyan = models.BooleanField('jyolsyan ', default=False)
     mentor = models.BooleanField('mentor', default=False)
     admin = models.BooleanField('admin', default=False)
+    is_staff = models.BooleanField('is_staff', default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     objects = UserManager()
     is_active = models.BooleanField(default=False)
@@ -80,10 +81,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_mentor(self):
         return self.mentor
-
-    @property
-    def is_staff(self):
-        return self.admin
 
     @property
     def is_superuser(self):
