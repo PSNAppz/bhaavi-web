@@ -86,3 +86,28 @@ class FinalMentorReport(models.Model):
     recommendation = models.TextField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class UserSubmitDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, null=True)
+    gender = models.CharField(max_length=255, null=True, blank=False)
+    dob = models.CharField(max_length=11, null=True, blank=False)
+    birthtime = models.CharField(max_length=255, null=True, blank=False)
+    birthplace = models.CharField(max_length=255, null=True, blank=False)
+    submitted = models.BooleanField(default=False, null=True, blank=True)
+    assigned = models.BooleanField(default=False, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.full_name
+
+
+class AssignSubmitReport(models.Model):
+    from mentor.models import MentorProfile
+
+    user_report = models.ForeignKey(UserSubmitDetails, on_delete=models.CASCADE)
+    astrologer = models.ForeignKey(MentorProfile, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.user_report.user.full_name + ":Astrologer " + self.astrologer.user.full_name
