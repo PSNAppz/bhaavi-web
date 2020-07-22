@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('request/astro', views.requestCallAstro, name="astro_request"),
+    path('request/astroCareer', views.submitCareerAstro, name="astro_career"),
 
     path('request/details', views.requestPage, name="request_details"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
@@ -48,6 +49,7 @@ urlpatterns = [
          name="mentor_report_confirm"),
 
     path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
+    path('dashboard/admin/assignAstrologer', views.assignAstrologer, name="assign_astrologer"),
     path('dashboard/admin/schedules/<int:id>', views.showSchedules, name="show_schedules"),
     path('dashboard/admin/schedule/drop/<int:id>', views.dropSchedule, name="drop_schedule"),
 

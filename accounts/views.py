@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
 
-from schedule.models import FinalMentorReport
+from schedule.models import FinalMentorReport, AssignSubmitReport
 from .decorators import *
 from picset.models import Result
 from .forms import *
@@ -447,6 +447,82 @@ def requestCallAstro(request):
 
 
 @login_required(login_url='login')
+def submitCareerAstro(request):
+    if request.method == "POST":
+
+        product_id = request.POST.get('product')
+        user = request.user
+        dob = request.POST.get('dob')
+        gender = request.POST.get('gender')
+
+        if gender == "1":
+            gender = "Male"
+        elif gender == "2":
+            gender = "Female"
+        else:
+            gender = "N/A"
+
+        try:
+            purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
+                product_id=product_id).product
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Invalid product!')
+            return redirect('dashboard')
+
+        if purchased_product.prod_type == "A":
+            btime = request.POST.get('time')
+            bplace = request.POST.get('place')
+            latlong = request.POST.get('latlong')
+            dst = request.POST.get('dst')
+            if dst == "1":
+                dst = "Yes"
+            else:
+                dst = "False"
+            if (
+                    product_id == None or user == None or dob == None or btime == None or gender == None or bplace == None):
+                messages.warning(request, 'Please fill all the required fields!')
+                return redirect('dashboard')
+            try:
+                pending = MentorCallRequest.objects.filter(user_id=user.id).filter(product_id=product_id).get(
+                    closed=False)
+                messages.warning(request, 'Call already Requested')
+                return redirect('dashboard')
+            except MentorCallRequest.DoesNotExist:
+                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+                    MentorCallRequest.objects.create(
+                        user=user,
+                        product=purchased_product,
+                    )
+                    try:
+                        profile = UserProfile.objects.get(user_id=user.id)
+                        UserProfile.objects.filter(user_id=user.id).update(
+                            gender=gender,
+                            birthtime=btime,
+                            dst=dst,
+                            birthplace=bplace,
+                            latlong=latlong,
+                            dob=dob,
+
+                        )
+                    except Exception as e:
+                        UserProfile.objects.create(
+                            user_id=user.id,
+                            gender=gender,
+                            birthtime=btime,
+                            dst=dst,
+                            birthplace=bplace,
+                            latlong=latlong,
+                            dob=dob,
+                        )
+                    messages.success(request,
+                                     'Details submitted succesfully. Please wait for an admin to respond!')
+                else:
+                    messages.error(request, 'An error occured!')
+                return redirect('dashboard')
+
+
+@login_required(login_url='login')
 def acceptCall(request):
     if request.method == "POST":
         schedule_id = request.POST.get('schedule')
@@ -467,6 +543,21 @@ def acceptCall(request):
 
     return redirect('dashboard')
 
+
+@login_required(login_url='login')
+@admin_user
+def assignAstrologer(request):
+    if request.method == "POST":
+        mentor_id = request.POST.get('mentor')
+        # user_id = request.POST.get('user')
+        request_id = request.POST.get('request')
+        mentor = MentorProfile.objects.get(id=mentor_id)
+        mentor_request = MentorCallRequest.objects.get(id=request_id)
+        assign = AssignSubmitReport.objects.create(mentor_request=mentor_request,astrologer=mentor )
+        mentor_request.responded = True
+        mentor_request.save()
+        messages.success(request, 'Assigned succesfully!')
+        return redirect('admin_panel')
 
 @login_required(login_url='login')
 @admin_user
@@ -862,6 +953,12 @@ def requestPage(request):
     if product.prod_type == "M":
         context = {'slots': slots, 'product': product.id, 'profile': profile}
         return render(request, 'accounts/mentor_request.html', context)
+    elif product.prod_type == "J":
+        context = {'slots': slots, 'product': product.id, 'profile': profile}
+        return render(request, 'accounts/astro_request.html', context)
+    elif product.prod_type == "A":
+        context = {'slots': slots, 'product': product.id, 'profile': profile}
+        return render(request, 'accounts/astrology_submit_details.html', context)
     else:
         context = {'slots': slots, 'product': product.id, 'profile': profile}
         return render(request, 'accounts/astro_request.html', context)
