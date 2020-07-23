@@ -553,11 +553,12 @@ def assignAstrologer(request):
         request_id = request.POST.get('request')
         mentor = MentorProfile.objects.get(id=mentor_id)
         mentor_request = MentorCallRequest.objects.get(id=request_id)
-        assign = AssignSubmitReport.objects.create(mentor_request=mentor_request,astrologer=mentor )
+        assign = AssignSubmitReport.objects.create(mentor_request=mentor_request, astrologer=mentor)
         mentor_request.responded = True
         mentor_request.save()
         messages.success(request, 'Assigned succesfully!')
         return redirect('admin_panel')
+
 
 @login_required(login_url='login')
 @admin_user
@@ -707,15 +708,25 @@ def userDashboard(request):
 def astroDetailsView(request):
     if request.method == "POST":
         schedule_id = request.POST.get('schedule')
-        mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
-        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
-            accepted=True)
-        user = schedule.user
-        user_profile = UserProfile.objects.get(user_id=user.id)
-        context = {'schedule': schedule, 'user': user, 'profile': user_profile}
-        return render(request, 'jyothishan/details.html', context)
-    else:
-        return redirect('dashboard')
+        report_id = request.POST.get('report')
+        mentor_request_id = request.POST.get('mentor_request')
+        if schedule_id:
+            mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
+            schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
+                accepted=True)
+            user = schedule.user
+            user_profile = UserProfile.objects.get(user_id=user.id)
+            context = {'schedule': schedule, 'user': user, 'profile': user_profile}
+            return render(request, 'jyothishan/details.html', context)
+        if report_id:
+            report = AssignSubmitReport.objects.get(id=report_id)
+            mentorRequest = MentorCallRequest.objects.get(id=mentor_request_id)
+            user = mentorRequest.user
+            user_profile = UserProfile.objects.get(user_id=user.id)
+            context = {'user': user, 'profile': user_profile}
+            return render(request, 'jyothishan/details.html', context)
+        else:
+            return redirect('dashboard')
 
 
 @login_required(login_url='login')
@@ -839,7 +850,8 @@ def respondCallRequest(request, id):
 def astroDashboard(request):
     profile = MentorProfile.objects.get(user_id=request.user.id)
     schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
-    context = {'schedules': schedules, 'profile': profile}
+    career_report = AssignSubmitReport.objects.filter(astrologer=profile, pending=True)
+    context = {'schedules': schedules, 'profile': profile, 'reports': career_report}
     return render(request, 'jyothishan/dashboard.html', context)
 
 

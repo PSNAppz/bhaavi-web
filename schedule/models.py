@@ -105,6 +105,8 @@ class AssignSubmitReport(models.Model):
 
     mentor_request = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=True)
     astrologer = models.ForeignKey(MentorProfile, on_delete=models.SET_NULL, null=True)
+    pending = models.BooleanField(default=True, null=True)
+    accepted = models.BooleanField(default=False, null=True)
 
     def __str__(self):
         return self.mentor_request.user.full_name + ":Astrologer " + self.astrologer.user.full_name

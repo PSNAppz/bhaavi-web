@@ -92,6 +92,90 @@
             </div>
           </div>
             <div class="col-12 col-md-9">
+            <div class="card card-bleed shadow-light-lg" id="schedules">
+                <div class="card-header">
+                  <div class="row align-items-center">
+                    <div class="col">
+
+                      <!-- Heading -->
+                      <h4 class="mb-0">
+                       Upcoming career report
+                      </h4>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <!-- start for -->
+                  {% for report in reports %}
+                  {% if report.pending %}
+                  <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col-auto">
+
+                          <!-- Icon -->
+                          <div class="icon">
+                            <img src="{% static 'assets/img/icons/duotone-icons/Media/Rec.svg' %}"/>
+                          </div>
+
+                        </div>
+                        <div class="col ml-n5">
+
+                          <!-- Heading -->
+                          <p class="mb-0">
+                            <small class="text-blue-300">
+                              Name:
+                            </small> {{report.mentor_request.user.full_name}}
+                          </p>
+                          <p class="mb-0">
+                            <small class="text-blue-300">
+                              Service: {{report.mentor_request.product.name}}
+                            </small>
+                          </p>
+                          <!-- Text -->
+{#                          Scheduled time:#}
+{#                          <small class="text-gray-700">#}
+{#                            {{schedule.slot}}#}
+{#                          </small>#}
+
+                        </div>
+                        <div class="col-auto">
+
+                          <!-- Button -->
+                          <form action="{% url 'view_details_astro' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="report" value="{{ report.id }}" />
+                            <input type="hidden" name="mentor_request" value="{{ report.mentor_request.id }}" />
+                            <input type="submit" class="btn btn-xs btn-primary-soft" value="View details" />
+                          </form>
+
+                        </div>
+                        <div class="col-auto">
+
+                          <!-- Button -->
+                          <form action="{% url 'call_details' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="schedule" value="{{ schedule.id }}" />
+                            <input type="submit" class="btn btn-xs btn-success-soft" value="Submit report" />
+                          </form>
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  {% if not forloop.last %}
+                  <hr>
+                  {% endif %}
+                  <!-- End for -->
+                  {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+
+
+
               <div class="card card-bleed shadow-light-lg" id="schedules">
                 <div class="card-header">
                   <div class="row align-items-center">
