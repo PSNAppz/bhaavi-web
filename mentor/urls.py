@@ -8,4 +8,6 @@ urlpatterns = [
     path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
     path('mentorboard/submitReport', views.submitReport, name="submit_report"),
     path('dashboard/conference/end/<reqid>', views.endCall, name="end_call"),
+
+    path('dashboard/careerReport/<id>', views.submitCareerReport, name="career-report"),
 ]

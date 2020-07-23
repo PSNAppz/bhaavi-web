@@ -1,0 +1,120 @@
+{% extends 'base/main.html' %}
+{% block content %}
+{% load filters %}
+{% load static %}
+{% if user.is_authenticated %}
+
+  <!-- CONTENT
+  ================================================== -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" />
+
+  <section>
+
+    <!-- Content -->
+    <div class="container d-flex flex-column">
+      <div class="row align-items-center justify-content-between no-gutters min-vh-100">
+        <div class="col-12 col-md-5 align-self-stretch">
+
+          <!-- Image (mobile) -->
+
+          <!-- Image -->
+
+        </div>
+        <div class="col-12 col-md-12 py-8 py-md-11">
+
+          <!-- Heading -->
+          <h2 class="font-weight-bold text-center mb-2">
+            Please fill the report form.
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-center text-muted mb-0">
+            Please submit the form for completing the call. You can also complete this later from dashboard.
+          </p>
+
+          <!-- Divider -->
+          <hr class="hr-sm my-6 my-md-8 border-gray-300">
+
+          <!-- Form -->
+
+          <form action="{% url 'submit_report' %}" method="POST">
+            <div class="card card-bleed shadow-light-lg mb-6">
+
+                <div class="card-body">
+                    <p class="font-size-lg text-center mb-0">
+                      Mentoring Report
+                    </p>
+            <div class="form-group mb-5">
+
+              <!-- Label -->
+              <label for="contactName">
+                Name of person
+              </label>
+
+              <!-- Input -->
+              <input type="text" class="form-control" value={{user.full_name}} id="contactName" placeholder="Your Name" disabled>
+
+            </div>
+            <div class="form-group mb-5">
+
+                <!-- Label -->
+                <label for="contactName">
+                  Requirement/Problem/Need:
+                </label>
+                <textarea name="requirement" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+
+            </div>
+            <div class="form-group mb-5">
+
+                <!-- Label -->
+                <label for="contactName">
+                  Diagnosis (Causes & Effect):
+                </label>
+                <textarea name="diagnosis" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+
+            </div>
+            <div class="form-group mb-5">
+
+                <!-- Label -->
+                <label for="contactName">
+                  Findings:
+                </label>
+                <textarea name="findings" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+
+            </div>
+
+            <div class="form-group mb-5">
+
+                <!-- Label -->
+                <label for="contactName">
+                  Follow up recommendation <b>(For client)</b>:
+                </label>
+                <textarea name="recommendation" class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+
+            </div>
+            <div class="form-group mb-5">
+
+              <!-- Label -->
+              <label for="contactName">
+                Suggestions & Remarks <b>(For client)</b>:
+              </label>
+              <textarea name="suggestions" class="form-control" id="exampleFormControlTextarea1" rows="4" required></textarea>
+
+          </div>
+
+
+
+    <button type="submit" class="btn btn-block btn-success lift">
+        Submit final report
+     </button>
+{#     <input type="hidden" name="schedule" value="{{ schedule }}" />#}
+     {% csrf_token %}
+          </form>
+
+        </div>
+      </div> <!-- / .row -->
+    </div>
+  </section>
+
+{% endif %}
+{% endblock content %}

@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
+from accounts.decorators import jyolsyan
 from mentor.decorators import mentor
 
 from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport
@@ -26,6 +27,17 @@ def mentorHistory(request):
     schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
     context = {'schedules': schedules, 'profile': profile}
     return render(request, 'mentor/past_schedules.html', context)
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReport(request, id):
+    if request.method == "POST":
+        mentor_call_id = request.POST.get('schedule')
+        mentor_call_request = MentorCallRequest.objects.get(id=mentor_call_id)
+        user = mentor_call_request.user
+        context = {'user': user}
+        return render(request, 'mentor/submit_report.html', context)
 
 
 @login_required(login_url='login')

@@ -110,3 +110,9 @@ class AssignSubmitReport(models.Model):
 
     def __str__(self):
         return self.mentor_request.user.full_name + ":Astrologer " + self.astrologer.user.full_name
+
+
+class AstrologerCareerReport(models.Model):
+    call = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False)
+    report = models.FileField()
+    timestamp = models.DateTimeField(auto_now_add=True)
