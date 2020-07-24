@@ -173,26 +173,6 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 
 AWS_LOCATION = 'static'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-# STATIC_S3_PATH = "static"
-# STATIC_ROOT = "/%s/" % STATIC_S3_PATH
-
-
 DEFAULT_FILE_STORAGE = 'bhaavi.storage_backends.MediaStorage'
 AWS_DEFAULT_ACL = None
 
-
-# DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
-# DEFAULT_S3_PATH = "media"
-# STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
-# STATIC_S3_PATH = "static"
-# AWS_ACCESS_KEY_ID = 'AKIA5MZHLE2ENHWIDEV3'
-# AWS_SECRET_ACCESS_KEY = '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'
-# AWS_STORAGE_BUCKET_NAME = 'bhaavi-reports'
-#
-# MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
-# MEDIA_URL = '//s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
-# STATIC_ROOT = "/%s/" % STATIC_S3_PATH
-# STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
-# ADMIN_MEDIA_PREFIX = STATIC_URL + 'agora/'

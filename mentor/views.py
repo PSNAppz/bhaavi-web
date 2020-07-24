@@ -5,7 +5,8 @@ from django.contrib import messages
 from accounts.decorators import jyolsyan
 from mentor.decorators import mentor
 
-from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport, AstrologerCareerReport, AssignSubmitReport
+from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport, AstrologerCareerReport, \
+    AssignSubmitReport
 from mentor.models import MentorProfile
 from accounts.models import UserProfile
 
@@ -33,8 +34,7 @@ def mentorHistory(request):
 @jyolsyan
 def submitCareerReportHoroscope(request, id):
     if request.method == "POST":
-        report = request.POST.get('pdf')
-        # call_request = request.POST.get('callRequest')
+        report = request.FILES['pdf']
 
         if report == None:
             messages.warning(request, 'Please upload a report!')

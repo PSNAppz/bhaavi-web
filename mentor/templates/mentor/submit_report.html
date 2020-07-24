@@ -39,33 +39,35 @@
 
                         <!-- Form -->
 
-                        <form action="{% url 'submit_career_report' mentor_call_request %}" method="POST">
-                            <div class="card card-bleed shadow-light-lg mb-6">
 
-                                <div class="card-body">
-                                    <p class="font-size-lg text-center mb-0">
-                                        Mentoring Report
-                                    </p>
-                                    <div class="form-group mb-5">
+                        <div class="card card-bleed shadow-light-lg mb-6">
 
-                                        <!-- Label -->
-                                        <label for="contactName">
-                                            Name of person
+                            <div class="card-body">
+                                <p class="font-size-lg text-center mb-0">
+                                    Mentoring Report
+                                </p>
+                                <div class="form-group mb-5">
 
-                                        </label>
-                                        <input type="text" class="form-control"
-                                               value={{ user.full_name }} id="contactName" placeholder="Your Name"
-                                               disabled>
-                                        <!-- Input -->
+                                    <!-- Label -->
+                                    <label for="contactName">
+                                        Name of person
 
-                                        {#                                        <label>#}
-                                        {#                                            Mentor call request#}
-                                        {#                                            <input type="text" class="form-control" name="callRequest"#}
-                                        {#                                                   value={{ mentor_call_request }} id="contactName"#}
-                                        {#                                                   >#}
-                                        {#                                        </label>#}
+                                    </label>
+                                    <input type="text" class="form-control"
+                                           value={{ user.full_name }} id="contactName" placeholder="Your Name"
+                                           disabled>
+                                    <!-- Input -->
 
-                                    </div>
+                                    {#                                        <label>#}
+                                    {#                                            Mentor call request#}
+                                    {#                                            <input type="text" class="form-control" name="callRequest"#}
+                                    {#                                                   value={{ mentor_call_request }} id="contactName"#}
+                                    {#                                                   >#}
+                                    {#                                        </label>#}
+
+                                </div>
+                                <form action="{% url 'submit_career_report' mentor_call_request %}" method="POST"
+                                      enctype="multipart/form-data">
                                     <div class="form-group mb-5">
 
                                         <!-- Label -->
@@ -82,11 +84,11 @@
                                     </button>
                                     {#     <input type="hidden" name="schedule" value="{{ schedule }}" />#}
                                     {% csrf_token %}
-                        </form>
+                                </form>
 
+                            </div>
+                        </div> <!-- / .row -->
                     </div>
-                </div> <!-- / .row -->
-            </div>
         </section>
 
     {% endif %}
