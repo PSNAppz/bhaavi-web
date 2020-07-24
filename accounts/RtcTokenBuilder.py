@@ -1,7 +1,4 @@
-import sys
-import os
 import time
-from random import randint
 from .TokenBuilder import RtcTokenBuilder
 
 
