@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.sites',
+    'markdown_deux',
+    'bootstrapform',
+    'helpdesk',
+
     'agora',
     'crispy_forms',
 
@@ -48,6 +54,7 @@ INSTALLED_APPS = [
     'payment',
     'schedule',
     'picset',
+
 ]
 
 MIDDLEWARE = [
@@ -119,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
+SITE_ID = 1
 
 LANGUAGE_CODE = 'en-us'
 
