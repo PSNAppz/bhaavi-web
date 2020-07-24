@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
 
-from schedule.models import FinalMentorReport, AssignSubmitReport
+from schedule.models import FinalMentorReport, AssignSubmitReport, AstrologerCareerReport
 from .decorators import *
 from picset.models import Result
 from .forms import *
@@ -683,6 +683,10 @@ def userDashboard(request):
     results = Result.objects.filter(user_id=request.user.id).order_by('id')
     finished_calls = MentorCallRequest.objects.filter(user_id=request.user.id).filter(report_submitted=True)
     reports = FinalMentorReport.objects.none()
+    career_reports = AstrologerCareerReport.objects.none()
+
+    for report in finished_calls:
+        career_reports |= AstrologerCareerReport.objects.filter(call=report.id).filter(submitted=True)
 
     for final in finished_calls:
         reports |= FinalMentorReport.objects.filter(call_id=final.id).filter(accepted=True)
@@ -699,7 +703,8 @@ def userDashboard(request):
         else:
             pass
     context = {'products': products, 'purchases': purchases, 'requests': user_requests, 'schedules': schedules,
-               'accepted_calls': accepted_calls, 'results': results, 'reports': reports}
+               'accepted_calls': accepted_calls, 'results': results, 'reports': reports,
+               'career_reports': career_reports}
     return render(request, 'accounts/dashboard.html', context)
 
 
@@ -775,6 +780,14 @@ def adminMentorReportView(request):
     reports = FinalMentorReport.objects.all()
     context = {'reports': reports}
     return render(request, 'admin/mentor_report.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def adminAstrologerReportView(request):
+    reports = AstrologerCareerReport.objects.all()
+    context = {'reports': reports}
+    return render(request, 'admin/astrologer_report.html', context)
 
 
 @login_required(login_url='login')
@@ -1033,12 +1046,26 @@ def handler400(request, exception=None):
 def viewReport(request):
     if request.method == "POST":
         report_id = request.POST.get('report')
-        report = FinalMentorReport.objects.get(pk=report_id)
-        if not report.call.user_id == request.user.id:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')
-
-        context = {'report': report}
+        print(report_id)
+        report = FinalMentorReport.objects.none()
+        career_report = AstrologerCareerReport.objects.none()
+        try:
+            report = FinalMentorReport.objects.get(pk=report_id)
+        except:
+            pass
+        try:
+            career_report = AstrologerCareerReport.objects.get(pk=report_id)
+        except:
+            pass
+        if report:
+            if not report.call.user_id == request.user.id:
+                messages.error(request, 'Invalid request')
+                return redirect('dashboard')
+        if career_report:
+            if not career_report.call.user_id == request.user.id:
+                messages.error(request, 'Invalid request')
+                return redirect('dashboard')
+        context = {'report': report, 'career_report': career_report}
         return render(request, 'accounts/view_report.html', context)
 
 

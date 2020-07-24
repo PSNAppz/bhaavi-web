@@ -114,5 +114,6 @@ class AssignSubmitReport(models.Model):
 
 class AstrologerCareerReport(models.Model):
     call = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False)
-    report = models.FileField()
+    report = models.FileField(upload_to='career_horoscope/', null=False)
+    submitted = models.BooleanField(default=False, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

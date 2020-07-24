@@ -5,7 +5,7 @@ from django.contrib import messages
 from accounts.decorators import jyolsyan
 from mentor.decorators import mentor
 
-from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport
+from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport, AstrologerCareerReport
 from mentor.models import MentorProfile
 from accounts.models import UserProfile
 
@@ -31,12 +31,35 @@ def mentorHistory(request):
 
 @login_required(login_url='login')
 @jyolsyan
+def submitCareerReportHoroscope(request, id):
+    if request.method == "POST":
+        report = request.POST.get('pdf')
+        # call_request = request.POST.get('callRequest')
+
+        if report == None:
+            messages.warning(request, 'Please upload a report!')
+            return redirect('mentorboard')
+        if report:
+            print(report)
+            callRequest = MentorCallRequest.objects.get(id=id)
+            submit_report = AstrologerCareerReport.objects.create(
+                call=callRequest,
+                report=report,
+                submitted=True
+            )
+            MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('mentorboard')
+
+
+@login_required(login_url='login')
+@jyolsyan
 def submitCareerReport(request, id):
     if request.method == "POST":
         mentor_call_id = request.POST.get('schedule')
         mentor_call_request = MentorCallRequest.objects.get(id=mentor_call_id)
         user = mentor_call_request.user
-        context = {'user': user}
+        context = {'user': user, 'mentor_call_request': mentor_call_id}
         return render(request, 'mentor/submit_report.html', context)
 
 

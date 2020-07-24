@@ -154,7 +154,7 @@
                         <div class="col-auto">
 
                           <!-- Button -->
-                          <form action="{% url 'career-report' report.id %}" method="POST">
+                          <form action="{% url 'career-report' report.mentor_request.id %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="schedule" value="{{ report.mentor_request.id }}" />
                             <input type="submit" class="btn btn-xs btn-success-soft" value="Submit report" />
