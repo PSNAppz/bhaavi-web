@@ -2,9 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
+from accounts.decorators import jyolsyan
 from mentor.decorators import mentor
 
-from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport
+from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport, AstrologerCareerReport, \
+    AssignSubmitReport
 from mentor.models import MentorProfile
 from accounts.models import UserProfile
 
@@ -26,6 +28,39 @@ def mentorHistory(request):
     schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
     context = {'schedules': schedules, 'profile': profile}
     return render(request, 'mentor/past_schedules.html', context)
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReportHoroscope(request, id):
+    if request.method == "POST":
+        report = request.FILES['pdf']
+
+        if report == None:
+            messages.warning(request, 'Please upload a report!')
+            return redirect('mentorboard')
+        if report:
+            callRequest = MentorCallRequest.objects.get(id=id)
+            submit_report = AstrologerCareerReport.objects.create(
+                call=callRequest,
+                report=report,
+                submitted=True
+            )
+            MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+            AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('mentorboard')
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReport(request, id):
+    if request.method == "POST":
+        mentor_call_id = request.POST.get('schedule')
+        mentor_call_request = MentorCallRequest.objects.get(id=mentor_call_id)
+        user = mentor_call_request.user
+        context = {'user': user, 'mentor_call_request': mentor_call_id}
+        return render(request, 'mentor/submit_report.html', context)
 
 
 @login_required(login_url='login')

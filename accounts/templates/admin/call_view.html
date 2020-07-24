@@ -37,6 +37,7 @@
                   </div>
                </div>
             </div>
+         {% if request.product.prod_type != "A" %}
             <div class="list-group-item">
                 <div class="row align-items-center">
                    <div class="col-sm-5 col-md-6">
@@ -66,7 +67,34 @@
                    </div>
                 </div>
              </div>
+         {% endif %}
+         {% if request.product.prod_type == "A" %}
+         <div class="list-group-item">
+                <div class="row align-items-center">
+                   <div class="col-sm-5 col-md-6">
+                    <form action="{% url 'assign_astrologer' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="user" value="{{ request_user.id }}" />
+                        <input type="hidden" name="request" value="{{ request.id }}" />
+
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Assign Mentor</label>
+                            <select name="mentor" class="form-control form-control-sm" id="exampleFormControlSelect1">
+                                {{ mentors }}
+                                {% for mentor in mentors %}
+                              <option value="{{ mentor.id}}">{{mentor.user.full_name}}, {{mentor.user.email}}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        <div class="mt-6">
+                           <input class="btn btn-sm btn-success lift" type="submit" value="Add schedule">
+                        </div>
+                     </form>
+                   </div>
+                </div>
+             </div>
          </div>
+      {% endif %}
          <br>
                 </div>
 </div>

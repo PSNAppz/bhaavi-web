@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'agora',
     'crispy_forms',
 
+    'storages',
+
     'accounts',
     'product',
     'mentor',
@@ -143,7 +145,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# STATIC_ROOT= os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -167,3 +169,18 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_ID')
 EMAIL_HOST_PASSWORD = config('EMAIL_APP_PASS')
+
+# AWS S3 SETTINGS
+AWS_ACCESS_KEY_ID = 'AKIA5MZHLE2ENHWIDEV3'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'bhaavi-reports'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_LOCATION = 'static'
+DEFAULT_FILE_STORAGE = 'bhaavi.storage_backends.MediaStorage'
+AWS_DEFAULT_ACL = None
+

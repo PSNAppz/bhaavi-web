@@ -86,3 +86,34 @@ class FinalMentorReport(models.Model):
     recommendation = models.TextField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class UserSubmitDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    responded = models.BooleanField(default=0)
+    scheduled = models.BooleanField(default=0)
+    closed = models.BooleanField(default=0)
+    report_submitted = models.BooleanField(default=1)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.full_name
+
+
+class AssignSubmitReport(models.Model):
+    from mentor.models import MentorProfile
+
+    mentor_request = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=True)
+    astrologer = models.ForeignKey(MentorProfile, on_delete=models.SET_NULL, null=True)
+    pending = models.BooleanField(default=True, null=True)
+    accepted = models.BooleanField(default=False, null=True)
+
+    def __str__(self):
+        return self.mentor_request.user.full_name + ":Astrologer " + self.astrologer.user.full_name
+
+
+class AstrologerCareerReport(models.Model):
+    call = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=False)
+    report = models.FileField(upload_to='career_horoscope/', null=False)
+    submitted = models.BooleanField(default=False, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)

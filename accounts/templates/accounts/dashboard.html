@@ -9,17 +9,17 @@
         <div class="container-md">
           <div class="row align-items-center">
             <div class="col">
-  
+
               <!-- Heading -->
               <h1 class="font-weight-bold text-white mb-2">
                 {{ user.full_name }}
               </h1>
-  
+
               <!-- Text -->
               <p class="font-size-lg text-white-75 mb-0">
                 Welcome to Bhaavi dashboard.
               </p>
-  
+
             </div>
           </div> <!-- / .row -->
         </div> <!-- / .container -->
@@ -71,7 +71,7 @@
                         Services
                       </a>
                     </li>
-                    
+
                   </ul>
 
                   <!-- Heading -->
@@ -103,7 +103,7 @@
 
             <!-- Card -->
             <div class="card card-bleed shadow-light-lg mb-6">
-              
+
               <div class="card-body">
 
                 <!-- List group -->
@@ -118,7 +118,7 @@
                         <p class="mb-0">
                           {{ product.name }} <i class="fe fe-info text-gray-500" data-toggle="tooltip" title="We use the the phone number you provide in General"></i>
                         </p>
-                       
+
 
                         <!-- Text -->
                         <small class="text-gray-700">
@@ -130,7 +130,7 @@
 
                         <!-- Button -->
                         {% if product.call_required == False %}
-                        
+
                         {% if purchase.product_id == product.id and purchase.status %}
                         <a href="{% url 'picset_pre' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
                         {% else %}
@@ -138,33 +138,48 @@
                           {% csrf_token %}
                             <input type="submit" class="btn btn-xs btn-success-soft" value="Purchase" />
                         </form>
-                       
+
                         {% endif %}
-                        
+
                         {% else %}
+
+
                         {% with requests|check_request_status:product.id as requested %}
-                        {% if purchase.product_id == product.id and purchase.status and requested == None %}
+                        {% if purchase.product_id == product.id and purchase.status and requested == None and product.prod_type != 'A' %}
                         <form action="{% url 'request_details' %}" method="POST">
                           {% csrf_token %}
                             <input type="hidden" name="product" value="{{ product.id }}" />
                             <input type="hidden" name="user" value="{{ user.id }}" />
-                           
+
                             <input type="submit" class="btn btn-xs btn-outline-white" value="Request" /><br>
-                            
+
                         </form>
-                            {% elif requested.responded and purchase.status and not requested.scheduled%}
+                            {% elif purchase.product_id == product.id and purchase.status and requested == None and product.prod_type == 'A' %}
+                        <form action="{% url 'request_details' %}" method="POST">
+                          {% csrf_token %}
+                            <input type="hidden" name="product" value="{{ product.id }}" />
+                            <input type="hidden" name="user" value="{{ user.id }}" />
+
+                            <input type="submit" class="btn btn-xs btn-outline-white" value="Submit details" /><br>
+
+                        </form>
+                            {% elif requested.responded and purchase.status and not requested.scheduled and product.prod_type != 'A'%}
                             <a href="#schedules" class="btn btn-xs btn-outline-info" >Available schedules</a>
-                            {% elif not requested.responded and purchase.status  %}    
+                            {% elif requested.responded and purchase.status and not requested.scheduled and product.prod_type == 'A'%}
+                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" >Assigned</a>
+                            {% elif not requested.responded and purchase.status and product.prod_type != 'A' %}
                             <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Please wait for the schedule from the mentor">Requested</a>
-                            {% elif requested.responded and purchase.status and requested.scheduled and not requested.closed %}   
+                            {% elif not requested.responded and purchase.status and product.prod_type == 'A' %}
+                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Please wait for the schedule from the mentor">Submitted</a>
+                            {% elif requested.responded and purchase.status and requested.scheduled and not requested.closed and product.prod_type != 'A' %}
                               {% with accepted_calls|get_schedule:requested.id as schedule %}
                               <form action="{% url 'call_details' %}" method="POST">
                                 {% csrf_token %}
                                   <input type="hidden" name="schedule" value="{{ schedule.schedule_id }}" />
                                   <button type="submit" class="btn btn-xs btn-primary-soft" >Join call<br> ({{schedule.schedule.slot}}) </button>
-                                  
+
                                 </form>
-                                
+
                               {% endwith %}
                             {% else %}
                         <form action="{% url 'plans' %}" method="GET">
@@ -215,14 +230,14 @@
 
                       </div>
                       <div class="col ml-n5">
-                        
+
                         <!-- Heading -->
                         <p class="mb-0">
-                            {{schedule.request.product.name}} 
+                            {{schedule.request.product.name}}
                         </p>
-                       
+
                         <!-- Text -->
-                        Schedule time: 
+                        Schedule time:
                         <small class="text-gray-700">
                           {{schedule.slot}}
                         </small>
@@ -236,7 +251,7 @@
                           <input type="hidden" name="schedule" value="{{ schedule.id }}" />
                             <input type="submit" id="confirmCall{{schedule.id }}" class="btn btn-xs btn-primary-soft" value="Accept" />
                         </form>
-                      
+
                         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap.js"></script>
 
@@ -273,7 +288,7 @@
              <!-- Button trigger modal -->
 
             {% endif %}
-           {% if results  or reports%}
+           {% if results  or reports or career_reports %}
             <!-- Test History -->
             <div class="card card-bleed shadow-light-lg">
               <div class="card-header">
@@ -288,7 +303,7 @@
                   </div>
                   <div class="col-auto">
 
-                    <!-- 
+                    <!--
                     <a class="small text-gray-700" href="#!">
                       View all
                     </a> -->
@@ -338,6 +353,7 @@
                 {% endif %}
                 {% endfor %}
 
+
                 {% for report in reports %}
                 <!-- List group -->
                 <div class="list-group list-group-flush">
@@ -365,7 +381,7 @@
                       </div>
                       <div class="col-auto">
                         <!-- Button -->
-                        
+
                         <form action="{% url 'report_view' %}" method="POST">
                           {% csrf_token %}
                           <input type="hidden" name="report" value="{{ report.id }}" />
@@ -381,6 +397,53 @@
                 <hr>
                 {% endif %}
                 {% endfor %}
+                <hr>
+
+
+              {% for report in career_reports %}
+                <!-- List group -->
+                <div class="list-group list-group-flush">
+                  <div class="list-group-item">
+                    <div class="row align-items-center">
+                      <div class="col-auto">
+
+                        <!-- Icon -->
+                        <div class="icon icon-sm text-gray-400">
+                          <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"></path><path d="M8 3v.5A1.5 1.5 0 009.5 5h5A1.5 1.5 0 0016 3.5V3h2a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h2z" fill="#335EEA" opacity=".3"></path><path d="M11 2a1 1 0 012 0h1.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5H11z" fill="#335EEA"></path><rect fill="#335EEA" opacity=".3" x="10" y="9" width="7" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="7" y="9" width="2" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="7" y="13" width="2" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="10" y="13" width="7" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="7" y="17" width="2" height="2" rx="1"></rect><rect fill="#335EEA" opacity=".3" x="10" y="17" width="7" height="2" rx="1"></rect></g></svg>                        </div>
+
+                      </div>
+                      <div class="col ml-n5">
+
+                        <!-- Heading -->
+                        <p class="mb-0">
+                          {{ report.call.product.name}} Report
+                        </p>
+
+                        <!-- Text -->
+                        <small class="text-gray-700">
+                          {{report.timestamp}}
+                        </small>
+
+                      </div>
+                      <div class="col-auto">
+                        <!-- Button -->
+
+                        <form action="{% url 'report_view' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="report" value="{{ report.id }}" />
+                            <input type="submit" class="btn btn-xs btn-primary-soft" value="View" />
+                        </form>
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                {% if not forloop.last %}
+                <hr>
+                {% endif %}
+                {% endfor %}
+                <hr>
 
 
               </div>
