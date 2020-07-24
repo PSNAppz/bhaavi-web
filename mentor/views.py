@@ -5,7 +5,7 @@ from django.contrib import messages
 from accounts.decorators import jyolsyan
 from mentor.decorators import mentor
 
-from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport, AstrologerCareerReport
+from schedule.models import RequestedSchedules, MentorCallRequest, FinalMentorReport, AstrologerCareerReport, AssignSubmitReport
 from mentor.models import MentorProfile
 from accounts.models import UserProfile
 
@@ -40,7 +40,6 @@ def submitCareerReportHoroscope(request, id):
             messages.warning(request, 'Please upload a report!')
             return redirect('mentorboard')
         if report:
-            print(report)
             callRequest = MentorCallRequest.objects.get(id=id)
             submit_report = AstrologerCareerReport.objects.create(
                 call=callRequest,
@@ -48,6 +47,7 @@ def submitCareerReportHoroscope(request, id):
                 submitted=True
             )
             MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+            AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('mentorboard')
 

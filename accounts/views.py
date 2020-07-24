@@ -195,7 +195,6 @@ def userRegisterPage(request):
 def activate_account(request, uidb64, token):
     try:
         uid = str(force_bytes(urlsafe_base64_decode(uidb64)), 'utf-8')
-        print(uid)
         user = User.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
@@ -582,7 +581,6 @@ def requestSchedule(request):
         if form.is_valid():
             for mentor_schedule in mentor_schedules:
                 clash_request_mentor = MentorCallRequest.objects.get(pk=mentor_schedule.request_id)
-                print(clash_request_mentor)
                 if not clash_request_mentor.closed:
                     time_delta = (mentor_schedule.slot - slot)
                     total_seconds = time_delta.total_seconds()
@@ -1046,7 +1044,6 @@ def handler400(request, exception=None):
 def viewReport(request):
     if request.method == "POST":
         report_id = request.POST.get('report')
-        print(report_id)
         report = FinalMentorReport.objects.none()
         career_report = AstrologerCareerReport.objects.none()
         try:
