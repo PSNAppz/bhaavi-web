@@ -33,6 +33,8 @@ def mentorHistory(request):
 @login_required(login_url='login')
 @jyolsyan
 def submitCareerReportHoroscope(request, id):
+    from product.models import Product
+    from payment.models import UserPurchases
     if request.method == "POST":
         report = request.FILES['pdf']
 
@@ -48,6 +50,10 @@ def submitCareerReportHoroscope(request, id):
             )
             MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
             AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
+            product_id = callRequest.product.id
+            product = Product.objects.get(id=product_id)
+            user = callRequest.user
+            UserPurchases.objects.filter(product=product, user=user).update(status=False)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('mentorboard')
 
