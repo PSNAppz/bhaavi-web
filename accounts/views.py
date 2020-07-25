@@ -554,11 +554,13 @@ def assignAstrologer(request):
         mentor_request = MentorCallRequest.objects.get(id=request_id)
         assignReport = AssignSubmitReport.objects.filter(mentor_request=mentor_request, mentor_request__responded=True)
         if assignReport.exists():
-            assign = AssignSubmitReport.objects.update(mentor_request=mentor_request, astrologer=mentor)
+            assign = AssignSubmitReport.objects.get(mentor_request=mentor_request)
+            assign.astrologer = mentor
+            assign.save()
         else:
             assign = AssignSubmitReport.objects.create(mentor_request=mentor_request, astrologer=mentor)
-        mentor_request.responded = True
-        mentor_request.save()
+            mentor_request.responded = True
+            mentor_request.save()
         messages.success(request, 'Assigned succesfully!')
         return redirect('astrologer_call_request')
 
