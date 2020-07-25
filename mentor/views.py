@@ -37,25 +37,29 @@ def submitCareerReportHoroscope(request, id):
     from payment.models import UserPurchases
     if request.method == "POST":
         report = request.FILES['pdf']
-
-        if report == None:
-            messages.warning(request, 'Please upload a report!')
-            return redirect('mentorboard')
-        if report:
-            callRequest = MentorCallRequest.objects.get(id=id)
-            submit_report = AstrologerCareerReport.objects.create(
-                call=callRequest,
-                report=report,
-                submitted=True
-            )
-            MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
-            AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
-            product_id = callRequest.product.id
-            product = Product.objects.get(id=product_id)
-            user = callRequest.user
-            UserPurchases.objects.filter(product=product, user=user).update(status=False)
-            messages.success(request, 'Thank you! Report sumbitted succesfully!')
-            return redirect('mentorboard')
+        report_name = request.FILES['pdf'].name
+        x = report_name.split('.')
+        if x[1] == 'pdf':
+            if report == None:
+                messages.warning(request, 'Please upload a report!')
+                return redirect('astroboard')
+            if report:
+                callRequest = MentorCallRequest.objects.get(id=id)
+                submit_report = AstrologerCareerReport.objects.create(
+                    call=callRequest,
+                    report=report,
+                    submitted=True
+                )
+                MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+                AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
+                product_id = callRequest.product.id
+                product = Product.objects.get(id=product_id)
+                user = callRequest.user
+                UserPurchases.objects.filter(product=product, user=user).update(status=False)
+                messages.success(request, 'Thank you! Report sumbitted succesfully!')
+                return redirect('astroboard')
+        messages.error(request, 'Please upload a file format pdf!')
+        return redirect('astroboard')
 
 
 @login_required(login_url='login')
