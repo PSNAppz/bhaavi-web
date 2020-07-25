@@ -50,7 +50,6 @@ number3 = 5
 def homePage(request):
     return render(request, 'base/home.html')
 
-
 @login_required(login_url='login')
 def profilePage(request):
     try:
