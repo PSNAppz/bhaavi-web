@@ -36,6 +36,7 @@ urlpatterns = [
 
     # Admin panel
     path('dashboard/admin', views.adminDashboard, name="admin_panel"),
+    path('dashboard/astrologerCallRequest', views.astrologerCallRequest, name="astrologer_call_request"),
     path('dashboard/reports', views.adminReportView, name="admin_panel_reports"),
     path('dashboard/astrologerReports', views.adminAstrologerReportView, name="astrologer_report"),
     path('dashboard/admin/request/<int:id>', views.respondCallRequest, name="respond_call"),

@@ -50,6 +50,7 @@ number3 = 5
 def homePage(request):
     return render(request, 'base/home.html')
 
+
 @login_required(login_url='login')
 def profilePage(request):
     try:
@@ -551,11 +552,15 @@ def assignAstrologer(request):
         request_id = request.POST.get('request')
         mentor = MentorProfile.objects.get(id=mentor_id)
         mentor_request = MentorCallRequest.objects.get(id=request_id)
-        assign = AssignSubmitReport.objects.create(mentor_request=mentor_request, astrologer=mentor)
+        assignReport = AssignSubmitReport.objects.filter(mentor_request=mentor_request, mentor_request__responded=True)
+        if assignReport.exists():
+            assign = AssignSubmitReport.objects.update(mentor_request=mentor_request, astrologer=mentor)
+        else:
+            assign = AssignSubmitReport.objects.create(mentor_request=mentor_request, astrologer=mentor)
         mentor_request.responded = True
         mentor_request.save()
         messages.success(request, 'Assigned succesfully!')
-        return redirect('admin_panel')
+        return redirect('astrologer_call_request')
 
 
 @login_required(login_url='login')
@@ -734,9 +739,17 @@ def astroDetailsView(request):
 @login_required(login_url='login')
 @admin_user
 def adminDashboard(request):
-    call_requests = MentorCallRequest.objects.all().order_by('-responded')
+    call_requests = MentorCallRequest.objects.all().order_by('-responded').exclude(product__prod_type="A")
     context = {'requests': call_requests}
     return render(request, 'admin/adminpanel.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def astrologerCallRequest(request):
+    call_requests = MentorCallRequest.objects.all().order_by('-responded').filter(product__prod_type="A")
+    context = {'requests': call_requests}
+    return render(request, 'admin/astrologer_call_request.html', context)
 
 
 @login_required(login_url='login')
@@ -843,13 +856,19 @@ def dropSchedule(request, id):
 def respondCallRequest(request, id):
     try:
         call_request = MentorCallRequest.objects.get(pk=id)
+        astrologer_request = AssignSubmitReport.objects.none()
+        try:
+            astrologer_request = AssignSubmitReport.objects.get(mentor_request=call_request)
+        except:
+            pass
         user = call_request.user
         mentor_products = MentorProducts.objects.filter(product_id=call_request.product.id)
         mentors = MentorProfile.objects.none()
 
         for mentor in mentor_products:
             mentors |= MentorProfile.objects.filter(pk=mentor.mentor_id)
-        context = {'request': call_request, 'request_user': user, 'mentors': mentors}
+        context = {'request': call_request, 'request_user': user, 'mentors': mentors,
+                   'astrologer_request': astrologer_request}
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")
     return render(request, 'admin/call_view.html', context)
