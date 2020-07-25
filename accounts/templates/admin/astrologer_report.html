@@ -55,7 +55,7 @@
                                 <td>{{ report.id }}</td>
                                 <td>{{ report.call.product.name }}</td>
                                 <td>{{ report.call.user.get_username }}</td>
-                                <td><a href={{ report.report }}>Download report</a></td>
+                                <td><a href='https://bhaavi-reports.s3.amazonaws.com/media/{{ report.report }}'>Download report</a></td>
                                 <td>{{ report.timestamp }}</td>
                             </tr>
                         {% endfor %}
