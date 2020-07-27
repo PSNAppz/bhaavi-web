@@ -796,8 +796,9 @@ def adminMentorReportView(request):
 @login_required(login_url='login')
 @admin_user
 def adminAstrologerReportView(request):
+    s3_url = config('S3_URL')
     reports = AstrologerCareerReport.objects.all()
-    context = {'reports': reports}
+    context = {'reports': reports, 's3_url': s3_url}
     return render(request, 'admin/astrologer_report.html', context)
 
 
@@ -1062,6 +1063,7 @@ def handler400(request, exception=None):
 @login_required(login_url='login')
 def viewReport(request):
     if request.method == "POST":
+        s3_url = config('S3_URL')
         report_id = request.POST.get('report')
         report = FinalMentorReport.objects.none()
         career_report = AstrologerCareerReport.objects.none()
@@ -1081,7 +1083,7 @@ def viewReport(request):
             if not career_report.call.user_id == request.user.id:
                 messages.error(request, 'Invalid request')
                 return redirect('dashboard')
-        context = {'report': report, 'career_report': career_report}
+        context = {'report': report, 'career_report': career_report, 's3_url':s3_url}
         return render(request, 'accounts/view_report.html', context)
 
 
@@ -1116,29 +1118,28 @@ def submitCareerReportHoroscope(request, id):
     from payment.models import UserPurchases
     if request.method == "POST":
         report = request.FILES['pdf']
+        if report == None:
+            messages.warning(request, 'Please upload a report!')
+            return redirect('astroboard')
         report_name = request.FILES['pdf'].name
         x = report_name.split('.')
         if x[1] == 'pdf':
-            if report == None:
-                messages.warning(request, 'Please upload a report!')
-                return redirect('astroboard')
-            if report:
-                callRequest = MentorCallRequest.objects.get(id=id)
-                submit_report = AstrologerCareerReport.objects.create(
-                    call=callRequest,
-                    report=report,
-                    submitted=True
-                )
-                MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
-                AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
-                product_id = callRequest.product.id
-                product = Product.objects.get(id=product_id)
-                user = callRequest.user
-                UserPurchases.objects.filter(product=product, user=user).update(status=False)
-                messages.success(request, 'Thank you! Report sumbitted succesfully!')
-                return redirect('astroboard')
-        messages.error(request, 'Please upload a file format pdf!')
-        return redirect('astroboard')
+            callRequest = MentorCallRequest.objects.get(id=id)
+            submit_report = AstrologerCareerReport.objects.create(
+                call=callRequest,
+                report=report,
+                submitted=True
+            )
+            MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+            AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
+            product_id = callRequest.product.id
+            product = Product.objects.get(id=product_id)
+            user = callRequest.user
+            UserPurchases.objects.filter(product=product, user=user).update(status=False)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('astroboard')
+    messages.error(request, 'Please upload a file format pdf!')
+    return redirect('astroboard')
 
 
 @login_required(login_url='login')
