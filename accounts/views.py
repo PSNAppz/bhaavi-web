@@ -16,7 +16,6 @@ from collections import Counter
 
 from .models import *
 from product.models import *
-from mentor.models import *
 from payment.models import *
 
 # from django.contrib.auth.tokens import default_token_generator
@@ -1089,3 +1088,142 @@ def viewReport(request):
 # sitemap
 def sitemap(request):
     return render(request, 'base/sitemap.xml', content_type='text/xml')
+
+
+@login_required(login_url='login')
+@mentor
+def mentorDashboard(request):
+    profile = MentorProfile.objects.get(user_id=request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
+    # reports = MentorCallRequest.objects.filter(mentor_id=profile.id).filter(re)
+    context = {'schedules': schedules, 'profile': profile}
+    return render(request, 'mentor/dashboard.html', context)
+
+
+@login_required(login_url='login')
+@mentor
+def mentorHistory(request):
+    profile = MentorProfile.objects.get(user_id=request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
+    context = {'schedules': schedules, 'profile': profile}
+    return render(request, 'mentor/past_schedules.html', context)
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReportHoroscope(request, id):
+    from product.models import Product
+    from payment.models import UserPurchases
+    if request.method == "POST":
+        report = request.FILES['pdf']
+        report_name = request.FILES['pdf'].name
+        x = report_name.split('.')
+        if x[1] == 'pdf':
+            if report == None:
+                messages.warning(request, 'Please upload a report!')
+                return redirect('astroboard')
+            if report:
+                callRequest = MentorCallRequest.objects.get(id=id)
+                submit_report = AstrologerCareerReport.objects.create(
+                    call=callRequest,
+                    report=report,
+                    submitted=True
+                )
+                MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+                AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
+                product_id = callRequest.product.id
+                product = Product.objects.get(id=product_id)
+                user = callRequest.user
+                UserPurchases.objects.filter(product=product, user=user).update(status=False)
+                messages.success(request, 'Thank you! Report sumbitted succesfully!')
+                return redirect('astroboard')
+        messages.error(request, 'Please upload a file format pdf!')
+        return redirect('astroboard')
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReport(request, id):
+    if request.method == "POST":
+        mentor_call_id = request.POST.get('schedule')
+        mentor_call_request = MentorCallRequest.objects.get(id=mentor_call_id)
+        user = mentor_call_request.user
+        context = {'user': user, 'mentor_call_request': mentor_call_id}
+        return render(request, 'mentor/submit_report.html', context)
+
+
+@login_required(login_url='login')
+@mentor
+def endCall(request, reqid):
+    schedule_id = reqid
+    schedule = RequestedSchedules.objects.get(pk=schedule_id)
+    if not schedule.mentor.user_id == request.user.id:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')
+    try:
+        callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+    except Exception as e:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')
+    user = callreq.user
+    context = {'user': user, 'call': callreq, 'schedule': schedule.id}
+    return render(request, 'mentor/report.html', context)
+
+
+@login_required(login_url='login')
+@mentor
+def mentorDetailsView(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
+        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
+            accepted=True)
+        user = schedule.user
+        user_profile = UserProfile.objects.get(user_id=user.id)
+        context = {'schedule': schedule, 'user': user, 'profile': user_profile}
+        return render(request, 'mentor/details.html', context)
+    else:
+        return redirect('dashboard')
+
+
+@login_required(login_url='login')
+@mentor
+def submitReport(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        requirement = request.POST.get('requirement')
+        diagnosis = request.POST.get('diagnosis')
+        findings = request.POST.get('findings')
+        suggestions = request.POST.get('suggestions')
+        recommendation = request.POST.get('recommendation')
+
+        if requirement == None or diagnosis == None or findings == None or suggestions == None or recommendation == None:
+            messages.warning(request, 'Please fill all the details!')
+            return redirect('dashboard')
+
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        if not schedule.mentor.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')
+        try:
+            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+        except Exception as e:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')
+        user = callreq.user
+        try:
+            call = FinalMentorReport.objects.get(call_id=callreq.id)
+            messages.error(request, 'Report already submitted for this!')
+            return redirect('dashboard')
+        except Exception as e:
+            FinalMentorReport.objects.create(
+                call=callreq,
+                requirement=requirement,
+                diagnosis=diagnosis,
+                findings=findings,
+                suggestions=suggestions,
+                recommendation=recommendation
+            )
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('mentorboard')

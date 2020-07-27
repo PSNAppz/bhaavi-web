@@ -50,7 +50,6 @@ INSTALLED_APPS = [
 
     'accounts',
     'product',
-    'mentor',
     'payment',
     'schedule',
     'picset',

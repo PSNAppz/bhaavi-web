@@ -45,7 +45,7 @@ class MentorCallRequest(models.Model):
 
 
 class RequestedSchedules(models.Model):
-    from mentor.models import MentorProfile
+    from accounts.models import MentorProfile
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_times', null=False)
     mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE, null=False)
@@ -101,7 +101,7 @@ class UserSubmitDetails(models.Model):
 
 
 class AssignSubmitReport(models.Model):
-    from mentor.models import MentorProfile
+    from accounts.models import MentorProfile
 
     mentor_request = models.ForeignKey(MentorCallRequest, on_delete=models.CASCADE, null=True)
     astrologer = models.ForeignKey(MentorProfile, on_delete=models.SET_NULL, null=True)

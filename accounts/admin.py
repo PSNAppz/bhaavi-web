@@ -39,7 +39,8 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(UserProfile)
-
+admin.site.register(MentorProfile)
+admin.site.register(MentorProducts)
 
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)
