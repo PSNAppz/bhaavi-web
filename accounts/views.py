@@ -487,7 +487,7 @@ def submitCareerAstro(request):
                 messages.warning(request, 'Call already Requested')
                 return redirect('dashboard')
             except MentorCallRequest.DoesNotExist:
-                if str(purchased_product.id) == str(product_id) and purchased_product.call_required:
+                if str(purchased_product.id) == str(product_id) and purchased_product.call_required == False:
                     MentorCallRequest.objects.create(
                         user=user,
                         product=purchased_product,
@@ -695,8 +695,7 @@ def userDashboard(request):
         reports |= FinalMentorReport.objects.filter(call_id=final.id).filter(accepted=True)
 
     for purchase in purchases:
-        if purchase.product.call_required:
-            user_requests |= request.user.mentor_request.filter(product_id=purchase.product_id)
+        user_requests |= request.user.mentor_request.filter(product_id=purchase.product_id)
     for user_request in user_requests:
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id=user_request.id).filter(accepted=0)
@@ -991,6 +990,7 @@ def requestPage(request):
         for result in results:
             if results[result] >= daily_sessions:
                 slots.append(result)
+    print(slots)
     profile = UserProfile.objects.filter(user_id=user.id)
     # TODO Redirect to respective pages, check and redirect according to product type
     if product.prod_type == "M":
