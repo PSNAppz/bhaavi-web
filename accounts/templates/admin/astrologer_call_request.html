@@ -2,9 +2,9 @@
 {% load static %}
 {% block content %}
     <div class="container-fluid">
-
         <div class="row">
             {% include 'admin/navbar.html' %}
+
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
                 <div class="chartjs-size-monitor"
                      style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Mentor Reports</h1>
+                    <h1 class="h2">Mentor requests</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -26,9 +26,8 @@
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                 class="feather feather-calendar">
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-calendar">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                 <line x1="16" y1="2" x2="16" y2="6"></line>
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -42,21 +41,53 @@
                     <table id="myTable" class="table table-striped table-sm">
                         <thead>
                         <tr>
-                            <th>id</th>
-                            <th>Product</th>
-                            <th>User</th>
-                            <th>Report</th>
-                            <th>Time</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>UUID</th>
+                            <th>Request Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                            <th>Update</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for report in reports %}
+                        {% for request in requests %}
                             <tr>
-                                <td>{{ report.id }}</td>
-                                <td>{{ report.call.product.name }}</td>
-                                <td>{{ report.call.user.get_username }}</td>
-                                <td><a href='{{ s3_url }}/media/{{ report.report }}'>Download report</a></td>
-                                <td>{{ report.timestamp }}</td>
+                                <td>{{ request.user.full_name }}</td>
+                                <td>{{ request.user }}</td>
+                                <td>{{ request.user_id }}</td>
+                                <td>{{ request.product.name }}</td>
+                                <td>{% if not request.closed %}
+                                    <button type="button" class="btn btn-xs btn-rounded-circle btn-danger-soft">
+                                        <i class="fe fe-x"></i>
+                                    </button>
+
+                                {% else %}
+                                    <button type="button" class="btn btn-xs btn-rounded-circle btn-success-soft">
+                                        <i class="fe fe-check"></i>
+                                    </button>
+                                {% endif %}
+                                </td>
+                                <td>
+                                    {% if not request.responded %}
+                                        <a href="{% url 'respond_call' request.id %}"
+                                           class="btn btn-info btn-pill btn-xs">
+                                            Respond
+                                        </a>
+                                    {% else %}
+                                        <a href="#" class="btn btn-dark-soft btn-pill btn-xs disabled">
+                                            Responded
+                                        </a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if request.responded %}
+                                        <a href="{% url 'respond_call' request.id %}"
+                                           class="btn btn-success-soft btn-pill btn-xs">
+                                            Update
+                                        </a>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -72,12 +103,8 @@
         });
     </script>
 
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
     <script src="dashboard.js"></script>
-
-
 
 {% endblock content %}

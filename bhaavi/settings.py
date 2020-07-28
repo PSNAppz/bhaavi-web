@@ -50,7 +50,6 @@ INSTALLED_APPS = [
 
     'accounts',
     'product',
-    'mentor',
     'payment',
     'schedule',
     'picset',
@@ -181,6 +180,6 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 
 AWS_LOCATION = 'static'
+
 DEFAULT_FILE_STORAGE = 'bhaavi.storage_backends.MediaStorage'
 AWS_DEFAULT_ACL = None
-

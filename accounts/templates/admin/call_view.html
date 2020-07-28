@@ -26,6 +26,7 @@
                         Requested mentor type: <span class="badge badge-primary-soft">{{request.product.name}}</span>
                      </p>
                      <!-- Text -->
+                      {% if request.product.prod_type != "A" %}
                      Suggested date:
                      <small class="text-gray-700">
                         <span class="badge badge-success-soft">{{request.request_date}}</span>
@@ -34,6 +35,18 @@
                      <small class="text-gray-700">
                         <span class="badge badge-info-soft">{{request.requested_slot}}</span>
                      </small>
+                      {% endif %}
+                  {% if request.product.prod_type == "A" %}
+                      Mentor assigned:
+                     <small class="text-gray-700">
+                        <span class="badge badge-success-soft">{{astrologer_request.astrologer.user.full_name}},{{astrologer_request.astrologer.user.get_username}}</span>
+                     </small><br>
+{#                     Suggested slot:#}
+{#                     <small class="text-gray-700">#}
+{#                        <span class="badge badge-info-soft">{{request.requested_slot}}</span>#}
+{#                     </small>#}
+                  {% endif %}
+
                   </div>
                </div>
             </div>
@@ -58,7 +71,7 @@
                         <div class="form-group">
                             <label for="datepicker">Scheduled Date & Time</label>
                             <input type='text' name="slot" id ="datepicker" class="form-control form-control-sm" required/>
-                            
+
                         </div>
                         <div class="mt-6">
                            <input class="btn btn-sm btn-success lift" type="submit" value="Add schedule">
@@ -86,9 +99,15 @@
                               {% endfor %}
                             </select>
                           </div>
+                    {% if request.product.prod_type == "A" %}
+                        <div class="mt-6">
+                           <input class="btn btn-sm btn-success lift" type="submit" value="Update">
+                        </div>
+                        {% else %}
                         <div class="mt-6">
                            <input class="btn btn-sm btn-success lift" type="submit" value="Add schedule">
                         </div>
+                        {% endif %}
                      </form>
                    </div>
                 </div>
@@ -110,17 +129,13 @@
 
 <script>
    jQuery('#datepicker').datetimepicker({
- formatDate: "Y.m.d", 
+ formatDate: "Y.m.d",
  timepicker:true,
  format: "Y-m-d H:i",
  highlightedDates: [
-    "29.06.2020,Meeting with Pete", 
-    "24.06.2020,Christmas Eve,xdsoft_highlighted_mint", 
-    "25.06.2020,Christmas Day,xdsoft_highlighted_mint", 
-    "26.06.2020,Thanksgiving"
  ],
- 
+
 });
 
-</script> 
+</script>
 {% endblock content %}

@@ -23,8 +23,6 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('picset.urls')),
 
-    # Mentor Dash
-    path('', include('mentor.urls')),
 
     # Payment flow below
     path('', include('payment.urls'))

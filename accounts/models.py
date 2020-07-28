@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 import uuid
 
 
+
 class UserManager(BaseUserManager):
     def create_user(self, full_name, email, password=None):
         if not full_name:
@@ -112,3 +113,32 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return 'Profile of user: {}'.format(self.user.full_name)
+
+
+class MentorProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mentor_profile')
+    tags = models.CharField(max_length=255)
+    experience = models.IntegerField(default=0)
+    active = models.BooleanField(default=1)
+    verified = models.BooleanField(default=0)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return 'Mentor: {}'.format(self.user.full_name)
+
+    @property
+    def mentor_type(self):
+        if self.user.mentor:
+            return 1
+        else:
+            return 2
+
+
+class MentorProducts(models.Model):
+    from product.models import Product
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    mentor = models.ForeignKey(MentorProfile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Associated Product name: {}'.format(self.product.name)

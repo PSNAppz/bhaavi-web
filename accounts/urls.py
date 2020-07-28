@@ -19,6 +19,16 @@ urlpatterns = [
     path('user/register', views.userRegisterPage, name="register"),
     path('logout', views.logoutUser, name="logout"),
 
+    # Mentor Dash
+    path('mentorboard/', views.mentorDashboard, name="mentorboard"),
+    path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
+    path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
+    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
+    path('dashboard/conference/end/<reqid>', views.endCall, name="end_call"),
+
+    path('dashboard/careerReport/<id>', views.submitCareerReport, name="career-report"),
+    path('dashboard/submitCareerReport/<id>', views.submitCareerReportHoroscope, name="submit_career_report"),
+
     # Payment flow below
 
     path('request/mentor', views.requestCall, name="mentor_request"),
@@ -36,6 +46,7 @@ urlpatterns = [
 
     # Admin panel
     path('dashboard/admin', views.adminDashboard, name="admin_panel"),
+    path('dashboard/astrologerCallRequest', views.astrologerCallRequest, name="astrologer_call_request"),
     path('dashboard/reports', views.adminReportView, name="admin_panel_reports"),
     path('dashboard/astrologerReports', views.adminAstrologerReportView, name="astrologer_report"),
     path('dashboard/admin/request/<int:id>', views.respondCallRequest, name="respond_call"),

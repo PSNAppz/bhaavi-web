@@ -37,6 +37,11 @@
                         Home
                     </a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" id="navbarPages" href="/support">
+                        Support
+                    </a>
+                </li>
                 {% if user.is_authenticated %}
                     {% if user.is_mentor %}
                         <li class="nav-item dropdown">
@@ -57,11 +62,7 @@
                             </a>
                         </li>
                     {% endif %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" id="navbarPages" href="support">
-                            Support
-                        </a>
-                    </li>
+
 
                     {% if user.is_superuser %}
 
