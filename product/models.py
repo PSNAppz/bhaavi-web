@@ -55,7 +55,7 @@ class Coupon(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Product name: {}'.format(self.name)
+        return 'Product name: {}'.format(self.product.name)
 
     @property
     def is_siteWide(self):

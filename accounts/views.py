@@ -807,6 +807,14 @@ def adminShowReport(request, id):
 
 @login_required(login_url='login')
 @admin_user
+def adminShowReport(request, id):
+    schedule = RequestedSchedules.objects.filter(accepted=True).get(request_id=id)
+    context = {'schedule': schedule, 'call_req': id}
+    return render(request, 'admin/view_report_data.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
 def showSchedules(request, id):
     schedules = RequestedSchedules.objects.filter(request_id=id)
     user = User.objects.get(pk=schedules[0].user_id)

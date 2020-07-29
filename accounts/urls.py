@@ -48,6 +48,7 @@ urlpatterns = [
     path('dashboard/admin/mentorReport', views.adminMentorReportView, name="mentor_report"),
     path('dashboard/admin/adminMentorReportConfirmView/<int:id>', views.adminMentorReportConfirmView,
          name="mentor_report_confirm"),
+    # path('dashboard/admin/mentorReport', views.adminMentorReportView, name="mentor_report"),
 
     path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
     path('dashboard/admin/assignAstrologer', views.assignAstrologer, name="assign_astrologer"),
