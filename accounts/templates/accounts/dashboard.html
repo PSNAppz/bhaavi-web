@@ -138,7 +138,6 @@
                             <input type="hidden" name="product" value="{{ product.id }}" />
                             <input type="hidden" name="user" value="{{ user.id }}" />
                                 {% if requested == None %}
-                                    <p>{{ requested }}</p>
                             <input type="submit" class="btn btn-xs btn-outline-white" value="Submit details" /><br>
                                 {% elif not requested.responded %}
                             <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Report submitted">Submitted</a>
