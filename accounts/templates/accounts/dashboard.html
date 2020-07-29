@@ -130,22 +130,35 @@
 
                         <!-- Button -->
                         {% if product.call_required == False %}
-
                         {% if purchase.product_id == product.id and purchase.status %}
+                            {% with requests|check_request_status:product.id as requested %}
+                            {% if product.prod_type == "A" %}
+                                <form action="{% url 'request_details' %}" method="POST">
+                          {% csrf_token %}
+                            <input type="hidden" name="product" value="{{ product.id }}" />
+                            <input type="hidden" name="user" value="{{ user.id }}" />
+                                {% if requested == None %}
+                            <input type="submit" class="btn btn-xs btn-outline-white" value="Submit details" /><br>
+                                {% elif not requested.responded %}
+                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Report submitted">Submitted</a>
+                                    {% elif requested.responded %}
+                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Report assigned to mentor">Assigned</a>
+                                    {% endif %}
+                        </form>
+                                {% else %}
                         <a href="{% url 'picset_pre' %}" class="btn btn-xs btn-outline-success" >Attend Test</a>
+                                {% endif %}
+                            {% endwith %}
                         {% else %}
                         <form action="{% url 'plans' %}" method="GET">
                           {% csrf_token %}
                             <input type="submit" class="btn btn-xs btn-success-soft" value="Purchase" />
                         </form>
-
                         {% endif %}
-
                         {% else %}
 
-
                         {% with requests|check_request_status:product.id as requested %}
-                        {% if purchase.product_id == product.id and purchase.status and requested == None and product.prod_type != 'A' %}
+                        {% if purchase.product_id == product.id and purchase.status and requested == None %}
                         <form action="{% url 'request_details' %}" method="POST">
                           {% csrf_token %}
                             <input type="hidden" name="product" value="{{ product.id }}" />
@@ -154,24 +167,13 @@
                             <input type="submit" class="btn btn-xs btn-outline-white" value="Request" /><br>
 
                         </form>
-                            {% elif purchase.product_id == product.id and purchase.status and requested == None and product.prod_type == 'A' %}
-                        <form action="{% url 'request_details' %}" method="POST">
-                          {% csrf_token %}
-                            <input type="hidden" name="product" value="{{ product.id }}" />
-                            <input type="hidden" name="user" value="{{ user.id }}" />
+                            {% elif purchase.product_id == product.id and purchase.status and requested == None %}
 
-                            <input type="submit" class="btn btn-xs btn-outline-white" value="Submit details" /><br>
-
-                        </form>
-                            {% elif requested.responded and purchase.status and not requested.scheduled and product.prod_type != 'A'%}
+                            {% elif requested.responded and purchase.status and not requested.scheduled%}
                             <a href="#schedules" class="btn btn-xs btn-outline-info" >Available schedules</a>
-                            {% elif requested.responded and purchase.status and not requested.scheduled and product.prod_type == 'A'%}
-                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" >Assigned</a>
-                            {% elif not requested.responded and purchase.status and product.prod_type != 'A' %}
+                            {% elif not requested.responded and purchase.status %}
                             <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Please wait for the schedule from the mentor">Requested</a>
-                            {% elif not requested.responded and purchase.status and product.prod_type == 'A' %}
-                            <a href="#" class="btn btn-xs btn-secondary-soft disabled" title="Please wait for the schedule from the mentor">Submitted</a>
-                            {% elif requested.responded and purchase.status and requested.scheduled and not requested.closed and product.prod_type != 'A' %}
+                            {% elif requested.responded and purchase.status and requested.scheduled and not requested.closed %}
                               {% with accepted_calls|get_schedule:requested.id as schedule %}
                               <form action="{% url 'call_details' %}" method="POST">
                                 {% csrf_token %}
