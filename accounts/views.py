@@ -990,7 +990,6 @@ def requestPage(request):
         for result in results:
             if results[result] >= daily_sessions:
                 slots.append(result)
-    print(slots)
     profile = UserProfile.objects.filter(user_id=user.id)
     # TODO Redirect to respective pages, check and redirect according to product type
     if product.prod_type == "M":
