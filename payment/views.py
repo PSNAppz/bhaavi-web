@@ -1,13 +1,46 @@
 import razorpay
 from decouple import config
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
 # Create your views here.
 from accounts.models import UserProfile
 from payment.models import RazorPayTransactions, UserPurchases
-from product.models import Product, ProductFeatures, ProductPackages
+from product.models import Product, ProductFeatures, ProductPackages, Coupon
+
+
+
+
+@login_required(login_url='login')
+def coupon(request):
+    from product.models import UserRedeemCoupon
+
+    if request.method == "POST":
+        code = request.POST.get('code')
+        product_id = request.POST.get('product')
+        if code == '':
+            messages.error(request, 'Please enter a coupon code')
+            return redirect('payment', product_id)
+
+        try:
+            product = Product.objects.get(id=product_id)
+            try:
+                coupon = Coupon.objects.get(product=product, code=code)
+                create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
+                                                                discount_percent=coupon.discount_percent)
+
+            except ObjectDoesNotExist:
+                messages.error(request, "This coupon does not exist")
+                return redirect("payment", product.id)
+
+            messages.success(request, 'Coupon added!')
+            return redirect('payment', product_id)
+        except:
+            pass
+    return None
 
 
 def plansPage(request):
@@ -42,12 +75,12 @@ def paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature):
 
 
 @login_required(login_url='login')
-def createOrder(request):
-    if request.method == "POST":
+def createOrder(request, id):
+    if request.method == "GET":
         if not request.user.customer:
             messages.warning(request, 'You cannot purchase products!')
             return redirect('dashboard')
-        product_id = request.POST.get('product')
+        product_id = id
         product = Product.objects.filter(active=True).get(pk=product_id)
         try:
             user_profile = UserProfile.objects.get(user_id=request.user.id)

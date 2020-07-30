@@ -178,7 +178,7 @@
                     {% endfor %}
 
                 <!-- Link -->
-               <form action="{% url 'payment' %}" method="POST">
+               <form action="{% url 'payment' product.id %}" method="GET" >
                     {% csrf_token %}
                     <input type="hidden" name="product" value="{{product.id}}" />
                     <button type="submit" class="btn btn-block btn-warning">

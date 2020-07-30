@@ -64,14 +64,16 @@
                 </li>
               </ul>
         
-              <!-- <form class="card p-2">
+               <form method="POST" action="{% url 'coupon' %}" class="card p-2">
+                   {% csrf_token %}
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Promo code">
+                  <input type="text" class="form-control" name="code" placeholder="Promo code">
+                  <input type="hidden" class="form-control" name="product" placeholder="Promo code" value={{ product.id }}>
                   <div class="input-group-append">
                     <button type="submit" class="btn btn-secondary">Redeem</button>
                   </div>
                 </div>
-              </form> -->
+              </form>
             </div>
             <div class="col-md-8 order-md-1">
               <h4 class="mb-3">Billing address</h4>
