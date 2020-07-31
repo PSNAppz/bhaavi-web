@@ -1,10 +1,11 @@
+import decimal
 import uuid
 
 from django.db import models
 
 # Create your models here.
 from accounts.models import User
-from product.models import Product
+from product.models import Product, Coupon
 
 
 def invoice_gen():
@@ -21,11 +22,20 @@ class UserPurchases(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     status = models.BooleanField(default=0)
     payment_progress = models.BooleanField(default=1)
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
     invoice = models.CharField(max_length=255, default=invoice_gen)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'Receipt id: {}'.format(self.invoice)
+
+    def get_total(self):
+        total = self.product.amount - self.product.active_discount
+        if self.coupon:
+            coupon_discount = decimal.Decimal(total/100) * self.coupon.discount_percent
+            total = decimal.Decimal(total) - coupon_discount
+            return total
+        return total
 
 
 class RazorPayTransactions(models.Model):

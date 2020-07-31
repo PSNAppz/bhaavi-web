@@ -47,7 +47,6 @@ class ProductPackages(models.Model):
 
 class Coupon(models.Model):
     code = models.CharField(max_length=255)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2)
     count = models.IntegerField(default=1)
     multiple_usage = models.BooleanField(default=0)
@@ -55,14 +54,14 @@ class Coupon(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Product name: {}'.format(self.product.name)
+        return 'Code name: {}'.format(self.code)
 
-    @property
-    def is_siteWide(self):
-        if (self.product == ""):
-            return True
-        else:
-            return False
+    # @property
+    # def is_siteWide(self):
+    #     if (self.product == ""):
+    #         return True
+    #     else:
+    #         return False
 
 
 class UserRedeemCoupon(models.Model):
