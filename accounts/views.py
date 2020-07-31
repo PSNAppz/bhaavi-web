@@ -730,7 +730,7 @@ def astroDetailsView(request):
             mentorRequest = MentorCallRequest.objects.get(id=mentor_request_id)
             user = mentorRequest.user
             user_profile = UserProfile.objects.get(user_id=user.id)
-            context = {'user': user, 'profile': user_profile}
+            context = {'user': user, 'profile': user_profile, 'report':report_id}
             return render(request, 'jyothishan/details.html', context)
         else:
             return redirect('dashboard')
