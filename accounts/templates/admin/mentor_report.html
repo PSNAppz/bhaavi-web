@@ -62,7 +62,13 @@
                                 <td>{{ report.findings }}</td>
                                 <td>{{ report.suggestions }}</td>
                                 <td>{{ report.recommendation }}</td>
-                                <td>{{ report.accepted }}</td>
+                                <td>
+                                    {% if report.accepted %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
                                 <td>{{ report.timestamp }}</td>
 
                                 <td>
