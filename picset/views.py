@@ -243,7 +243,7 @@ def showResultMentor(request, id):
         context = {'result': result, 'P': p, 'I': i, 'C': c, 'S': s, 'E': e, 'T': t, 'top': top}
         return render(request, 'picset/pdfview.html', context)
     except Exception as e:
-        # messages.warning('User has not written PICSET test yet!')
+        messages.warning(request,'User has not written PICSET test yet!')
         return redirect('dashboard')
 
 

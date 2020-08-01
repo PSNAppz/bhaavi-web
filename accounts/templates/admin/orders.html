@@ -43,8 +43,8 @@
                         <tr>
                             <th>User</th>
                             <th>Product</th>
-                            <th>Status</th>
-                            <th>Payment progress</th>
+                            <th>Active</th>
+                            <th>Payment in progress</th>
                             <th>Invoice</th>
                         </tr>
                         </thead>
@@ -53,8 +53,20 @@
                             <tr>
                                 <td>{{ order.user.get_username }}</td>
                                 <td>{{ order.product.name }}</td>
-                                <td>{{ order.status }}</td>
-                                <td>{{ order.payment_progress }}</td>
+                                <td>
+                                    {% if order.status %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
+                            <td>
+                                    {% if order.payment_progress %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
                                 <td>{{ order.invoice }}</td>
                             </tr>
                         {% endfor %}

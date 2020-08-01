@@ -58,10 +58,36 @@
                                 <td>{{ product.description }}</td>
                                 <td>{{ product.amount }}</td>
                                 <td>{{ product.active_discount }}</td>
-                                <td>{{ product.prod_type }}</td>
-                                <td>{{ product.call_required }}</td>
-                                <td>{{ product.is_package }}</td>
-                                <td>{{ product.active }}</td>
+                                <td>
+                                    {% if product.prod_type == "A" %}
+                                        Astrologer career horoscope
+                                        {% elif product.prod_type == "M" %}
+                                        Mentor
+                                        {% else %}
+                                        Jyolsyan
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if product.call_required %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if product.is_package %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if product.active %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>

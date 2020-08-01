@@ -723,7 +723,7 @@ def astroDetailsView(request):
                 accepted=True)
             user = schedule.user
             user_profile = UserProfile.objects.get(user_id=user.id)
-            context = {'schedule': schedule, 'user': user, 'profile': user_profile}
+            context = {'schedule': schedule, 'user': user, 'profile': user_profile, 'report':report_id}
             return render(request, 'jyothishan/details.html', context)
         if report_id:
             report = AssignSubmitReport.objects.get(id=report_id)
