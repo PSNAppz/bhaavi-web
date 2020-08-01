@@ -117,32 +117,34 @@
                 <input type="text"  class="form-control" name="time"  value="{{profile.latlong}}" disabled>
   
             </div>
+
+              {% if not report %}
             <p class="font-size-lg text-center mb-0">
               Queries of student
             </p>
             <div class="form-group mb-5">
-              
+
                 <!-- Label -->
                 <label for="contactName">
                   Query 1:
                 </label>
-  
+
                 <!-- Input -->
                 <input type="text"  class="form-control" name="time"  value="{{schedule.request.query1}}" disabled>
-  
+
             </div>
             <div class="form-group mb-5">
-              
+
                 <!-- Label -->
                 <label for="contactName">
                   Query 2:
                 </label>
-  
+
                 <!-- Input -->
                 <input type="text"  class="form-control" name="time"  value="{{schedule.request.query2}}" disabled>
-  
+
             </div>
-            
+            {% endif %}
             
     </div>
   

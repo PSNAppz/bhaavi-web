@@ -72,7 +72,7 @@ def getQuestion(request):
             else:
                 return JsonResponse({'success': False})
 
-            user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_id="PROD-1").get(
+            user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_type="P").get(
                 status=True)
             if (prev):
                 if question_id == 0:
@@ -140,7 +140,7 @@ def getQuestion(request):
                         explorer_score=e,
                         traditional_score=t,
                     )
-                    UserPurchases.objects.filter(user_id=request.user.id).filter(product_id="PROD-1").update(
+                    UserPurchases.objects.filter(user_id=request.user.id).filter(product_type="P").update(
                         status=False)
                     return JsonResponse({'success': False, 'redirect': True})
             last_q = Question.objects.last()
@@ -243,7 +243,7 @@ def showResultMentor(request, id):
         context = {'result': result, 'P': p, 'I': i, 'C': c, 'S': s, 'E': e, 'T': t, 'top': top}
         return render(request, 'picset/pdfview.html', context)
     except Exception as e:
-        # messages.warning('User has not written PICSET test yet!')
+        messages.warning(request,'User has not written PICSET test yet!')
         return redirect('dashboard')
 
 
@@ -289,7 +289,7 @@ def downloadPDF(request, id=None):
 @login_required(login_url='login')
 def preTest(request):
     try:
-        user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_id="PROD-1").get(
+        user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_type="P").get(
             status=True)
         return render(request, 'picset/pretest.html')
     except Exception as e:
