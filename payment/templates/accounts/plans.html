@@ -83,7 +83,7 @@
                     {% endfor %}
 
                 <!-- Link -->
-               <form action="{% url 'payment' %}" method="POST">
+               <form action="{% url 'payment' package.id %}" method="GET">
                     {% csrf_token %}
                     <input type="hidden" name="product" value="{{package.id}}" />
                     <button type="submit" class="btn btn-block btn-primary-soft">
