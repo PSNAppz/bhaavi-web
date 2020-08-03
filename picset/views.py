@@ -19,7 +19,7 @@ def takeTest(request):
         messages.warning(request, 'You are not a customer!')
         return redirect('dashboard')
 
-    user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").get(status=True)
+    user_purchase = UserPurchases.objects.get(user_id=request.user.id, product__prod_type="O", status=True)
     last_q = Question.objects.last()
     name = request.GET['name']
     age = request.GET['age']
@@ -243,7 +243,7 @@ def showResultMentor(request, id):
         context = {'result': result, 'P': p, 'I': i, 'C': c, 'S': s, 'E': e, 'T': t, 'top': top}
         return render(request, 'picset/pdfview.html', context)
     except Exception as e:
-        messages.warning(request,'User has not written PICSET test yet!')
+        messages.warning(request, 'User has not written PICSET test yet!')
         return redirect('dashboard')
 
 
