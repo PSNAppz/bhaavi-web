@@ -19,7 +19,7 @@ def takeTest(request):
         messages.warning(request, 'You are not a customer!')
         return redirect('dashboard')
 
-    user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_id="PROD-1").get(status=True)
+    user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").get(status=True)
     last_q = Question.objects.last()
     name = request.GET['name']
     age = request.GET['age']
@@ -72,7 +72,7 @@ def getQuestion(request):
             else:
                 return JsonResponse({'success': False})
 
-            user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_type="P").get(
+            user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").get(
                 status=True)
             if (prev):
                 if question_id == 0:
@@ -140,7 +140,7 @@ def getQuestion(request):
                         explorer_score=e,
                         traditional_score=t,
                     )
-                    UserPurchases.objects.filter(user_id=request.user.id).filter(product_type="P").update(
+                    UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").update(
                         status=False)
                     return JsonResponse({'success': False, 'redirect': True})
             last_q = Question.objects.last()
@@ -289,7 +289,7 @@ def downloadPDF(request, id=None):
 @login_required(login_url='login')
 def preTest(request):
     try:
-        user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product_type="P").get(
+        user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").get(
             status=True)
         return render(request, 'picset/pretest.html')
     except Exception as e:
