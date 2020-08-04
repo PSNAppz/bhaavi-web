@@ -123,8 +123,9 @@ def createOrder(request, id):
                             invoice=invoice,
                         )
                 client = initPaymentClient()
-                user_purchase = UserPurchases.objects.get(product=product)
-                order_amount = user_purchase.get_total() * 100
+                user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
+                    payment_progress=True).get(product_id=product.id)
+                order_amount = int(user_purchase.get_total()) * 100
                 order_currency = 'INR'
                 order_receipt = invoice
                 notes = {'Product': user_purchase.product.name}
@@ -137,7 +138,7 @@ def createOrder(request, id):
 
                 if order_status == 'created':
                     context = {'order_id': order_id, 'product': product, 'amount': order_amount,
-                               'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchases}
+                               'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase}
                     return render(request, 'accounts/payment.html', context)
                 else:
                     messages.error(request, 'Some error occured, please try again!')
