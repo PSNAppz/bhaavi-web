@@ -7,11 +7,11 @@
     ================================================== -->
     <section class="pt-8 pt-md-11 pb-10 pb-md-15">
       <!-- Content -->
-      
+
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8 text-center">
-            
+
             <!-- Heading -->
             <h2 class="font-weight-bold">
               Checkout
@@ -26,12 +26,12 @@
         </div> <!-- / .row -->
 
         <div class="row justify-content-center">
-          
+
           <div class="row">
             <div class="col-md-4 order-md-2 mb-4">
               <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-muted">Product details</span>
-                
+
               </h4>
               <ul class="list-group mb-3">
                 <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -55,15 +55,27 @@
                     <h6 class="my-0"></h6>
                     <small>DISCOUNT</small>
                   </div>
-                  <span class="text-success">-₹{{user_purchases.product.active_discount}}</span>
+                  <span class="text-success">-₹{{discount_price}}</span>
                 </li>
                     {% if user_purchases.coupon %}
                     <li class="list-group-item d-flex justify-content-between bg-light">
                   <div class="text-success">
                     <h6 class="my-0"></h6>
-                    <small>Coupon: {{ user_purchases.coupon.code }}</small>
+
+                    <small>
+                        Coupon: {{ user_purchases.coupon.code }}
+                        <br>
+                        {{user_purchases.coupon.discount_percent}}% OFF
+                    </small>
                   </div>
-                  <span class="text-success">{{user_purchases.coupon.discount_percent}}% OFF</span>
+                  <span class="text-success">
+                      <form action="{% url 'removeCoupon' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="user_purchase_id" value="{{ user_purchases.id }}">
+                          <input type="hidden" name="product_id" value="{{ product.id }}">
+                          <button type="submit" style="font-size: 13px;float: right" class="btn btn-danger btn-sm">X</button>
+                      </form>
+                  </span>
                 </li>
                         {% endif %}
                 {% endif %}
@@ -72,7 +84,7 @@
                   <strong>₹{{user_purchases.get_total}}</strong>
                 </li>
               </ul>
-        
+
                <form method="POST" action="{% url 'coupon' %}" class="card p-2">
                    {% csrf_token %}
                 <div class="input-group">
@@ -111,15 +123,15 @@
                   </div>
                 </div>
                 </div>
-        
+
                 <div class="mb-3">
-                  <label for="address">Address</label> 
+                  <label for="address">Address</label>
                   <input type="text" class="form-control" name="address" id="address" placeholder="1234 Main St" required value="{{profile.address}}">
                   <div class="invalid-feedback">
                     Please enter your shipping address.
                   </div>
                 </div>
-        
+
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="state">State</label>
@@ -167,7 +179,7 @@
                       <option value="West Bengal">West Bengal</option>
                     </select>
                     <div class="invalid-feedback">
-                      Please provide a valid state. 
+                      Please provide a valid state.
                     </div>
                   </div>
                   <div class="col-md-6 mb-3">
@@ -177,11 +189,11 @@
                       Zip code required.
                     </div>
                   </div>
-                </div>            
-                <hr class="mb-4">        
+                </div>
+                <hr class="mb-4">
                 <input type="hidden" name="product" value="{{product.id}}" />
                 <button class="btn btn-success btn-lg btn-block" id="rzp-button1" type="button">Proceed to pay</button>
-                
+
               </form>
             </div>
           </div>
@@ -218,11 +230,11 @@
               rzp1.open();
               e.preventDefault();
           }
-          </script>  
+          </script>
 
         </div> <!-- / .row -->
       </div> <!-- / .container -->
     </section>
 
-  
+
 {% endblock content %}

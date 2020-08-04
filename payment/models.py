@@ -37,6 +37,14 @@ class UserPurchases(models.Model):
             return total
         return total
 
+    def get_product_discount(self):
+        discount_price =self.product.amount - self.product.active_discount
+        if self.coupon:
+            discount = decimal.Decimal(discount_price / 100) * self.coupon.discount_percent
+            discount_price = decimal.Decimal(discount_price) - decimal.Decimal(discount)
+            return discount_price
+        return discount_price
+
 
 class RazorPayTransactions(models.Model):
     purchase = models.ForeignKey(UserPurchases, on_delete=models.CASCADE, related_name='transaction_details')
