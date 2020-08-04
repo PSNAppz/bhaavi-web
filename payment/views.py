@@ -126,6 +126,7 @@ def createOrder(request, id):
                 user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
                     payment_progress=True).get(product_id=product.id)
                 order_amount = int(user_purchase.get_total()) * 100
+                get_discount_price = int(int(user_purchase.get_product_discount()))
                 order_currency = 'INR'
                 order_receipt = invoice
                 notes = {'Product': user_purchase.product.name}
@@ -138,7 +139,7 @@ def createOrder(request, id):
 
                 if order_status == 'created':
                     context = {'order_id': order_id, 'product': product, 'amount': order_amount,
-                               'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase}
+                               'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,'discount_price': get_discount_price}
                     return render(request, 'accounts/payment.html', context)
                 else:
                     messages.error(request, 'Some error occured, please try again!')
@@ -164,8 +165,9 @@ def createOrder(request, id):
                         invoice = purchase.invoice
                     client = initPaymentClient()
                     user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                            payment_progress=True).get(product_id=product.id)
+                        payment_progress=True).get(product_id=product.id)
                     order_amount = int(user_purchase.get_total()) * 100
+                    get_discount_price = int(int(user_purchase.get_product_discount()))
                     order_currency = 'INR'
                     order_receipt = invoice
                     notes = {'Product': product.name}
@@ -177,7 +179,8 @@ def createOrder(request, id):
                     order_status = response['status']
                     if order_status == 'created':
                         context = {'order_id': order_id, 'product': product, 'amount': order_amount,
-                                   'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase}
+                                   'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
+                                   'discount_price': get_discount_price}
                         return render(request, 'accounts/payment.html', context)
                     else:
                         messages.error(request, 'Some error occured, please try again!')
