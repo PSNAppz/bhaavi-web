@@ -69,7 +69,6 @@
                     </small>
                   </div>
                   <span class="text-success">
-
                       <form action="{% url 'removeCoupon' %}" method="POST">
                           {% csrf_token %}
                           <input type="hidden" name="user_purchase_id" value="{{ user_purchases.id }}">

@@ -19,7 +19,6 @@ def removeCoupon(request):
     if request.method == "POST":
         user_purchase_id = request.POST.get('user_purchase_id')
         product_id = request.POST.get('product_id')
-        # console.log(user_purchase_id)
         if user_purchase_id:
             user_purchase = UserPurchases.objects.get(id=user_purchase_id)
             user_purchase.coupon = None
@@ -142,8 +141,9 @@ def createOrder(request, id):
                 client = initPaymentClient()
                 user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
                     payment_progress=True).get(product_id=product.id)
-                if user_purchase.coupon.count <= 0:
-                    user_purchase.coupon = None
+                if user_purchase.coupon:
+                    if user_purchase.coupon.count <= 0:
+                        user_purchase.coupon = None
                 order_amount = int(user_purchase.get_total()) * 100
                 get_discount_price = int(int(user_purchase.get_product_discount()))
                 order_currency = 'INR'
