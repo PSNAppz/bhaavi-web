@@ -15,6 +15,23 @@ from product.models import Product, ProductFeatures, ProductPackages, Coupon
 
 
 @login_required(login_url='login')
+def removeCoupon(request):
+    if request.method == "POST":
+        user_purchase_id = request.POST.get('user_purchase_id')
+        product_id = request.POST.get('product_id')
+        # console.log(user_purchase_id)
+        if user_purchase_id:
+            user_purchase = UserPurchases.objects.get(id=user_purchase_id)
+            user_purchase.coupon = None
+            user_purchase.save()
+            messages.success(request, 'Coupon has been removed')
+            return redirect('payment', product_id)
+        else:
+            messages.error(request, 'You do not have a active coupon on this product')
+            return redirect('payment', product_id)
+
+
+@login_required(login_url='login')
 def coupon(request):
     from product.models import UserRedeemCoupon
 
@@ -125,6 +142,8 @@ def createOrder(request, id):
                 client = initPaymentClient()
                 user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
                     payment_progress=True).get(product_id=product.id)
+                if user_purchase.coupon.count <= 0:
+                    user_purchase.coupon = None
                 order_amount = int(user_purchase.get_total()) * 100
                 get_discount_price = int(int(user_purchase.get_product_discount()))
                 order_currency = 'INR'
@@ -139,7 +158,8 @@ def createOrder(request, id):
 
                 if order_status == 'created':
                     context = {'order_id': order_id, 'product': product, 'amount': order_amount,
-                               'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,'discount_price': get_discount_price}
+                               'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
+                               'discount_price': get_discount_price}
                     return render(request, 'accounts/payment.html', context)
                 else:
                     messages.error(request, 'Some error occured, please try again!')
@@ -166,6 +186,9 @@ def createOrder(request, id):
                     client = initPaymentClient()
                     user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
                         payment_progress=True).get(product_id=product.id)
+                    if user_purchase.coupon:
+                        if user_purchase.coupon.count <= 0:
+                            user_purchase.coupon = None
                     order_amount = int(user_purchase.get_total()) * 100
                     get_discount_price = int(int(user_purchase.get_product_discount()))
                     order_currency = 'INR'

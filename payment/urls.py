@@ -8,4 +8,5 @@ urlpatterns = [
     path('payment/status', views.paymentStatus, name='payment_status'),
     path('payment/done', views.paymentSuccessPage, name="success"),
     path('payment/coupon', views.coupon, name="coupon"),
+    path('payment/removeCoupon', views.removeCoupon, name="removeCoupon"),
 ]
