@@ -11,7 +11,7 @@ from django.contrib import messages
 # Create your views here.
 from accounts.models import UserProfile
 from payment.models import RazorPayTransactions, UserPurchases
-from product.models import Product, ProductFeatures, ProductPackages, Coupon
+from product.models import Product, ProductFeatures, ProductPackages, Coupon, UserRedeemCoupon
 
 
 @login_required(login_url='login')
@@ -45,15 +45,15 @@ def coupon(request):
             product = Product.objects.get(id=product_id)
             try:
                 coupon = Coupon.objects.get(code=code)
+                if coupon.multiple_usage:
+                    user_redeem = UserRedeemCoupon.objects.filter(coupon=coupon, user=request.user)
+                    if user_redeem.exists():
+                        messages.error(request, "This coupon does not exists")
+                        return redirect("payment", product.id)
                 if coupon.count >= 1:
-                    create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
-                                                                    discount_percent=coupon.discount_percent)
-
                     user_purchase = UserPurchases.objects.get(product=product, payment_progress=True)
                     user_purchase.coupon = coupon
                     user_purchase.save()
-                    coupon.count -= 1
-                    coupon.save()
                     messages.success(request, 'Coupon added!')
                     return redirect('payment', product_id)
                 else:
@@ -214,6 +214,8 @@ def createOrder(request, id):
 def paymentSuccessPage(request):
     if request.method == "POST":
         response = request.POST
+        product_id = request.POST.get('product')
+        product = Product.objects.get(id=product_id)
         try:
             response['razorpay_payment_id']
             razorpay_payment_id = response['razorpay_payment_id']
@@ -221,7 +223,13 @@ def paymentSuccessPage(request):
             razorpay_signature = response['razorpay_signature']
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
-
+                user_purchase = UserPurchases.objects.get(product=product, payment_progress=True, user=request.user)
+                coupon_code = user_purchase.coupon.code
+                coupon = Coupon.objects.get(code=coupon_code)
+                coupon.count -= 1
+                coupon.save()
+                create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
+                                                                discount_percent=coupon.discount_percent)
                 items = UserPurchases.objects.filter(invoice=response['invoice'])
                 if not items.count() > 1:
                     purchase = UserPurchases.objects.get(invoice=response['invoice'])
