@@ -53,6 +53,11 @@ urlpatterns = [
     path('dashboard/admin/report/<int:id>', views.adminShowReport, name="admin_show_report"),
     path('dashboard/admin/report/close', views.closeReport, name="close_report"),
 
+
+    path('dashboard/admin/couponView', views.couponAdminView, name="coupon_view"),
+    path('dashboard/admin/createCouponView', views.couponCreateView, name="coupon_create_view"),
+    path('dashboard/admin/createCoupon', views.couponCreate, name="create_coupon"),
+
     path('dashboard/admin/product', views.adminProductView, name="product"),
     path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
     path('dashboard/admin/orders', views.adminOrdersView, name="orders"),

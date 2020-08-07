@@ -1,0 +1,92 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'admin/navbar.html' %}
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="chartjs-size-monitor"
+                     style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                    <div class="chartjs-size-monitor-expand"
+                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink"
+                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+
+                    <table style="margin-top: 20px" id="myTable" class="table table-striped table-sm">
+                        <thead>
+                        <div style=";margin-bottom: 20px">
+                                <a href="{% url 'coupon_create_view' %}"
+                                        class="btn btn-info btn-pill btn-xs">
+                                    Create coupon
+                                </a>
+
+                        </div>
+                        <tr>
+                            <th>Coupon code</th>
+                            <th>Discount(%)</th>
+                            <th>Coupon quantity</th>
+                            <th>Multiple usage</th>
+                            <th>Active</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for coupon in coupons %}
+                            <tr>
+                                <td>{{ coupon.code }}</td>
+                                <td>{{ coupon.discount_percent }}</td>
+                                <td>{{ coupon.count }}</td>
+                                <td>
+                                    {% if coupon.multiple_usage %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if coupon.active %}
+                                        Yes
+                                    {% else %}
+                                        No
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href=""
+                                       class="btn btn-info btn-pill btn-xs">
+                                        Update
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href=""
+                                       class="btn btn-danger btn-pill btn-xs">
+                                        Delete
+                                    </a>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="dashboard.js"></script>
+
+{% endblock content %}

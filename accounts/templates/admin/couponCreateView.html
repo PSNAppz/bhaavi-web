@@ -1,0 +1,70 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% block content %}
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"/>
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'admin/navbar.html' %}
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="chartjs-size-monitor"
+                     style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                    <div class="chartjs-size-monitor-expand"
+                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                    </div>
+                    <div class="chartjs-size-monitor-shrink"
+                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                    </div>
+                </div>
+                <h2>Create a Coupon</h2>
+
+                <div class="list-group list-group-flush">
+                        <div class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-sm-5 col-md-4">
+                                    <form action="{% url 'create_coupon' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="datepicker">Coupon code</label>
+                                            <input type='text' name="coupon_code" id="datepicker"
+                                                   class="form-control form-control-sm" required/>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="datepicker">Discount percent(%)</label>
+                                            <input type='number' name="coupon_discount" id="datepicker"
+                                                   class="form-control form-control-sm" required/>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="datepicker">Coupon quantity</label>
+                                            <input type='number' name="coupon_quantity" id="datepicker"
+                                                   class="form-control form-control-sm" required/>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="datepicker">Multiple usage</label>
+                                            <input type='checkbox' name="multiple_usage" id="datepicker"
+                                                   class=""/>
+
+                                        </div>
+                                        <div class="mt-6">
+                                            <input class="btn btn-sm btn-info lift" type="submit"
+                                                   value="Create coupon">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                <br>
+        </div>
+    </div>
+    </main>
+    </div>
+    </div>
+
+{% endblock content %}
