@@ -723,14 +723,14 @@ def astroDetailsView(request):
                 accepted=True)
             user = schedule.user
             user_profile = UserProfile.objects.get(user_id=user.id)
-            context = {'schedule': schedule, 'user': user, 'profile': user_profile, 'report':report_id}
+            context = {'schedule': schedule, 'user': user, 'profile': user_profile, 'report': report_id}
             return render(request, 'jyothishan/details.html', context)
         if report_id:
             report = AssignSubmitReport.objects.get(id=report_id)
             mentorRequest = MentorCallRequest.objects.get(id=mentor_request_id)
             user = mentorRequest.user
             user_profile = UserProfile.objects.get(user_id=user.id)
-            context = {'user': user, 'profile': user_profile, 'report':report_id}
+            context = {'user': user, 'profile': user_profile, 'report': report_id}
             return render(request, 'jyothishan/details.html', context)
         else:
             return redirect('dashboard')
@@ -833,6 +833,95 @@ def showSchedules(request, id):
     user = User.objects.get(pk=schedules[0].user_id)
     context = {'schedules': schedules, 'requested_user': user}
     return render(request, 'admin/view_schedule.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def couponAdminView(request):
+    coupon = Coupon.objects.all().order_by('-timestamp')
+    context = {'coupons': coupon}
+    return render(request, 'admin/couponView.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def couponCreateView(request):
+    return render(request, 'admin/couponCreateView.html')
+
+
+@login_required(login_url='login')
+@admin_user
+def couponDelete(request):
+    if request.method == 'POST':
+        coupon_id = request.POST.get('coupon')
+        coupon = Coupon.objects.get(id=coupon_id)
+        coupon.delete()
+        messages.success(request, 'Coupon has been deleted!')
+        return redirect('coupon_view')
+
+
+@login_required(login_url='login')
+@admin_user
+def couponUpdateView(request):
+    if request.method == 'POST':
+        coupon_id = request.POST.get('coupon')
+        coupon = Coupon.objects.get(id=coupon_id)
+        context = {'coupon': coupon}
+        return render(request, 'admin/couponUpdate.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def couponUpdate(request):
+    if request.method == 'POST':
+        coupon_id = request.POST.get('coupon_id')
+        coupon_code = request.POST.get('coupon_code')
+        coupon_discount = request.POST.get('coupon_discount')
+        coupon_quantity = request.POST.get('coupon_quantity')
+        multiple_usage = request.POST.get('multiple_usage')
+
+        coupon = Coupon.objects.get(id=coupon_id)
+        if coupon_code == None or coupon_discount == None or coupon_quantity == None:
+            messages.error(request, 'Please fill all the field!')
+            return redirect('coupon_update_view')
+        if multiple_usage:
+            coupon_multiple_usage = True
+            coupon.multiple_usage = coupon_multiple_usage
+        else:
+            coupon.multiple_usage = False
+
+        coupon.code = coupon_code
+        coupon.discount_percent = coupon_discount
+        coupon.count = coupon_quantity
+        coupon.save()
+
+        messages.success(request, 'Coupon update succesfully!')
+        return redirect('coupon_view')
+
+
+@login_required(login_url='login')
+@admin_user
+def couponCreate(request):
+    if request.method == 'POST':
+
+        coupon_code = request.POST.get('coupon_code')
+        coupon_discount = request.POST.get('coupon_discount')
+        coupon_quantity = request.POST.get('coupon_quantity')
+        multiple_usage = request.POST.get('multiple_usage')
+        if coupon_code == None or coupon_discount == None or coupon_quantity == None:
+            messages.error(request, 'Please fill all the field!')
+            return redirect('coupon_create_view')
+        if multiple_usage:
+            multiple_usage_value = True
+            coupon = Coupon.objects.create(code=coupon_code, discount_percent=coupon_discount, count=coupon_quantity,
+                                           multiple_usage=multiple_usage_value)
+            messages.success(request, 'Coupon created succesfully!')
+            return redirect('coupon_view')
+
+        coupon = Coupon.objects.create(code=coupon_code, discount_percent=coupon_discount, count=coupon_quantity,
+                                       multiple_usage=False)
+        messages.success(request, 'Coupon created succesfully!')
+        return redirect('coupon_view')
 
 
 @login_required(login_url='login')
@@ -1090,7 +1179,7 @@ def viewReport(request):
             if not career_report.call.user_id == request.user.id:
                 messages.error(request, 'Invalid request')
                 return redirect('dashboard')
-        context = {'report': report, 'career_report': career_report, 's3_url':s3_url}
+        context = {'report': report, 'career_report': career_report, 's3_url': s3_url}
         return render(request, 'accounts/view_report.html', context)
 
 
