@@ -45,7 +45,7 @@ def coupon(request):
             product = Product.objects.get(id=product_id)
             try:
                 coupon = Coupon.objects.get(code=code)
-                if coupon.multiple_usage:
+                if not coupon.multiple_usage:
                     user_redeem = UserRedeemCoupon.objects.filter(coupon=coupon, user=request.user)
                     if user_redeem.exists():
                         messages.error(request, "This coupon does not exists")
