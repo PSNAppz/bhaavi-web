@@ -57,6 +57,9 @@ urlpatterns = [
     path('dashboard/admin/couponView', views.couponAdminView, name="coupon_view"),
     path('dashboard/admin/createCouponView', views.couponCreateView, name="coupon_create_view"),
     path('dashboard/admin/createCoupon', views.couponCreate, name="create_coupon"),
+    path('dashboard/admin/couponDelete', views.couponDelete, name="coupon_delete"),
+    path('dashboard/admin/couponUpdateView', views.couponUpdateView, name="coupon_update_view"),
+    path('dashboard/admin/updateCoupon', views.couponUpdate, name="coupon_update"),
 
     path('dashboard/admin/product', views.adminProductView, name="product"),
     path('dashboard/admin/customers', views.adminCustomersView, name="customers"),

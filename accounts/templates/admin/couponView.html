@@ -59,16 +59,26 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href=""
+                                    <form action="{% url 'coupon_update_view' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="coupon" value="{{ coupon.id }}">
+                                        <button type="submit"
                                        class="btn btn-info btn-pill btn-xs">
                                         Update
-                                    </a>
+                                    </button>
+                                    </form>
+
                                 </td>
                                 <td>
-                                    <a href=""
+                                    <form action="{% url 'coupon_delete' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="coupon" value="{{ coupon.id }}">
+                                        <button type="submit"
                                        class="btn btn-danger btn-pill btn-xs">
                                         Delete
-                                    </a>
+                                    </button>
+                                    </form>
+
                                 </td>
 
                             </tr>
