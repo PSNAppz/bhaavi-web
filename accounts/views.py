@@ -13,6 +13,8 @@ import pytz
 from .RtcTokenBuilder import buildToken
 import razorpay
 from collections import Counter
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from .models import *
 from product.models import *
@@ -47,6 +49,19 @@ number3 = 5
 
 
 def homePage(request):
+    message = Mail(
+        from_email='harshinfo3@gmail.com',
+        to_emails='hk967144@gmail.com',
+        subject='Sending with Twilio SendGrid is Fun',
+        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+    try:
+        sg = SendGridAPIClient(config('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
     return render(request, 'base/home.html')
 
 

@@ -162,12 +162,12 @@ MESSAGE_TAGS = {
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_ID')
-EMAIL_HOST_PASSWORD = config('EMAIL_APP_PASS')
+EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
 
 # AWS S3 SETTINGS
 AWS_ACCESS_KEY_ID = 'AKIA5MZHLE2ENHWIDEV3'
