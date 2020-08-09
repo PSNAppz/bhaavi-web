@@ -1,0 +1,207 @@
+{% extends 'base/main.html' %}
+{% load static %}
+{% load filters %}
+{% block content %}
+    <section class="pt-8 pt-md-11 bg-gradient-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8 text-center">
+            
+            <!-- Badge -->
+            <span class="badge badge-pill badge-success-soft mb-3">
+              <span class="h6 text-uppercase">Value Packs</span>
+            </span>
+
+            <!-- Heading -->
+            <h1>
+              Choose our combo value pack!
+            </h1>
+
+            <!-- Text -->
+            <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+              Use our best and cost effective solutions
+            </p>
+
+          </div>
+        </div> <!-- / .row -->
+        <div class="row">
+          {% for package in packages %}
+          <div class="col-12 col-md-4" data-aos="fade-up">
+            
+            <!-- Card -->
+            <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
+              
+
+              <!-- Body -->
+              <div class="card-body position-relative">
+
+                <!-- Badge -->
+                {% if package.active_discount != 0 %}
+                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ package.active_discount|percent:package.amount }}% discount</span>
+                  </span>
+                </div>
+                {% endif %}
+                <!-- Heading -->
+                <div class="text-center mb-3">
+                  <!-- <span class="badge badge-pill badge-primary"> -->
+                    <span class="h6 text-uppercase">{{package.name}}</span>
+                  <!-- </span> -->
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  {% if package.active_discount != 0 %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{package.amount|integer}}</s></span>
+                  <span class="h2 align-self-end mb-1">{{package.amount|sub:package.active_discount}}</span>*
+                  {% else %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{package.amount|integer}}</span>
+                  {% endif %}
+                </div>
+                <br>
+
+                <!-- Text -->
+                {% for feature in features %}
+                    {% if feature.product_id == package.id%}
+                    <!-- List -->
+                    <div class="d-flex">
+                      
+                      <!-- Badge -->
+                      <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                        <i class="fe fe-check"></i>
+                      </div>
+                      
+                      <!-- Text -->
+                      <p>
+                      {{ feature.feature }}
+                      </p>
+                      
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                <!-- Link -->
+               <form action="{% url 'payment' package.id %}" method="GET">
+                    {% csrf_token %}
+                    <input type="hidden" name="product" value="{{package.id}}" />
+                    <button type="submit" class="btn btn-block btn-primary-soft">
+                      Purchase
+                    <i class="fe fe-arrow-right ml-3"></i>
+                  </button>
+                  </form>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endfor %}
+        </div> <!-- / .row --><br><hr>
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8 text-center">
+            
+            <!-- Badge -->
+            <span class="badge badge-pill badge-primary-soft mb-3">
+              <span class="h6 text-uppercase">Individual Packs</span>
+            </span>
+
+            <!-- Heading -->
+            <h1>
+              Individual products 
+            </h1>
+
+            <!-- Text -->
+            <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+              Use our best and cost effective solutions
+            </p>
+
+          </div>
+        </div> <!-- / .row -->
+        <div class="row">
+          {% for product in products %}
+          {% if product.id != "PROD-2"%}
+          <div class="col-12 col-md-4" data-aos="fade-up">
+            
+            <!-- Card -->
+            <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
+              
+              <!-- Body -->
+              <div class="card-body position-relative">
+
+                <!-- Badge -->
+                {% if product.active_discount != 0 %}
+                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ product.active_discount|percent:product.amount }}% discount</span>
+                  </span>
+                </div>
+                {% endif %}
+                <!-- Heading -->
+                <div class="text-center mb-3">
+                  <!-- <span class="badge badge-pill badge-warning"> -->
+                    <span class="h6 text-uppercase">{{product.name}}</span>
+                  <!-- </span> -->
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  {% if product.active_discount != 0 %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{product.amount|integer}}</s></span>
+                  <span class="h2 align-self-end mb-1">{{product.amount|sub:product.active_discount}}</span>*
+                  {% else %}
+                  <span class="h2 mb-0 mt-2">₹</span>
+                  <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{product.amount|integer}}</span>
+                  {% endif %}
+                </div>
+                <br>
+
+                <!-- Text -->
+                {% for feature in features %}
+                    {% if feature.product_id == product.id%}
+                    <!-- List -->
+                    <div class="d-flex">
+                      
+                      <!-- Badge -->
+                      <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                        <i class="fe fe-check"></i>
+                      </div>
+                      
+                      <!-- Text -->
+                      <p>
+                      {{ feature.feature }}
+                      </p>
+                      
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                <!-- Link -->
+               <form action="{% url 'payment' product.id %}" method="GET" >
+                    {% csrf_token %}
+                    <input type="hidden" name="product" value="{{product.id}}" />
+                    <button type="submit" class="btn btn-block btn-warning">
+                      Purchase
+                    <i class="fe fe-arrow-right ml-3"></i>
+                  </button>
+                  </form>
+
+              </div>
+
+            </div>
+
+          </div>
+          {% endif %}
+          {% endfor %}
+
+         
+          
+        </div> <!-- / .row -->
+        <br><br>
+        <i>* Introductory offer. Offer only valid for limited period.</i>
+      </div> <!-- / .container -->
+      
+    </section>
+  
+{% endblock content %}

@@ -6,6 +6,8 @@ from accounts.models import *
 import hashlib
 from decouple import config
 
+from schedule.models import MentorCallRequest, AcceptedCallSchedule, RequestedSchedules
+
 
 class AgoraVideoCall(View):
     app_id=''
@@ -20,7 +22,7 @@ class AgoraVideoCall(View):
         elif permission_class == 'IsAuthenticated':
             return bool(request.user and request.user.is_authenticated)
         elif permission_class == 'IsAdmin':
-            return bool(request.user and request.user.is_staff)
+            return bool(request.user and request.user.sis_staff)
         else:
             return False
 

@@ -16,11 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('accounts.urls')),
-    path('',include('picset.urls'))
+    path('support/', include('helpdesk.urls', namespace='support')),
+
+    path('', include('accounts.urls')),
+    path('', include('picset.urls')),
+
+
+    # Payment flow below
+    path('', include('payment.urls'))
+
 ]
 handler400 = 'accounts.views.handler400'
 handler403 = 'accounts.views.handler403'
