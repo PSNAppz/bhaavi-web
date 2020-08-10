@@ -183,7 +183,7 @@ def userRegisterPage(request):
             email_subject = 'Activate Your Account'
             message = render_to_string('accounts/email_verification.html', {
                 'user': user_name,
-                'domain': current_site.domain,
+                'domain': 'url8485.bhaavi.in',
                 'uid': urlsafe_base64_encode(force_bytes(user.id)),
                 'token': account_activation_token.make_token(user),
             })
