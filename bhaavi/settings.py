@@ -189,3 +189,4 @@ AWS_LOCATION = 'static'
 
 DEFAULT_FILE_STORAGE = 'bhaavi.storage_backends.MediaStorage'
 AWS_DEFAULT_ACL = None
+LOGIN_URL = '/login'
