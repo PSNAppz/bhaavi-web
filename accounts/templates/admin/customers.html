@@ -45,9 +45,7 @@
                             <th>Full name</th>
                             <th>Customer</th>
                             <th>Date</th>
-                            <th>Jyolsan</th>
-                            <th>Mentor</th>
-                            <th>Admin</th>
+                
                             <th>Active</th>
                         </tr>
                         </thead>
@@ -64,27 +62,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ user.timestamp }}</td>
-                                <td>
-                                    {% if user.jyolsyan %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if user.mentor %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if user.admin %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
+                               
                                 <td>
                                     {% if user.is_active %}
                                         Yes
