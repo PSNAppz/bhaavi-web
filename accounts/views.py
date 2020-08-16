@@ -776,7 +776,7 @@ def adminProductView(request):
 @login_required(login_url='login')
 @admin_user
 def adminCustomersView(request):
-    users = User.objects.all()
+    users = User.objects.filter(customer=True).filter(admin=False)
     context = {'Users': users}
     return render(request, 'admin/customers.html', context)
 
