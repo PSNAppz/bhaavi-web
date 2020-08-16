@@ -51,7 +51,7 @@ def add_coupon(request):
                         messages.error(request, "This coupon does not exists")
                         return redirect("payment", product.id)
                 if coupon.count >= 1:
-                    user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True).latest('id')
+                    user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True).first()
                     user_purchase.coupon = coupon
                     user_purchase.save()
                     messages.success(request, 'Coupon added!')
