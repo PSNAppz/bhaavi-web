@@ -177,7 +177,7 @@ def createOrder(request, id):
                 except UserPurchases.DoesNotExist:
                     try:
                         in_progress = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                            payment_progress=True).get(product_id=product.id)
+                            payment_progress=True).filter(product_id=product.id).latest('id')
                         invoice = in_progress.invoice
                     except UserPurchases.DoesNotExist:
                         purchase = UserPurchases.objects.create(
@@ -187,7 +187,7 @@ def createOrder(request, id):
                         invoice = purchase.invoice
                     client = initPaymentClient()
                     user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                        payment_progress=True).get(product_id=product.id)
+                        payment_progress=True).filter(product_id=product.id).latest('id')
                     if user_purchase.coupon:
                         if user_purchase.coupon.count <= 0:
                             user_purchase.coupon = None
