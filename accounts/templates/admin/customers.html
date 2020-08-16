@@ -44,6 +44,7 @@
                             <th>Email</th>
                             <th>Full name</th>
                             <th>Customer</th>
+                            <th>Date</th>
                             <th>Jyolsan</th>
                             <th>Mentor</th>
                             <th>Admin</th>
@@ -62,6 +63,7 @@
                                         No
                                     {% endif %}
                                 </td>
+                                <td>{{ user.timestamp }}</td>
                                 <td>
                                     {% if user.jyolsyan %}
                                         Yes
