@@ -53,9 +53,9 @@
                 <li class="list-group-item d-flex justify-content-between bg-light">
                   <div class="text-success">
                     <h6 class="my-0"></h6>
-                    <small>DISCOUNT</small>
+                    <small>Discounted Price</small>
                   </div>
-                  <span class="text-success">-₹{{discount_price}}</span>
+                  <span class="text-success">₹{{discount_price}}</span>
                 </li>
                     {% if user_purchases.coupon %}
                     <li class="list-group-item d-flex justify-content-between bg-light">
@@ -200,7 +200,7 @@
           <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
           <script>
           var options = {
-              "key": "rzp_test_fQoNChtxYZZOse", // Enter the Key ID generated from the Dashboard
+              "key": "rzp_live_ksMaCwCTOhtWMX", // Enter the Key ID generated from the Dashboard
               "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
               "currency": "INR",
               "name": "Bhaavi consultants",

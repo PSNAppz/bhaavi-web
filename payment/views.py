@@ -15,7 +15,7 @@ from product.models import Product, ProductFeatures, ProductPackages, Coupon, Us
 
 
 @login_required(login_url='login')
-def removeCoupon(request):
+def remove_coupon(request):
     if request.method == "POST":
         user_purchase_id = request.POST.get('user_purchase_id')
         product_id = request.POST.get('product_id')
@@ -31,7 +31,7 @@ def removeCoupon(request):
 
 
 @login_required(login_url='login')
-def coupon(request):
+def add_coupon(request):
     from product.models import UserRedeemCoupon
 
     if request.method == "POST":
@@ -51,7 +51,7 @@ def coupon(request):
                         messages.error(request, "This coupon does not exists")
                         return redirect("payment", product.id)
                 if coupon.count >= 1:
-                    user_purchase = UserPurchases.objects.get(product=product, payment_progress=True)
+                    user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True).first()
                     user_purchase.coupon = coupon
                     user_purchase.save()
                     messages.success(request, 'Coupon added!')
@@ -63,9 +63,11 @@ def coupon(request):
             except ObjectDoesNotExist:
                 messages.error(request, "This coupon does not exist")
                 return redirect("payment", product.id)
-        except:
-            pass
-    return None
+        except Exception as e:
+            messages.error(request, "Error adding coupon:"+str(e))
+            return redirect("payment", product.id)
+    messages.error(request, "Method does not exist")
+    return redirect("payment", product.id)
 
 
 def plansPage(request):
