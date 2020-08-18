@@ -43,6 +43,8 @@
                         <tr>
                             <th>User</th>
                             <th>Product</th>
+                            <th>Amount</th>
+                            <th>Time</th>
                             <th>Active</th>
                             <th>Payment in progress</th>
                             <th>Invoice</th>
@@ -53,6 +55,8 @@
                             <tr>
                                 <td>{{ order.user.get_username }}</td>
                                 <td>{{ order.product.name }}</td>
+                                <td>{{ order.product.active_discount }}</td>
+                                <td>{{ order.product.timestamp }}</td>
                                 <td>
                                     {% if order.status %}
                                         Yes
