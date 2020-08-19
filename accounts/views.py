@@ -74,6 +74,23 @@ def profilePage(request):
     return render(request, 'accounts/profile.html', context)
 
 
+@login_required(login_url='login')
+def customerPaymentHistory(request):
+    paymentHistory = []
+    try:
+        user_purchase = UserPurchases.objects.filter(user=request.user)
+        for purchase in user_purchase:
+            try:
+                payment = RazorPayTransactions.objects.get(purchase=purchase, status=1)
+                paymentHistory.append(payment)
+            except:
+                pass
+        context = {'payments': paymentHistory}
+    except:
+        context = {'payments': None}
+    return render(request, 'accounts/payment_history.html', context)
+
+
 # Conference call
 # check if scheduled in 30 min
 @login_required(login_url='login')
