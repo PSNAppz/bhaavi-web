@@ -12,7 +12,7 @@ urlpatterns = [
     path('dashboard', views.userDashboard, name="dashboard"),
     path('dashboard/view', views.viewReport, name="report_view"),
     path('dashboard/conference/finish', views.finishCallUser, name="call_end"),
-    path('sitemap', views.sitemap, name="sitemap"),
+    path('sitemap.xml', views.sitemap, name="sitemap"),
 
     path('login', views.loginPage, name="login"),
     path('mentor/register', views.mentorRegisterPage, name="mentor_register"),
