@@ -42,7 +42,7 @@
 
                             </div>
                             <div class="card-body">
-
+                                {% if payments != 'None' %}
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -67,7 +67,9 @@
 
                                     </tbody>
                                 </table>
-
+                                {% endif %}
+                            {% else %}
+                            <h1>You have not purchased any product yet</h1>
                             </div>
                         </div>
                         <!-- Card -->
