@@ -226,11 +226,12 @@ def paymentSuccessPage(request):
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
                 user_purchase = UserPurchases.objects.get(product=product, payment_progress=True, user=request.user)
-                coupon_code = user_purchase.coupon.code
-                coupon = Coupon.objects.get(code=coupon_code)
-                coupon.count -= 1
-                coupon.save()
-                create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
+                if(user_purchase.coupon):
+                    coupon_code = user_purchase.coupon.code
+                    coupon = Coupon.objects.get(code=coupon_code)
+                    coupon.count -= 1
+                    coupon.save()
+                    create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
                                                                 discount_percent=coupon.discount_percent)
                 items = UserPurchases.objects.filter(invoice=response['invoice'])
                 if not items.count() > 1:
