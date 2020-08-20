@@ -64,7 +64,7 @@ def add_coupon(request):
                 messages.error(request, "This coupon does not exist")
                 return redirect("payment", product.id)
         except Exception as e:
-            messages.error(request, "Error adding coupon:"+str(e))
+            messages.error(request, "Error adding coupon:" + str(e))
             return redirect("payment", product.id)
     messages.error(request, "Method does not exist")
     return redirect("payment", product.id)
@@ -103,6 +103,7 @@ def paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature):
 
 @login_required(login_url='login')
 def createOrder(request, id):
+    rpay_id = config('RazorPay_ID')
     if request.method == "GET":
         if not request.user.customer:
             messages.warning(request, 'You cannot purchase products!')
@@ -161,7 +162,7 @@ def createOrder(request, id):
                 if order_status == 'created':
                     context = {'order_id': order_id, 'product': product, 'amount': order_amount,
                                'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
-                               'discount_price': get_discount_price}
+                               'discount_price': get_discount_price, 'rpay_id': rpay_id}
                     return render(request, 'accounts/payment.html', context)
                 else:
                     messages.error(request, 'Some error occured, please try again!')
@@ -205,7 +206,7 @@ def createOrder(request, id):
                     if order_status == 'created':
                         context = {'order_id': order_id, 'product': product, 'amount': order_amount,
                                    'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
-                                   'discount_price': get_discount_price}
+                                   'discount_price': get_discount_price, 'rpay_id': rpay_id}
                         return render(request, 'accounts/payment.html', context)
                     else:
                         messages.error(request, 'Some error occured, please try again!')

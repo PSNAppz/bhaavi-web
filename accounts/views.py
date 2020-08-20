@@ -801,8 +801,18 @@ def adminCustomersView(request):
 @login_required(login_url='login')
 @admin_user
 def adminOrdersView(request):
-    orders = UserPurchases.objects.all()
-    context = {'Orders': orders}
+    orders = []
+    try:
+        user_purchase = UserPurchases.objects.all()
+        for purchase in user_purchase:
+            try:
+                payment = RazorPayTransactions.objects.get(purchase=purchase, status=1)
+                orders.append(payment)
+            except:
+                pass
+        context = {'Orders': orders}
+    except:
+        context = {'Orders': orders}
     return render(request, 'admin/orders.html', context)
 
 

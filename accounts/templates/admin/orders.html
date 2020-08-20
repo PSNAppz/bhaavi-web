@@ -45,33 +45,17 @@
                             <th>Product</th>
                             <th>Amount</th>
                             <th>Time</th>
-                            <th>Active</th>
-                            <th>Payment in progress</th>
                             <th>Invoice</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for order in Orders %}
                             <tr>
-                                <td>{{ order.user.get_username }}</td>
-                                <td>{{ order.product.name }}</td>
-                                <td>{{ order.product.active_discount }}</td>
-                                <td>{{ order.product.timestamp }}</td>
-                                <td>
-                                    {% if order.status %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
-                            <td>
-                                    {% if order.payment_progress %}
-                                        Yes
-                                    {% else %}
-                                        No
-                                    {% endif %}
-                                </td>
-                                <td>{{ order.invoice }}</td>
+                                <td>{{ order.purchase.user.get_username }}</td>
+                                <td>{{ order.purchase.product.name }}</td>
+                                <td>{{ order.purchase.product.active_discount }}</td>
+                                <td>{{ order.payment_date }}</td>
+                                <td>{{ order.purchase.invoice }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
