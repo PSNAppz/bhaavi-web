@@ -7,6 +7,7 @@ urlpatterns = [
     # Basic page URLs
     path('', views.homePage, name="home"),
     path('dashboard/profile', views.profilePage, name="profile"),
+    path('dashboard/paymentHistory', views.customerPaymentHistory, name="payment-history"),
     path('dashboard/profile/save', views.saveProfile, name="profile_save"),
     path('dashboard', views.userDashboard, name="dashboard"),
     path('dashboard/view', views.viewReport, name="report_view"),
@@ -19,10 +20,21 @@ urlpatterns = [
     path('user/register', views.userRegisterPage, name="register"),
     path('logout', views.logoutUser, name="logout"),
 
+    # Mentor Dash
+    path('mentorboard/', views.mentorDashboard, name="mentorboard"),
+    path('mentorboard/viewDetails', views.mentorDetailsView, name="view_details_mentor"),
+    path('mentorboard/prevDetails', views.mentorHistory, name="view_history_mentor"),
+    path('mentorboard/submitReport', views.submitReport, name="submit_report"),
+    path('dashboard/conference/end/<reqid>', views.endCall, name="end_call"),
+
+    path('dashboard/careerReport/<id>', views.submitCareerReport, name="career-report"),
+    path('dashboard/submitCareerReport/<id>', views.submitCareerReportHoroscope, name="submit_career_report"),
+
     # Payment flow below
 
     path('request/mentor', views.requestCall, name="mentor_request"),
     path('request/astro', views.requestCallAstro, name="astro_request"),
+    path('request/astroCareer', views.submitCareerAstro, name="astro_career"),
 
     path('request/details', views.requestPage, name="request_details"),
     path('accept/mentor', views.acceptCall, name="accept_call"),
@@ -35,19 +47,32 @@ urlpatterns = [
 
     # Admin panel
     path('dashboard/admin', views.adminDashboard, name="admin_panel"),
+    path('dashboard/astrologerCallRequest', views.astrologerCallRequest, name="astrologer_call_request"),
     path('dashboard/reports', views.adminReportView, name="admin_panel_reports"),
+    path('dashboard/astrologerReports', views.adminAstrologerReportView, name="astrologer_report"),
     path('dashboard/admin/request/<int:id>', views.respondCallRequest, name="respond_call"),
     path('dashboard/admin/report/<int:id>', views.adminShowReport, name="admin_show_report"),
     path('dashboard/admin/report/close', views.closeReport, name="close_report"),
 
+
+    path('dashboard/admin/couponView', views.couponAdminView, name="coupon_view"),
+    path('dashboard/admin/createCouponView', views.couponCreateView, name="coupon_create_view"),
+    path('dashboard/admin/createCoupon', views.couponCreate, name="create_coupon"),
+    path('dashboard/admin/couponDelete', views.couponDelete, name="coupon_delete"),
+    path('dashboard/admin/couponUpdateView', views.couponUpdateView, name="coupon_update_view"),
+    path('dashboard/admin/updateCoupon', views.couponUpdate, name="coupon_update"),
+
     path('dashboard/admin/product', views.adminProductView, name="product"),
     path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
     path('dashboard/admin/orders', views.adminOrdersView, name="orders"),
+    path('dashboard/admin/picset', views.picsetAdminView, name="picset-admin"),
     path('dashboard/admin/mentorReport', views.adminMentorReportView, name="mentor_report"),
     path('dashboard/admin/adminMentorReportConfirmView/<int:id>', views.adminMentorReportConfirmView,
          name="mentor_report_confirm"),
+    # path('dashboard/admin/mentorReport', views.adminMentorReportView, name="mentor_report"),
 
     path('dashboard/admin/schedule', views.requestSchedule, name="send_schedule"),
+    path('dashboard/admin/assignAstrologer', views.assignAstrologer, name="assign_astrologer"),
     path('dashboard/admin/schedules/<int:id>', views.showSchedules, name="show_schedules"),
     path('dashboard/admin/schedule/drop/<int:id>', views.dropSchedule, name="drop_schedule"),
 

@@ -1,519 +1,573 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-	{%  include 'base/head.html' %}
-  <body>
-    
-    <!-- NAVBAR
-    ================================================== -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
-      <div class="container-fluid">
+{% include 'base/head.html' %}
+<body>
+
+<!-- NAVBAR
+================================================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid">
 
         <!-- Brand -->
         <a class="navbar-brand col-1" href="{% url 'home' %}">
-          <img src="{% static '/assets/img/brand-tagline.png' %}" class="navbar-brand-img" alt="...">
+            <img src="{% static '/assets/img/brand-tagline.png' %}" class="navbar-brand-img" alt="...">
         </a>
 
         <!-- Toggler -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Collapse -->
         <div class="collapse navbar-collapse" id="navbarCollapse">
 
-          <!-- Toggler -->
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fe fe-x"></i>
-          </button>
+            <!-- Toggler -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fe fe-x"></i>
+            </button>
 
-          <!-- Navigation -->
-          <ul class="navbar-nav ml-auto">
-            
-      <li class="nav-item dropdown">
-              <a class="nav-link" id="navbarPages"  href="{% url 'home' %}" >
-                Home
-              </a>
-            </li>
-            {% if user.is_authenticated %}
-              {% if user.is_mentor %}
+            <!-- Navigation -->
+            <ul class="navbar-nav ml-auto">
+
                 <li class="nav-item dropdown">
-                  <a class="nav-link" id="navbarPages"  href="{% url 'mentorboard' %}" >
-                    Dashboard
-                  </a>
+                    <a class="nav-link" id="navbarPages" href="{% url 'home' %}">
+                        Home
+                    </a>
                 </li>
-                {% elif user.is_jyolsyan %}
                 <li class="nav-item dropdown">
-                  <a class="nav-link" id="navbarPages"  href="{% url 'astroboard' %}" >
-                    Dashboard
-                  </a>
+                    <a class="nav-link" id="navbarPages" href="/support">
+                        Support
+                    </a>
                 </li>
-               {% else %}
-               <li class="nav-item dropdown">
-                <a class="nav-link" id="navbarPages"  href="{% url 'dashboard' %}" >
-                  Dashboard
-                </a>
-              </li>
-            {% endif %}
+                {% if user.is_authenticated %}
+                    {% if user.is_mentor %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" id="navbarPages" href="{% url 'mentorboard' %}">
+                                Dashboard
+                            </a>
+                        </li>
+                    {% elif user.is_jyolsyan %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" id="navbarPages" href="{% url 'astroboard' %}">
+                                Dashboard
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" id="navbarPages" href="{% url 'dashboard' %}">
+                                Dashboard
+                            </a>
+                        </li>
+                    {% endif %}
 
-            {% if user.is_superuser %}
 
-            <li class="nav-item dropdown">
-              <a class="nav-link" id="navbarPages"  href="{%url 'admin_panel'%}" >
-                Admin Dashboard
-              </a>
-            </li>
-            
-            {% endif %} 
+                    {% if user.is_superuser %}
 
-          {% endif %}  
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" id="navbarDocumentation" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
-				  Our Solutions
-				</a>
-				<div class="dropdown-menu dropdown-menu-md" aria-labelledby="navbarDocumentation">
-				  <div class="list-group list-group-flush">
-					<a class="list-group-item" href="{% url 'plans' %}">
-  
-					  <!-- Icon -->
-					  <div class="icon icon-sm text-primary">
-						<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"/><path d="M8 3v.5A1.5 1.5 0 009.5 5h5A1.5 1.5 0 0016 3.5V3h2a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h2z" fill="#335EEA" opacity=".3"/><path d="M11 2a1 1 0 012 0h1.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5H11z" fill="#335EEA"/><rect fill="#335EEA" opacity=".3" x="7" y="10" width="5" height="2" rx="1"/><rect fill="#335EEA" opacity=".3" x="7" y="14" width="9" height="2" rx="1"/></g></svg>
-					  </div>
-  
-					  <!-- Content -->
-					  <div class="ml-4">
-  
-						<!-- Heading -->
-						<h6 class="font-weight-bold text-uppercase text-primary mb-0">
-						  PICSET test
-						</h6>
-  
-						<!-- Text -->
-						<p class="font-size-sm text-gray-700 mb-0">
-							Online career assessment
-						</p>
-  
-					  </div>
-  
-					</a>
-					<a class="list-group-item" href="{% url 'plans' %}">
-  
-					  <!-- Icon -->
-					  <div class="icon icon-sm text-primary">
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"></path><path d="M19 11h1a3 3 0 010 6h-1v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3h2a3 3 0 000-6H3V8a2 2 0 012-2h3V5a3 3 0 116 0v1h3a2 2 0 012 2v3z" fill="#335EEA" opacity=".3"></path></g></svg>
-            </div>
-  
-					  <!-- Content -->
-					  <div class="ml-4">
-  
-						<!-- Heading -->
-						<h6 class="font-weight-bold text-uppercase text-primary mb-0">
-						  E-Mentoring
-						</h6>
-  
-						<!-- Text -->
-						<p class="font-size-sm text-gray-700 mb-0">
-						  Inspiring sessions by mentors
-						</p>
-  
-					  </div>
-  
-          </a>
-          <a class="list-group-item" href="{% url 'plans' %}">
-  
-					  <!-- Icon -->
-					  <div class="icon icon-sm text-primary">
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"></path><path d="M11 3v8c0 .086.01.17.031.25a2 2 0 101.938 0c.02-.08.031-.164.031-.25V3l4.793 9.585a1 1 0 01.024.841l-2.687 6.271a.5.5 0 01-.46.303H9.33a.5.5 0 01-.46-.303l-2.687-6.27a1 1 0 01.024-.842L11 3z" fill="#335EEA"></path><path d="M10 21h4a1 1 0 011 1v1H9v-1a1 1 0 011-1z" fill="#335EEA" opacity=".3"></path></g></svg>
-              </div>
-  
-					  <!-- Content -->
-					  <div class="ml-4">
-  
-						<!-- Heading -->
-						<h6 class="font-weight-bold text-uppercase text-primary mb-0">
-						  Career horoscope
-						</h6>
-  
-						<!-- Text -->
-						<p class="font-size-sm text-gray-700 mb-0">
-						  Horoscope highlighting your career
-						</p>
-  
-					  </div>
-  
-					</a>
-					<a class="list-group-item" href="{% url 'plans' %}">
-  
-					  <!-- Icon -->
-					  <div class="icon icon-sm text-primary">
-						<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"/><path d="M5.857 2h7.88a1.5 1.5 0 01.968.355l4.764 4.029A1.5 1.5 0 0120 7.529v12.554c0 1.79-.02 1.917-1.857 1.917H5.857C4.02 22 4 21.874 4 20.083V3.917C4 2.127 4.02 2 5.857 2z" fill="#335EEA" opacity=".3"/><rect fill="#335EEA" x="6" y="11" width="9" height="2" rx="1"/><rect fill="#335EEA" x="6" y="15" width="5" height="2" rx="1"/></g></svg>
-					  </div>
-  
-					  <!-- Content -->
-					  <div class="ml-4">
-  
-						<!-- Heading -->
-						<h6 class="font-weight-bold text-uppercase text-primary mb-0">
-						  E-Jyothisham
-						</h6>
-  
-						<!-- Text -->
-						<p class="font-size-sm text-gray-700 mb-0">
-						  Live astrology consultation
-						</p>
-  
-					  </div>
-  
-					  <!-- <span class="badge badge-pill badge-primary-soft ml-auto">
-						1.2.0
-					  </span> -->
-  
-          </a>
-          <a class="list-group-item" href="{% url 'plans' %}">
-  
-					  <!-- Icon -->
-					  <div class="icon icon-sm text-primary">
-              <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h24v24H0z"></path><path d="M12 4.26a.996.996 0 01.897.557l2.042 4.138 4.566.663a1 1 0 01.555 1.706l-3.305 3.221.78 4.548a1 1 0 01-1.45 1.054L12 18V4.26z" fill="#335EEA" opacity=".3"></path><path d="M12 4.26V18l-4.084 2.147a1 1 0 01-1.451-1.054l.78-4.548-3.305-3.22a1 1 0 01.555-1.707l4.566-.663 2.042-4.138A1 1 0 0112 4.259z" fill="#335EEA"></path></g></svg>					  </div>
-  
-					  <!-- Content -->
-					  <div class="ml-4">
-  
-						<!-- Heading -->
-						<h6 class="font-weight-bold text-uppercase text-primary mb-0">
-						  E-Astro consultation
-						</h6>
-  
-						<!-- Text -->
-						<p class="font-size-sm text-gray-700 mb-0">
-						  Live astro consultation with our experts
-						</p>
-  
-					  </div>
-  
-					  <!-- <span class="badge badge-pill badge-primary-soft ml-auto">
-						1.2.0
-					  </span> -->
-  
-					</a>
-				  </div>
-				</div>
-			  </li>
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" id="navbarLandings" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
-				  About
-				</a>
-				<div class="dropdown-menu dropdown-menu-xl p-0" aria-labelledby="navbarLandings">
-				  <div class="row no-gutters">
-					<div class="col-12 col-lg-6">
-					  <div class="dropdown-img-left" style="background-image: url({% static '/assets/img/illustrations/illustration-9.png' %});">
-  
-						<!-- Heading -->
-						<h4 class="font-weight-bold text-white mb-0">
-						  Mentors and Astrologers
-						</h4>
-  
-						<!-- Text -->
-						<p class="font-size-sm text-white">
-						</p>
-  
-						<!-- Button -->
-						<a href="{% url 'mentors' %}" class="btn btn-sm btn-white shadow-dark fonFt-size-sm">
-						  View
-						</a>
-  
-					  </div>
-					</div>
-					<div class="col-12 col-lg-6">
-					  <div class="dropdown-body">
-						<div class="row no-gutters">
-						  <div class="col-6">
-  
-							<!-- Heading -->
-							<h6 class="dropdown-header">
-							Connect
-							</h6>
-  
-							<!-- List -->
-							<a class="dropdown-item" href="{%url 'about'%}">
-							  About Us
-							</a>
-							<a class="dropdown-item" href="{%url 'contact'%}">
-							  Contact Us
-							</a>
-							
-  
-							<!-- <h6 class="dropdown-header">
-							  Apps
-							</h6>
-  
-							<a class="dropdown-item" href="./desktop-app.html">
-							  Desktop
-							</a>
-							<a class="dropdown-item" href="./mobile-app.html">
-							  Mobile
-							</a> -->
-  
-						  </div>
-						  <!-- <div class="col-6">
-  
-							<h6 class="dropdown-header">
-							  Web
-							</h6>
-  
-							<a class="dropdown-item" href="./index.html">
-							  Basic2
-							</a>
-							<a class="dropdown-item" href="./startup.html">
-							  Startup <span class="h6 text-uppercase text-primary">(new)</span>
-							</a>
-							<a class="dropdown-item" href="./enterprise.html">
-							  Enterprise
-							</a>
-							<a class="dropdown-item" href="./service.html">
-							  Service
-							</a>
-							<a class="dropdown-item" href="./cloud.html">
-							  Cloud Hosting
-							</a>
-							<a class="dropdown-item" href="./agency.html">
-							  Agency
-							</a>
-  
-						  </div> -->
-						</div> <!-- / .row -->
-					  </div>
-					</div>
-				  </div> <!-- / .row -->
-				</div>
-			  </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" id="navbarAccount" data-toggle="dropdown" href="#" aria-haspopup="true" aria-expanded="false">
-                Account
-			  </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarAccount">
-        {% if user.is_authenticated == False %}
-                  <a class="dropdown-item" href="{% url 'register'%}">
-                    Sign Up
-                  </a>
-                  <a class="dropdown-item" href="{% url 'login'%}">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" id="navbarPages" href="{% url 'admin_panel' %}">
+                                Admin Dashboard
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDocumentation" data-toggle="dropdown" href="#"
+                       aria-haspopup="true" aria-expanded="false">
+                        Our Solutions
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-md" aria-labelledby="navbarDocumentation">
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item" href="{% url 'plans' %}">
+
+                                <!-- Icon -->
+                                <div class="icon icon-sm text-primary">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <path d="M0 0h24v24H0z"/>
+                                            <path d="M8 3v.5A1.5 1.5 0 009.5 5h5A1.5 1.5 0 0016 3.5V3h2a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h2z"
+                                                  fill="#335EEA" opacity=".3"/>
+                                            <path d="M11 2a1 1 0 012 0h1.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5h-5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5H11z"
+                                                  fill="#335EEA"/>
+                                            <rect fill="#335EEA" opacity=".3" x="7" y="10" width="5" height="2" rx="1"/>
+                                            <rect fill="#335EEA" opacity=".3" x="7" y="14" width="9" height="2" rx="1"/>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="ml-4">
+
+                                    <!-- Heading -->
+                                    <h6 class="font-weight-bold text-uppercase text-primary mb-0">
+                                        PICSET test
+                                    </h6>
+
+                                    <!-- Text -->
+                                    <p class="font-size-sm text-gray-700 mb-0">
+                                        Online career assessment
+                                    </p>
+
+                                </div>
+
+                            </a>
+                            <a class="list-group-item" href="{% url 'plans' %}">
+
+                                <!-- Icon -->
+                                <div class="icon icon-sm text-primary">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <path d="M0 0h24v24H0z"></path>
+                                            <path d="M19 11h1a3 3 0 010 6h-1v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-3h2a3 3 0 000-6H3V8a2 2 0 012-2h3V5a3 3 0 116 0v1h3a2 2 0 012 2v3z"
+                                                  fill="#335EEA" opacity=".3"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="ml-4">
+
+                                    <!-- Heading -->
+                                    <h6 class="font-weight-bold text-uppercase text-primary mb-0">
+                                        E-Mentoring
+                                    </h6>
+
+                                    <!-- Text -->
+                                    <p class="font-size-sm text-gray-700 mb-0">
+                                        Inspiring sessions by mentors
+                                    </p>
+
+                                </div>
+
+                            </a>
+                            <a class="list-group-item" href="{% url 'plans' %}">
+
+                                <!-- Icon -->
+                                <div class="icon icon-sm text-primary">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <path d="M0 0h24v24H0z"></path>
+                                            <path d="M11 3v8c0 .086.01.17.031.25a2 2 0 101.938 0c.02-.08.031-.164.031-.25V3l4.793 9.585a1 1 0 01.024.841l-2.687 6.271a.5.5 0 01-.46.303H9.33a.5.5 0 01-.46-.303l-2.687-6.27a1 1 0 01.024-.842L11 3z"
+                                                  fill="#335EEA"></path>
+                                            <path d="M10 21h4a1 1 0 011 1v1H9v-1a1 1 0 011-1z" fill="#335EEA"
+                                                  opacity=".3"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="ml-4">
+
+                                    <!-- Heading -->
+                                    <h6 class="font-weight-bold text-uppercase text-primary mb-0">
+                                        Career horoscope
+                                    </h6>
+
+                                    <!-- Text -->
+                                    <p class="font-size-sm text-gray-700 mb-0">
+                                        Horoscope highlighting your career
+                                    </p>
+
+                                </div>
+
+                            </a>
+                            <a class="list-group-item" href="{% url 'plans' %}">
+
+                                <!-- Icon -->
+                                <div class="icon icon-sm text-primary">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <path d="M0 0h24v24H0z"/>
+                                            <path d="M5.857 2h7.88a1.5 1.5 0 01.968.355l4.764 4.029A1.5 1.5 0 0120 7.529v12.554c0 1.79-.02 1.917-1.857 1.917H5.857C4.02 22 4 21.874 4 20.083V3.917C4 2.127 4.02 2 5.857 2z"
+                                                  fill="#335EEA" opacity=".3"/>
+                                            <rect fill="#335EEA" x="6" y="11" width="9" height="2" rx="1"/>
+                                            <rect fill="#335EEA" x="6" y="15" width="5" height="2" rx="1"/>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="ml-4">
+
+                                    <!-- Heading -->
+                                    <h6 class="font-weight-bold text-uppercase text-primary mb-0">
+                                        E-Jyothisham
+                                    </h6>
+
+                                    <!-- Text -->
+                                    <p class="font-size-sm text-gray-700 mb-0">
+                                        Live astrology consultation
+                                    </p>
+
+                                </div>
+
+                                <!-- <span class="badge badge-pill badge-primary-soft ml-auto">
+                                  1.2.0
+                                </span> -->
+
+                            </a>
+                            <a class="list-group-item" href="{% url 'plans' %}">
+
+                                <!-- Icon -->
+                                <div class="icon icon-sm text-primary">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <g fill="none" fill-rule="evenodd">
+                                            <path d="M0 0h24v24H0z"></path>
+                                            <path d="M12 4.26a.996.996 0 01.897.557l2.042 4.138 4.566.663a1 1 0 01.555 1.706l-3.305 3.221.78 4.548a1 1 0 01-1.45 1.054L12 18V4.26z"
+                                                  fill="#335EEA" opacity=".3"></path>
+                                            <path d="M12 4.26V18l-4.084 2.147a1 1 0 01-1.451-1.054l.78-4.548-3.305-3.22a1 1 0 01.555-1.707l4.566-.663 2.042-4.138A1 1 0 0112 4.259z"
+                                                  fill="#335EEA"></path>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="ml-4">
+
+                                    <!-- Heading -->
+                                    <h6 class="font-weight-bold text-uppercase text-primary mb-0">
+                                        E-Astro consultation
+                                    </h6>
+
+                                    <!-- Text -->
+                                    <p class="font-size-sm text-gray-700 mb-0">
+                                        Live astro consultation with our experts
+                                    </p>
+
+                                </div>
+
+                                <!-- <span class="badge badge-pill badge-primary-soft ml-auto">
+                                  1.2.0
+                                </span> -->
+
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarLandings" data-toggle="dropdown" href="#"
+                       aria-haspopup="true" aria-expanded="false">
+                        About
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-xl p-0" aria-labelledby="navbarLandings">
+                        <div class="row no-gutters">
+                            <div class="col-12 col-lg-6">
+                                <div class="dropdown-img-left"
+                                     style="background-image: url({% static '/assets/img/illustrations/illustration-9.png' %});">
+
+                                    <!-- Heading -->
+                                    <h4 class="font-weight-bold text-white mb-0">
+                                        Mentors and Astrologers
+                                    </h4>
+
+                                    <!-- Text -->
+                                    <p class="font-size-sm text-white">
+                                    </p>
+
+                                    <!-- Button -->
+                                    <a href="{% url 'mentors' %}"
+                                       class="btn btn-sm btn-white shadow-dark fonFt-size-sm">
+                                        View
+                                    </a>
+
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="dropdown-body">
+                                    <div class="row no-gutters">
+                                        <div class="col-6">
+
+                                            <!-- Heading -->
+                                            <h6 class="dropdown-header">
+                                                Connect
+                                            </h6>
+
+                                            <!-- List -->
+                                            <a class="dropdown-item" href="{% url 'about' %}">
+                                                About Us
+                                            </a>
+                                            <a class="dropdown-item" href="{% url 'contact' %}">
+                                                Contact Us
+                                            </a>
+
+
+                                            <!-- <h6 class="dropdown-header">
+                                              Apps
+                                            </h6>
+
+                                            <a class="dropdown-item" href="./desktop-app.html">
+                                              Desktop
+                                            </a>
+                                            <a class="dropdown-item" href="./mobile-app.html">
+                                              Mobile
+                                            </a> -->
+
+                                        </div>
+                                        <!-- <div class="col-6">
+
+                                          <h6 class="dropdown-header">
+                                            Web
+                                          </h6>
+
+                                          <a class="dropdown-item" href="./index.html">
+                                            Basic2
+                                          </a>
+                                          <a class="dropdown-item" href="./startup.html">
+                                            Startup <span class="h6 text-uppercase text-primary">(new)</span>
+                                          </a>
+                                          <a class="dropdown-item" href="./enterprise.html">
+                                            Enterprise
+                                          </a>
+                                          <a class="dropdown-item" href="./service.html">
+                                            Service
+                                          </a>
+                                          <a class="dropdown-item" href="./cloud.html">
+                                            Cloud Hosting
+                                          </a>
+                                          <a class="dropdown-item" href="./agency.html">
+                                            Agency
+                                          </a>
+
+                                        </div> -->
+                                    </div> <!-- / .row -->
+                                </div>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarAccount" data-toggle="dropdown" href="#"
+                       aria-haspopup="true" aria-expanded="false">
+                        Account
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarAccount">
+                        {% if user.is_authenticated == False %}
+                            <a class="dropdown-item" href="{% url 'register' %}">
+                                Sign Up
+                            </a>
+                            <a class="dropdown-item" href="{% url 'login' %}">
+                                Sign In
+                            </a>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <li class="dropdown-item dropright">
+                                <a class="dropdown-link dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Dashboard
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'profile' %}">
+                                        Profile
+                                    </a>
+                                    <!-- <a class="dropdown-item" href="./account-notifications.html">
+                                      Notifications
+                                    </a> -->
+                                    <!-- <a class="dropdown-item" href="./billing-plans-and-payment.html">
+                                      Plans & Payment
+                                    </a> -->
+                                </div>
+                            </li>
+                        {% endif %}
+
+                        <!-- <a class="dropdown-item" href="#">
+                          Contact Support
+                        </a> -->
+
+                    </ul>
+                </li>
+
+            </ul>
+
+            {% if user.is_authenticated == False %}
+                <a class="navbar-btn btn btn-sm btn-primary lift ml-auto" href="{% url 'login' %}">
                     Sign In
-                  </a>
-				{% endif %}
-				{% if user.is_authenticated %}
-				<li class="dropdown-item dropright">
-					<a class="dropdown-link dropdown-toggle" data-toggle="dropdown" href="#">
-					  Dashboard 
-					</a>
-					<div class="dropdown-menu">
-					  <a class="dropdown-item" href="{% url 'profile' %}">
-						Profile
-					  </a>
-					  <!-- <a class="dropdown-item" href="./account-notifications.html">
-						Notifications
-					  </a> -->
-					  <!-- <a class="dropdown-item" href="./billing-plans-and-payment.html">
-						Plans & Payment
-					  </a> -->
-					</div>
-				  </li>  
-				  {% endif %}
-                
-                  <!-- <a class="dropdown-item" href="#">
-                    Contact Support
-                  </a> -->
-               
-              </ul>
-            </li>
-
-          </ul>
-
-          {% if user.is_authenticated == False %}
-          <a class="navbar-btn btn btn-sm btn-primary lift ml-auto" href="{% url 'login' %}">
-            Sign In
-		  </a>
-		  {% endif %}
-		  {% if user.is_authenticated %}
-          <a class="navbar-btn btn btn-sm btn-secondary lift ml-auto" href="{% url 'logout' %}">
-            Logout
-		  </a>
-		  {% endif %}
+                </a>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <a class="navbar-btn btn btn-sm btn-secondary lift ml-auto" href="{% url 'logout' %}">
+                    Logout
+                </a>
+            {% endif %}
 
         </div>
 
-      </div>
-    </nav>
-    {% include 'base/messages.html' %}
-    {% block content %}
-	
-			
-			
+    </div>
+</nav>
+{% include 'base/messages.html' %}
+{% block content %}
 
 
 
-    {% endblock %}
-    <!-- FOOTER
-    ================================================== -->
-    <footer class="py-8 py-md-11 bg-gray-200">
-      <div class="container">
+
+
+
+{% endblock %}
+<!-- FOOTER
+================================================== -->
+<footer class="py-8 py-md-11 bg-gray-200">
+    <div class="container">
         <div class="row">
-          <div class="col-12 col-md-4 col-lg-3">
-        
-            <!-- Brand -->
-            <img src="{% static '/assets/img/brand.png' %}" alt="..." class="footer-brand img-fluid mb-2">
+            <div class="col-12 col-md-4 col-lg-3">
 
-            <!-- Text -->
-            <p class="text-gray-700 mb-2">
-              For a better tomorrow.
-            </p>
-            
+                <!-- Brand -->
+                <img src="{% static '/assets/img/brand.png' %}" alt="..." class="footer-brand img-fluid mb-2">
 
-            <!-- Social -->
-            <ul class="list-unstyled list-inline list-social mb-6 mb-md-0">
-              <li class="list-inline-item list-social-item mr-3">
-                <a href="https://www.instagram.com/bhaavi.in/" class="text-decoration-none">
-                  <img src="{% static '/assets/img/icons/social/instagram.svg' %}" class="list-social-icon" alt="...">
-                </a>
-              </li>
-              <!-- <li class="list-inline-item list-social-item mr-3">
+                <!-- Text -->
+                <p class="text-gray-700 mb-2">
+                    For a better tomorrow.
+                </p>
+
+
+                <!-- Social -->
+                <ul class="list-unstyled list-inline list-social mb-6 mb-md-0">
+                    <li class="list-inline-item list-social-item mr-3">
+                        <a href="https://www.instagram.com/bhaavi.in/" class="text-decoration-none">
+                            <img src="{% static '/assets/img/icons/social/instagram.svg' %}" class="list-social-icon"
+                                 alt="...">
+                        </a>
+                    </li>
+                    <!-- <li class="list-inline-item list-social-item mr-3">
                 <a href="#!" class="text-decoration-none">
                   <img src="{% static '/assets/img/icons/social/facebook.svg' %}" class="list-social-icon" alt="...">
                 </a>
               </li> -->
-              <!-- <li class="list-inline-item list-social-item mr-3">
+                    <!-- <li class="list-inline-item list-social-item mr-3">
                 <a href="#!" class="text-decoration-none">
                   <img src="{% static '/assets/img/icons/social/twitter.svg' %}" class="list-social-icon" alt="...">
                 </a>
               </li> -->
-            </ul>
+                </ul>
 
 
-            
-          </div>
+            </div>
 
-          <!-- <div class="col-6 col-md-4 col-lg-2">
-        
-            <h6 class="font-weight-bold text-uppercase text-gray-700">
-              Services
-            </h6>
+            <!-- <div class="col-6 col-md-4 col-lg-2">
 
-            <ul class="list-unstyled text-muted mb-6 mb-md-8 mb-lg-0">
-              <li class="mb-3">
-                <a href="#!" class="text-reset">
-                  Psychometric Test
-                </a>
-              </li>
-              <li class="mb-3">
-                <a href="#!" class="text-reset">
-                  Mentoring
-                </a>
-              </li>
-              <li class="mb-3">
-                <a href="#!" class="text-reset">
-                  E-Jyothisham
-                </a>
-              </li>
-            </ul>
+              <h6 class="font-weight-bold text-uppercase text-gray-700">
+                Services
+              </h6>
 
-          </div> -->
-          
-          <div class="col-6 col-md-4 offset-md-4 col-lg-2 offset-lg-0">
-        
-            <!-- Heading -->
-            <h6 class="font-weight-bold text-uppercase text-gray-700">
-              Connect
-            </h6>
+              <ul class="list-unstyled text-muted mb-6 mb-md-8 mb-lg-0">
+                <li class="mb-3">
+                  <a href="#!" class="text-reset">
+                    Psychometric Test
+                  </a>
+                </li>
+                <li class="mb-3">
+                  <a href="#!" class="text-reset">
+                    Mentoring
+                  </a>
+                </li>
+                <li class="mb-3">
+                  <a href="#!" class="text-reset">
+                    E-Jyothisham
+                  </a>
+                </li>
+              </ul>
 
-            <!-- List -->
-            <ul class="list-unstyled text-muted mb-0">
-              <li class="mb-3">
-                <a href="{% url 'about' %}" class="text-reset">
-                  About Us
-                </a>
-              </li>
-              <li class="mb-3">
-                <a href="{% url 'contact' %}" class="text-reset">
-                  Contact Us
-                </a>
-              </li>
-            </ul>
+            </div> -->
 
-          </div>
-          <!-- <div class="col-6 col-md-4 col-lg-2">
-        
-            <h6 class="font-weight-bold text-uppercase text-gray-700">
-              Partner with us
-            </h6>
+            <div class="col-6 col-md-4 offset-md-4 col-lg-2 offset-lg-0">
 
-            <ul class="list-unstyled text-muted mb-0">
-              <li class="mb-3">
-                <a href="#!" class="text-reset">
-                  Become a mentor
-                </a>
-              </li>
-              <li class="mb-3">
-                <a href="#!" class="text-reset">
-                  Requirements
-                </a>
-              </li>
-            </ul>
+                <!-- Heading -->
+                <h6 class="font-weight-bold text-uppercase text-gray-700">
+                    Connect
+                </h6>
 
-          </div> -->
-          <div class="col-6 col-md-4 col-lg-2">
-        
-            <!-- Heading -->
-            <h6 class="font-weight-bold text-uppercase text-gray-700">
-              Legal
-            </h6>
+                <!-- List -->
+                <ul class="list-unstyled text-muted mb-0">
+                    <li class="mb-3">
+                        <a href="{% url 'about' %}" class="text-reset">
+                            About Us
+                        </a>
+                    </li>
+                    <li class="mb-3">
+                        <a href="{% url 'contact' %}" class="text-reset">
+                            Contact Us
+                        </a>
+                    </li>
+                </ul>
 
-            <!-- List -->
-            <ul class="list-unstyled text-muted mb-0">
-              <li class="mb-3">
-                <a href="{% url 'privacy' %}" class="text-reset">
-                  Privacy Policy
-                </a>
-              </li>
-              <li class="mb-3">
-                <a href="{% url 'terms' %}" class="text-reset">
-                  Terms and Conditions
-                </a>
-              </li>
-              <li>
-                <a href="{% url 'refund' %}" class="text-reset">
-                  Refund Policy
-                </a>
-              </li>
-            </ul>
+            </div>
+            <!-- <div class="col-6 col-md-4 col-lg-2">
 
-          </div>
-          <div class="col-6 col-md-4 col-lg-2">
-        
-            <h6 class="font-weight-bold text-uppercase text-gray-700">
-              Translate
-            </h6>
+              <h6 class="font-weight-bold text-uppercase text-gray-700">
+                Partner with us
+              </h6>
 
-            <ul class="list-unstyled text-muted mb-6 mb-md-8 mb-lg-0">
-              <li class="mb-3">
-                <div id="google_translate_element"></div>
+              <ul class="list-unstyled text-muted mb-0">
+                <li class="mb-3">
+                  <a href="#!" class="text-reset">
+                    Become a mentor
+                  </a>
+                </li>
+                <li class="mb-3">
+                  <a href="#!" class="text-reset">
+                    Requirements
+                  </a>
+                </li>
+              </ul>
 
-                  <script type="text/javascript">
-                  function googleTranslateElementInit() {
-                    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-                  }
-                  </script>
+            </div> -->
+            <div class="col-6 col-md-4 col-lg-2">
 
-                  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-              </li>
-              
-            </ul>
+                <!-- Heading -->
+                <h6 class="font-weight-bold text-uppercase text-gray-700">
+                    Legal
+                </h6>
 
-          </div>
+                <!-- List -->
+                <ul class="list-unstyled text-muted mb-0">
+                    <li class="mb-3">
+                        <a href="{% url 'privacy' %}" class="text-reset">
+                            Privacy Policy
+                        </a>
+                    </li>
+                    <li class="mb-3">
+                        <a href="{% url 'terms' %}" class="text-reset">
+                            Terms and Conditions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'refund' %}" class="text-reset">
+                            Refund Policy
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="col-6 col-md-4 col-lg-2">
+
+                <h6 class="font-weight-bold text-uppercase text-gray-700">
+                    Translate
+                </h6>
+
+                <ul class="list-unstyled text-muted mb-6 mb-md-8 mb-lg-0">
+                    <li class="mb-3">
+                        <div id="google_translate_element"></div>
+
+                        <script type="text/javascript">
+                            function googleTranslateElementInit() {
+                                new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+                            }
+                        </script>
+
+                        <script type="text/javascript"
+                                src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+                    </li>
+
+                </ul>
+
+            </div>
         </div> <!-- / .row -->
-      </div> <!-- / .container -->
-    </footer>
+    </div> <!-- / .container -->
+</footer>
 
-	{%  include 'base/scripts.html' %}
+{% include 'base/scripts.html' %}
 
 
-      
-  </body>
+</body>
 </html>

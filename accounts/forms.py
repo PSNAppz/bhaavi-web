@@ -1,8 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.forms.utils import ValidationError
 from .models import User
-from schedule.models import RequestedSchedules, MentorCallRequest, AcceptedCallSchedule
+from schedule.models import RequestedSchedules, MentorCallRequest, AcceptedCallSchedule, AstrologerCareerReport
 from django import forms
 
 
@@ -200,6 +199,7 @@ class AcceptedSchedulesForm(forms.ModelForm):
         model = AcceptedCallSchedule
         fields = ('schedule',)
 
+
 # Password reset
 # class UserForgotPasswordForm(PasswordResetForm):
 #     """User forgot password, check via email form."""
@@ -216,3 +216,4 @@ class AcceptedSchedulesForm(forms.ModelForm):
 
 # class PasswordResetRequestForm(forms.Form):
 #     email_or_username = forms.CharField(label=("Email Or Username"), max_length=254)
+

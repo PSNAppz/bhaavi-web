@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from decouple import config
 from django.contrib.auth.decorators import login_required
 
-from schedule.models import FinalMentorReport
+from schedule.models import FinalMentorReport, AssignSubmitReport, AstrologerCareerReport
 from .decorators import *
 from picset.models import Result
 from .forms import *
@@ -13,10 +13,11 @@ import pytz
 from .RtcTokenBuilder import buildToken
 import razorpay
 from collections import Counter
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from .models import *
 from product.models import *
-from mentor.models import *
 from payment.models import *
 
 # from django.contrib.auth.tokens import default_token_generator
@@ -47,6 +48,17 @@ number2 = 65
 number3 = 5
 
 
+# Sending email (Put this inside the notification function and call it only when the notification type email is selected)
+# from_email='test@gmail.com'
+# to_emails='thepsnarayanan@gmail.com'
+# subject='Sending with Twilio SendGrid is Fun'
+# html_content='and easy to do anywhere, even with Python'
+# try:
+#     EmailMessage(subject, html_content, from_email, [to_emails])
+
+# except Exception as e:
+#     print(e)
+
 def homePage(request):
     return render(request, 'base/home.html')
 
@@ -60,6 +72,23 @@ def profilePage(request):
         context = {'profile': None}
 
     return render(request, 'accounts/profile.html', context)
+
+
+@login_required(login_url='login')
+def customerPaymentHistory(request):
+    paymentHistory = []
+    try:
+        user_purchase = UserPurchases.objects.filter(user=request.user)
+        for purchase in user_purchase:
+            try:
+                payment = RazorPayTransactions.objects.get(purchase=purchase, status=1)
+                paymentHistory.append(payment)
+            except:
+                pass
+        context = {'payments': paymentHistory}
+    except:
+        context = {'payments': None}
+    return render(request, 'accounts/payment_history.html', context)
 
 
 # Conference call
@@ -171,12 +200,12 @@ def userRegisterPage(request):
             email_subject = 'Activate Your Account'
             message = render_to_string('accounts/email_verification.html', {
                 'user': user_name,
-                'domain': current_site.domain,
+                'domain': 'bhaavi.in',
                 'uid': urlsafe_base64_encode(force_bytes(user.id)),
                 'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
-            email = EmailMessage(email_subject, message, to=[to_email])
+            email = EmailMessage(email_subject, message, 'support@bhaavi.in', to=[to_email])
             email.send()
             messages.success(request,
                              'We have sent you an email, please confirm your email address to complete registration')
@@ -195,7 +224,6 @@ def userRegisterPage(request):
 def activate_account(request, uidb64, token):
     try:
         uid = str(force_bytes(urlsafe_base64_decode(uidb64)), 'utf-8')
-        print(uid)
         user = User.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
@@ -447,6 +475,82 @@ def requestCallAstro(request):
 
 
 @login_required(login_url='login')
+def submitCareerAstro(request):
+    if request.method == "POST":
+
+        product_id = request.POST.get('product')
+        user = request.user
+        dob = request.POST.get('dob')
+        gender = request.POST.get('gender')
+
+        if gender == "1":
+            gender = "Male"
+        elif gender == "2":
+            gender = "Female"
+        else:
+            gender = "N/A"
+
+        try:
+            purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
+                product_id=product_id).product
+        except Exception as e:
+            print(e)
+            messages.error(request, 'Invalid product!')
+            return redirect('dashboard')
+
+        if purchased_product.prod_type == "A":
+            btime = request.POST.get('time')
+            bplace = request.POST.get('place')
+            latlong = request.POST.get('latlong')
+            dst = request.POST.get('dst')
+            if dst == "1":
+                dst = "Yes"
+            else:
+                dst = "False"
+            if (
+                    product_id == None or user == None or dob == None or btime == None or gender == None or bplace == None):
+                messages.warning(request, 'Please fill all the required fields!')
+                return redirect('dashboard')
+            try:
+                pending = MentorCallRequest.objects.filter(user_id=user.id).filter(product_id=product_id).get(
+                    closed=False)
+                messages.warning(request, 'Call already Requested')
+                return redirect('dashboard')
+            except MentorCallRequest.DoesNotExist:
+                if str(purchased_product.id) == str(product_id) and purchased_product.call_required == False:
+                    MentorCallRequest.objects.create(
+                        user=user,
+                        product=purchased_product,
+                    )
+                    try:
+                        profile = UserProfile.objects.get(user_id=user.id)
+                        UserProfile.objects.filter(user_id=user.id).update(
+                            gender=gender,
+                            birthtime=btime,
+                            dst=dst,
+                            birthplace=bplace,
+                            latlong=latlong,
+                            dob=dob,
+
+                        )
+                    except Exception as e:
+                        UserProfile.objects.create(
+                            user_id=user.id,
+                            gender=gender,
+                            birthtime=btime,
+                            dst=dst,
+                            birthplace=bplace,
+                            latlong=latlong,
+                            dob=dob,
+                        )
+                    messages.success(request,
+                                     'Details submitted succesfully. Please wait for an admin to respond!')
+                else:
+                    messages.error(request, 'An error occured!')
+                return redirect('dashboard')
+
+
+@login_required(login_url='login')
 def acceptCall(request):
     if request.method == "POST":
         schedule_id = request.POST.get('schedule')
@@ -466,6 +570,28 @@ def acceptCall(request):
                 messages.error(request, 'Schedule invalid!')
 
     return redirect('dashboard')
+
+
+@login_required(login_url='login')
+@admin_user
+def assignAstrologer(request):
+    if request.method == "POST":
+        mentor_id = request.POST.get('mentor')
+        # user_id = request.POST.get('user')
+        request_id = request.POST.get('request')
+        mentor = MentorProfile.objects.get(id=mentor_id)
+        mentor_request = MentorCallRequest.objects.get(id=request_id)
+        assignReport = AssignSubmitReport.objects.filter(mentor_request=mentor_request, mentor_request__responded=True)
+        if assignReport.exists():
+            assign = AssignSubmitReport.objects.get(mentor_request=mentor_request)
+            assign.astrologer = mentor
+            assign.save()
+        else:
+            assign = AssignSubmitReport.objects.create(mentor_request=mentor_request, astrologer=mentor)
+            mentor_request.responded = True
+            mentor_request.save()
+        messages.success(request, 'Assigned succesfully!')
+        return redirect('astrologer_call_request')
 
 
 @login_required(login_url='login')
@@ -490,7 +616,6 @@ def requestSchedule(request):
         if form.is_valid():
             for mentor_schedule in mentor_schedules:
                 clash_request_mentor = MentorCallRequest.objects.get(pk=mentor_schedule.request_id)
-                print(clash_request_mentor)
                 if not clash_request_mentor.closed:
                     time_delta = (mentor_schedule.slot - slot)
                     total_seconds = time_delta.total_seconds()
@@ -591,13 +716,16 @@ def userDashboard(request):
     results = Result.objects.filter(user_id=request.user.id).order_by('id')
     finished_calls = MentorCallRequest.objects.filter(user_id=request.user.id).filter(report_submitted=True)
     reports = FinalMentorReport.objects.none()
+    career_reports = AstrologerCareerReport.objects.none()
+
+    for report in finished_calls:
+        career_reports |= AstrologerCareerReport.objects.filter(call=report.id).filter(submitted=True)
 
     for final in finished_calls:
         reports |= FinalMentorReport.objects.filter(call_id=final.id).filter(accepted=True)
 
     for purchase in purchases:
-        if purchase.product.call_required:
-            user_requests |= request.user.mentor_request.filter(product_id=purchase.product_id)
+        user_requests |= request.user.mentor_request.filter(product_id=purchase.product_id)
     for user_request in user_requests:
         if user_request.responded and not user_request.scheduled:
             schedules |= request.user.schedule_times.filter(request_id=user_request.id).filter(accepted=0)
@@ -607,7 +735,8 @@ def userDashboard(request):
         else:
             pass
     context = {'products': products, 'purchases': purchases, 'requests': user_requests, 'schedules': schedules,
-               'accepted_calls': accepted_calls, 'results': results, 'reports': reports}
+               'accepted_calls': accepted_calls, 'results': results, 'reports': reports,
+               'career_reports': career_reports}
     return render(request, 'accounts/dashboard.html', context)
 
 
@@ -616,23 +745,41 @@ def userDashboard(request):
 def astroDetailsView(request):
     if request.method == "POST":
         schedule_id = request.POST.get('schedule')
-        mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
-        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
-            accepted=True)
-        user = schedule.user
-        user_profile = UserProfile.objects.get(user_id=user.id)
-        context = {'schedule': schedule, 'user': user, 'profile': user_profile}
-        return render(request, 'jyothishan/details.html', context)
-    else:
-        return redirect('dashboard')
+        report_id = request.POST.get('report')
+        mentor_request_id = request.POST.get('mentor_request')
+        if schedule_id:
+            mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
+            schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
+                accepted=True)
+            user = schedule.user
+            user_profile = UserProfile.objects.get(user_id=user.id)
+            context = {'schedule': schedule, 'user': user, 'profile': user_profile, 'report': report_id}
+            return render(request, 'jyothishan/details.html', context)
+        if report_id:
+            report = AssignSubmitReport.objects.get(id=report_id)
+            mentorRequest = MentorCallRequest.objects.get(id=mentor_request_id)
+            user = mentorRequest.user
+            user_profile = UserProfile.objects.get(user_id=user.id)
+            context = {'user': user, 'profile': user_profile, 'report': report_id}
+            return render(request, 'jyothishan/details.html', context)
+        else:
+            return redirect('dashboard')
 
 
 @login_required(login_url='login')
 @admin_user
 def adminDashboard(request):
-    call_requests = MentorCallRequest.objects.all().order_by('-responded')
+    call_requests = MentorCallRequest.objects.all().order_by('-responded').exclude(product__prod_type="A")
     context = {'requests': call_requests}
     return render(request, 'admin/adminpanel.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def astrologerCallRequest(request):
+    call_requests = MentorCallRequest.objects.all().order_by('-responded').filter(product__prod_type="A")
+    context = {'requests': call_requests}
+    return render(request, 'admin/astrologer_call_request.html', context)
 
 
 @login_required(login_url='login')
@@ -646,7 +793,7 @@ def adminProductView(request):
 @login_required(login_url='login')
 @admin_user
 def adminCustomersView(request):
-    users = User.objects.all()
+    users = User.objects.filter(customer=True).filter(admin=False)
     context = {'Users': users}
     return render(request, 'admin/customers.html', context)
 
@@ -677,6 +824,15 @@ def adminMentorReportView(request):
 
 @login_required(login_url='login')
 @admin_user
+def adminAstrologerReportView(request):
+    s3_url = config('S3_URL')
+    reports = AstrologerCareerReport.objects.all()
+    context = {'reports': reports, 's3_url': s3_url}
+    return render(request, 'admin/astrologer_report.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
 def adminMentorReportConfirmView(request, id):
     report = FinalMentorReport.objects.get(id=id)
     report.accepted = True
@@ -694,11 +850,116 @@ def adminShowReport(request, id):
 
 @login_required(login_url='login')
 @admin_user
+def adminShowReport(request, id):
+    schedule = RequestedSchedules.objects.filter(accepted=True).get(request_id=id)
+    context = {'schedule': schedule, 'call_req': id}
+    return render(request, 'admin/view_report_data.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
 def showSchedules(request, id):
     schedules = RequestedSchedules.objects.filter(request_id=id)
     user = User.objects.get(pk=schedules[0].user_id)
     context = {'schedules': schedules, 'requested_user': user}
     return render(request, 'admin/view_schedule.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def couponAdminView(request):
+    coupon = Coupon.objects.all().order_by('-timestamp')
+    context = {'coupons': coupon}
+    return render(request, 'admin/couponView.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def picsetAdminView(request):
+    results = Result.objects.all().order_by('-timestamp')
+    context = {'results': results}
+    return render(request, 'admin/picset_details.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def couponCreateView(request):
+    return render(request, 'admin/couponCreateView.html')
+
+
+@login_required(login_url='login')
+@admin_user
+def couponDelete(request):
+    if request.method == 'POST':
+        coupon_id = request.POST.get('coupon')
+        coupon = Coupon.objects.get(id=coupon_id)
+        coupon.delete()
+        messages.success(request, 'Coupon has been deleted!')
+        return redirect('coupon_view')
+
+
+@login_required(login_url='login')
+@admin_user
+def couponUpdateView(request):
+    if request.method == 'POST':
+        coupon_id = request.POST.get('coupon')
+        coupon = Coupon.objects.get(id=coupon_id)
+        context = {'coupon': coupon}
+        return render(request, 'admin/couponUpdate.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def couponUpdate(request):
+    if request.method == 'POST':
+        coupon_id = request.POST.get('coupon_id')
+        coupon_code = request.POST.get('coupon_code')
+        coupon_discount = request.POST.get('coupon_discount')
+        coupon_quantity = request.POST.get('coupon_quantity')
+        multiple_usage = request.POST.get('multiple_usage')
+
+        coupon = Coupon.objects.get(id=coupon_id)
+        if coupon_code == None or coupon_discount == None or coupon_quantity == None:
+            messages.error(request, 'Please fill all the field!')
+            return redirect('coupon_update_view')
+        if multiple_usage:
+            coupon_multiple_usage = True
+            coupon.multiple_usage = coupon_multiple_usage
+        else:
+            coupon.multiple_usage = False
+
+        coupon.code = coupon_code
+        coupon.discount_percent = coupon_discount
+        coupon.count = coupon_quantity
+        coupon.save()
+
+        messages.success(request, 'Coupon update succesfully!')
+        return redirect('coupon_view')
+
+
+@login_required(login_url='login')
+@admin_user
+def couponCreate(request):
+    if request.method == 'POST':
+
+        coupon_code = request.POST.get('coupon_code')
+        coupon_discount = request.POST.get('coupon_discount')
+        coupon_quantity = request.POST.get('coupon_quantity')
+        multiple_usage = request.POST.get('multiple_usage')
+        if coupon_code == None or coupon_discount == None or coupon_quantity == None:
+            messages.error(request, 'Please fill all the field!')
+            return redirect('coupon_create_view')
+        if multiple_usage:
+            multiple_usage_value = True
+            coupon = Coupon.objects.create(code=coupon_code, discount_percent=coupon_discount, count=coupon_quantity,
+                                           multiple_usage=multiple_usage_value)
+            messages.success(request, 'Coupon created succesfully!')
+            return redirect('coupon_view')
+
+        coupon = Coupon.objects.create(code=coupon_code, discount_percent=coupon_discount, count=coupon_quantity,
+                                       multiple_usage=False)
+        messages.success(request, 'Coupon created succesfully!')
+        return redirect('coupon_view')
 
 
 @login_required(login_url='login')
@@ -731,13 +992,19 @@ def dropSchedule(request, id):
 def respondCallRequest(request, id):
     try:
         call_request = MentorCallRequest.objects.get(pk=id)
+        astrologer_request = AssignSubmitReport.objects.none()
+        try:
+            astrologer_request = AssignSubmitReport.objects.get(mentor_request=call_request)
+        except:
+            pass
         user = call_request.user
         mentor_products = MentorProducts.objects.filter(product_id=call_request.product.id)
         mentors = MentorProfile.objects.none()
 
         for mentor in mentor_products:
             mentors |= MentorProfile.objects.filter(pk=mentor.mentor_id)
-        context = {'request': call_request, 'request_user': user, 'mentors': mentors}
+        context = {'request': call_request, 'request_user': user, 'mentors': mentors,
+                   'astrologer_request': astrologer_request}
     except MentorCallRequest.DoesNotExist:
         raise Http404("Request does not exist")
     return render(request, 'admin/call_view.html', context)
@@ -748,7 +1015,8 @@ def respondCallRequest(request, id):
 def astroDashboard(request):
     profile = MentorProfile.objects.get(user_id=request.user.id)
     schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
-    context = {'schedules': schedules, 'profile': profile}
+    career_report = AssignSubmitReport.objects.filter(astrologer=profile, pending=True)
+    context = {'schedules': schedules, 'profile': profile, 'reports': career_report}
     return render(request, 'jyothishan/dashboard.html', context)
 
 
@@ -862,6 +1130,12 @@ def requestPage(request):
     if product.prod_type == "M":
         context = {'slots': slots, 'product': product.id, 'profile': profile}
         return render(request, 'accounts/mentor_request.html', context)
+    elif product.prod_type == "J":
+        context = {'slots': slots, 'product': product.id, 'profile': profile}
+        return render(request, 'accounts/astro_request.html', context)
+    elif product.prod_type == "A":
+        context = {'slots': slots, 'product': product.id, 'profile': profile}
+        return render(request, 'accounts/astrology_submit_details.html', context)
     else:
         context = {'slots': slots, 'product': product.id, 'profile': profile}
         return render(request, 'accounts/astro_request.html', context)
@@ -923,16 +1197,168 @@ def handler400(request, exception=None):
 @login_required(login_url='login')
 def viewReport(request):
     if request.method == "POST":
+        s3_url = config('S3_URL')
         report_id = request.POST.get('report')
-        report = FinalMentorReport.objects.get(pk=report_id)
-        if not report.call.user_id == request.user.id:
-            messages.error(request, 'Invalid request')
-            return redirect('dashboard')
-
-        context = {'report': report}
+        report = FinalMentorReport.objects.none()
+        career_report = AstrologerCareerReport.objects.none()
+        try:
+            report = FinalMentorReport.objects.get(pk=report_id)
+        except:
+            pass
+        try:
+            career_report = AstrologerCareerReport.objects.get(pk=report_id)
+        except:
+            pass
+        if report:
+            if not report.call.user_id == request.user.id:
+                messages.error(request, 'Invalid request')
+                return redirect('dashboard')
+        if career_report:
+            if not career_report.call.user_id == request.user.id:
+                messages.error(request, 'Invalid request')
+                return redirect('dashboard')
+        context = {'report': report, 'career_report': career_report, 's3_url': s3_url}
         return render(request, 'accounts/view_report.html', context)
 
 
 # sitemap
 def sitemap(request):
     return render(request, 'base/sitemap.xml', content_type='text/xml')
+
+
+@login_required(login_url='login')
+@mentor
+def mentorDashboard(request):
+    profile = MentorProfile.objects.get(user_id=request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
+    # reports = MentorCallRequest.objects.filter(mentor_id=profile.id).filter(re)
+    context = {'schedules': schedules, 'profile': profile}
+    return render(request, 'mentor/dashboard.html', context)
+
+
+@login_required(login_url='login')
+@mentor
+def mentorHistory(request):
+    profile = MentorProfile.objects.get(user_id=request.user.id)
+    schedules = RequestedSchedules.objects.filter(mentor_id=profile.id).filter(accepted=True)
+    context = {'schedules': schedules, 'profile': profile}
+    return render(request, 'mentor/past_schedules.html', context)
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReportHoroscope(request, id):
+    from product.models import Product
+    from payment.models import UserPurchases
+    if request.method == "POST":
+        report = request.FILES['pdf']
+        if report == None:
+            messages.warning(request, 'Please upload a report!')
+            return redirect('astroboard')
+        report_name = request.FILES['pdf'].name
+        x = report_name.split('.')
+        if x[1] == 'pdf':
+            callRequest = MentorCallRequest.objects.get(id=id)
+            submit_report = AstrologerCareerReport.objects.create(
+                call=callRequest,
+                report=report,
+                submitted=True
+            )
+            MentorCallRequest.objects.filter(pk=id).update(report_submitted=True, closed=True)
+            AssignSubmitReport.objects.filter(mentor_request=callRequest).update(pending=False)
+            product_id = callRequest.product.id
+            product = Product.objects.get(id=product_id)
+            user = callRequest.user
+            UserPurchases.objects.filter(product=product, user=user).update(status=False, coupon=None)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('astroboard')
+    messages.error(request, 'Please upload a file format pdf!')
+    return redirect('astroboard')
+
+
+@login_required(login_url='login')
+@jyolsyan
+def submitCareerReport(request, id):
+    if request.method == "POST":
+        mentor_call_id = request.POST.get('schedule')
+        mentor_call_request = MentorCallRequest.objects.get(id=mentor_call_id)
+        user = mentor_call_request.user
+        context = {'user': user, 'mentor_call_request': mentor_call_id}
+        return render(request, 'mentor/submit_report.html', context)
+
+
+@login_required(login_url='login')
+@mentor
+def endCall(request, reqid):
+    schedule_id = reqid
+    schedule = RequestedSchedules.objects.get(pk=schedule_id)
+    if not schedule.mentor.user_id == request.user.id:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')
+    try:
+        callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+    except Exception as e:
+        messages.error(request, 'Invalid request')
+        return redirect('dashboard')
+    user = callreq.user
+    context = {'user': user, 'call': callreq, 'schedule': schedule.id}
+    return render(request, 'mentor/report.html', context)
+
+
+@login_required(login_url='login')
+@mentor
+def mentorDetailsView(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        mentor_profile = MentorProfile.objects.get(user_id=request.user.id)
+        schedule = RequestedSchedules.objects.filter(pk=schedule_id).filter(mentor_id=mentor_profile.id).get(
+            accepted=True)
+        user = schedule.user
+        user_profile = UserProfile.objects.get(user_id=user.id)
+        context = {'schedule': schedule, 'user': user, 'profile': user_profile}
+        return render(request, 'mentor/details.html', context)
+    else:
+        return redirect('dashboard')
+
+
+@login_required(login_url='login')
+@mentor
+def submitReport(request):
+    if request.method == "POST":
+        schedule_id = request.POST.get('schedule')
+        requirement = request.POST.get('requirement')
+        diagnosis = request.POST.get('diagnosis')
+        findings = request.POST.get('findings')
+        suggestions = request.POST.get('suggestions')
+        recommendation = request.POST.get('recommendation')
+
+        if requirement == None or diagnosis == None or findings == None or suggestions == None or recommendation == None:
+            messages.warning(request, 'Please fill all the details!')
+            return redirect('dashboard')
+
+        schedule = RequestedSchedules.objects.get(pk=schedule_id)
+        if not schedule.mentor.user_id == request.user.id:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')
+        try:
+            callreq = MentorCallRequest.objects.get(pk=schedule.request.id)
+        except Exception as e:
+            messages.error(request, 'Invalid request')
+            return redirect('dashboard')
+        user = callreq.user
+        try:
+            call = FinalMentorReport.objects.get(call_id=callreq.id)
+            messages.error(request, 'Report already submitted for this!')
+            return redirect('dashboard')
+        except Exception as e:
+            FinalMentorReport.objects.create(
+                call=callreq,
+                requirement=requirement,
+                diagnosis=diagnosis,
+                findings=findings,
+                suggestions=suggestions,
+                recommendation=recommendation
+            )
+            MentorCallRequest.objects.filter(pk=schedule.request.id).update(report_submitted=True, closed=True)
+            messages.success(request, 'Thank you! Report sumbitted succesfully!')
+            return redirect('mentorboard')

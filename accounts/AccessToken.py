@@ -1,6 +1,5 @@
 import hmac
 from hashlib import sha256
-import ctypes
 import base64
 import struct
 from zlib import crc32

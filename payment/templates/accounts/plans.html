@@ -2,206 +2,521 @@
 {% load static %}
 {% load filters %}
 {% block content %}
-    <section class="pt-8 pt-md-11 bg-gradient-light">
-      <div class="container">
+    <meta name="bhaavi-products"
+          content="students career, student career, career counselling, careerbuilder, career quiz, astrologer, online-astrologer, online-consultant, career-online-consultant, career-advice, >
+    <title>Bhaavi products</title>
+    <section class=" pt-8 pt-md-11 bg-gradient-light">
+    <div class="container">
         <div class="row justify-content-center">
-          <div class="col-12 col-md-10 col-lg-8 text-center">
-            
-            <!-- Badge -->
-            <span class="badge badge-pill badge-success-soft mb-3">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+
+                <!-- Badge -->
+                <span class="badge badge-pill badge-success-soft mb-3">
               <span class="h6 text-uppercase">Value Packs</span>
             </span>
 
-            <!-- Heading -->
-            <h1>
-              Choose our combo value pack!
-            </h1>
+                <!-- Heading -->
+                <h1>
+                    Choose our combo value pack!
+                </h1>
 
-            <!-- Text -->
-            <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
-              Use our best and cost effective solutions
-            </p>
+                <!-- Text -->
+                <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+                    Use our best and cost effective solutions
+                </p>
 
-          </div>
+            </div>
         </div> <!-- / .row -->
         <div class="row">
-          {% for package in packages %}
-          <div class="col-12 col-md-4" data-aos="fade-up">
-            
-            <!-- Card -->
-            <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
-              
+            {% for package in packages %}
+                <div class="col-12 col-md-4" data-aos="fade-up">
 
-              <!-- Body -->
-              <div class="card-body position-relative">
+                    <!-- Card -->
+                    <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
 
-                <!-- Badge -->
-                {% if package.active_discount != 0 %}
-                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+
+                        <!-- Body -->
+                        <div class="card-body position-relative">
+
+                            <!-- Badge -->
+                            {% if package.active_discount != 0 %}
+                                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
                   <span class="badge badge-pill badge-success">
                     <span class="h6 text-uppercase">{{ package.active_discount|percent:package.amount }}% discount</span>
                   </span>
-                </div>
-                {% endif %}
-                <!-- Heading -->
-                <div class="text-center mb-3">
-                  <!-- <span class="badge badge-pill badge-primary"> -->
-                    <span class="h6 text-uppercase">{{package.name}}</span>
-                  <!-- </span> -->
-                </div>
+                                </div>
+                            {% endif %}
+                            <!-- Heading -->
+                            <div class="text-center mb-3">
+                                <!-- <span class="badge badge-pill badge-primary"> -->
+                                <span class="h6 text-uppercase">{{ package.name }}</span>
+                                <!-- </span> -->
+                            </div>
 
-                <div class="d-flex justify-content-center">
-                  {% if package.active_discount != 0 %}
-                  <span class="h2 mb-0 mt-2">₹</span>
-                  <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{package.amount|integer}}</s></span>
-                  <span class="h2 align-self-end mb-1">{{package.amount|sub:package.active_discount}}</span>*
-                  {% else %}
-                  <span class="h2 mb-0 mt-2">₹</span>
-                  <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{package.amount|integer}}</span>
-                  {% endif %}
-                </div>
-                <br>
+                            <div class="d-flex justify-content-center">
+                                {% if package.active_discount != 0 %}
+                                    <span class="h2 mb-0 mt-2">₹</span>
+                                    <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s
+                                            style="color: #df4759;">{{ package.amount|integer }}</s></span>
+                                    <span class="h2 align-self-end mb-1">{{ package.amount|sub:package.active_discount }}</span>
+                                    *
+                                {% else %}
+                                    <span class="h2 mb-0 mt-2">₹</span>
+                                    <span class="price display-2 mb-0" data-annual="10"
+                                          data-monthly="10">{{ package.amount|integer }}</span>
+                                {% endif %}
+                            </div>
+                            <br>
 
-                <!-- Text -->
-                {% for feature in features %}
-                    {% if feature.product_id == package.id%}
-                    <!-- List -->
-                    <div class="d-flex">
-                      
-                      <!-- Badge -->
-                      <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                        <i class="fe fe-check"></i>
-                      </div>
-                      
-                      <!-- Text -->
-                      <p>
-                      {{ feature.feature }}
-                      </p>
-                      
+                            <!-- Text -->
+                            {% for feature in features %}
+                                {% if feature.product_id == package.id %}
+                                    <!-- List -->
+                                    <div class="d-flex">
+
+                                        <!-- Badge -->
+                                        <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                                            <i class="fe fe-check"></i>
+                                        </div>
+
+                                        <!-- Text -->
+                                        <p>
+                                            {{ feature.feature }}
+                                        </p>
+
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Link -->
+                            <form action="{% url 'payment' package.id %}" method="GET">
+                                {% csrf_token %}
+                                <input type="hidden" name="product" value="{{ package.id }}"/>
+                                <button type="submit" class="btn btn-block btn-primary-soft">
+                                    Purchase
+                                    <i class="fe fe-arrow-right ml-3"></i>
+                                </button>
+                            </form>
+
+                        </div>
+
                     </div>
-                    {% endif %}
-                    {% endfor %}
 
-                <!-- Link -->
-               <form action="{% url 'payment' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="product" value="{{package.id}}" />
-                    <button type="submit" class="btn btn-block btn-primary-soft">
-                      Purchase
-                    <i class="fe fe-arrow-right ml-3"></i>
-                  </button>
-                  </form>
-
-              </div>
-
-            </div>
-
-          </div>
-          {% endfor %}
-        </div> <!-- / .row --><br><hr>
+                </div>
+            {% endfor %}
+        </div> <!-- / .row --><br>
+        <hr>
         <div class="row justify-content-center">
-          <div class="col-12 col-md-10 col-lg-8 text-center">
-            
-            <!-- Badge -->
-            <span class="badge badge-pill badge-primary-soft mb-3">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+
+                <!-- Badge -->
+                <span class="badge badge-pill badge-primary-soft mb-3">
               <span class="h6 text-uppercase">Individual Packs</span>
             </span>
 
-            <!-- Heading -->
-            <h1>
-              Individual products 
-            </h1>
+                <!-- Heading -->
+                <h1>
+                    Pictest products
+                </h1>
 
-            <!-- Text -->
-            <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
-              Use our best and cost effective solutions
-            </p>
+                <!-- Text -->
+                <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+                    PICSET test (Set your Picture) is a validated objective test to understand the overall interest, aptitude and personality traits of theindividual. This was customized by our expert team comprising career mentors and Psychologists. The report generated will be an indication of the fields best suited to the respective individual. Test will take only 15-20 minutes for the individual to appear and the result will be immediately visible.
+                </p>
 
-          </div>
+            </div>
         </div> <!-- / .row -->
         <div class="row">
-          {% for product in products %}
-          {% if product.id != "PROD-2"%}
-          <div class="col-12 col-md-4" data-aos="fade-up">
-            
-            <!-- Card -->
-            <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
-              
-              <!-- Body -->
-              <div class="card-body position-relative">
+            {% for product in products %}
+                {% if product.prod_type == "O" %}
+                    <div class="col-12 col-md-4" data-aos="fade-up">
 
-                <!-- Badge -->
-                {% if product.active_discount != 0 %}
-                <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                        <!-- Card -->
+                        <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
+
+                            <!-- Body -->
+                            <div class="card-body position-relative">
+
+                                <!-- Badge -->
+                                {% if product.active_discount != 0 %}
+                                    <div class="position-relative text-right mt-n8 mr-n4 mb-3">
                   <span class="badge badge-pill badge-success">
                     <span class="h6 text-uppercase">{{ product.active_discount|percent:product.amount }}% discount</span>
                   </span>
-                </div>
-                {% endif %}
-                <!-- Heading -->
-                <div class="text-center mb-3">
-                  <!-- <span class="badge badge-pill badge-warning"> -->
-                    <span class="h6 text-uppercase">{{product.name}}</span>
-                  <!-- </span> -->
-                </div>
+                                    </div>
+                                {% endif %}
+                                <!-- Heading -->
+                                <div class="text-center mb-3">
+                                    <!-- <span class="badge badge-pill badge-warning"> -->
+                                    <span class="h6 text-uppercase">{{ product.name }}</span>
+                                    <!-- </span> -->
+                                </div>
 
-                <div class="d-flex justify-content-center">
-                  {% if product.active_discount != 0 %}
-                  <span class="h2 mb-0 mt-2">₹</span>
-                  <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s style="color: #df4759;">{{product.amount|integer}}</s></span>
-                  <span class="h2 align-self-end mb-1">{{product.amount|sub:product.active_discount}}</span>*
-                  {% else %}
-                  <span class="h2 mb-0 mt-2">₹</span>
-                  <span class="price display-2 mb-0" data-annual="10" data-monthly="10">{{product.amount|integer}}</span>
-                  {% endif %}
-                </div>
-                <br>
+                                <div class="d-flex justify-content-center">
+                                    {% if product.active_discount != 0 %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s
+                                                style="color: #df4759;">{{ product.amount|integer }}</s></span>
+                                        <span class="h2 align-self-end mb-1">{{ product.amount|sub:product.active_discount }}</span>
+                                        *
+                                    {% else %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-2 mb-0" data-annual="10"
+                                              data-monthly="10">{{ product.amount|integer }}</span>
+                                    {% endif %}
+                                </div>
+                                <br>
+
+                                <!-- Text -->
+                                {% for feature in features %}
+                                    {% if feature.product_id == product.id %}
+                                        <!-- List -->
+                                        <div class="d-flex">
+
+                                            <!-- Badge -->
+                                            <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                                                <i class="fe fe-check"></i>
+                                            </div>
+
+                                            <!-- Text -->
+                                            <p>
+                                                {{ feature.feature }}
+                                            </p>
+
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- Link -->
+                                <form action="{% url 'payment' product.id %}" method="GET">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}"/>
+                                    <button type="submit" class="btn btn-block btn-warning">
+                                        Purchase
+                                        <i class="fe fe-arrow-right ml-3"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+
+        </div> <!-- / .row -->
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+
+                <!-- Badge -->
+                <span class="badge badge-pill badge-primary-soft mb-3">
+              <span class="h6 text-uppercase">Individual Packs</span>
+            </span>
+
+                <!-- Heading -->
+                <h1>
+                    Mentor products
+                </h1>
 
                 <!-- Text -->
-                {% for feature in features %}
-                    {% if feature.product_id == product.id%}
-                    <!-- List -->
-                    <div class="d-flex">
-                      
-                      <!-- Badge -->
-                      <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
-                        <i class="fe fe-check"></i>
-                      </div>
-                      
-                      <!-- Text -->
-                      <p>
-                      {{ feature.feature }}
-                      </p>
-                      
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-
-                <!-- Link -->
-               <form action="{% url 'payment' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="product" value="{{product.id}}" />
-                    <button type="submit" class="btn btn-block btn-warning">
-                      Purchase
-                    <i class="fe fe-arrow-right ml-3"></i>
-                  </button>
-                  </form>
-
-              </div>
+                <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+                    30-45 minutes Live online session on higher education course selection, career choices & paths which are best suited for the individual along with the answering of relevant queries by one of our expert career mentor. A report will be generated based on the discussion and made available to the respective individual. A pre-mentoring form has to be filled before the consultation.
+                </p>
 
             </div>
+        </div> <!-- / .row -->
+        <div class="row">
+            {% for product in products %}
+                {% if product.prod_type == "M" %}
+                    <div class="col-12 col-md-4" data-aos="fade-up">
 
-          </div>
-          {% endif %}
-          {% endfor %}
+                        <!-- Card -->
+                        <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
 
-         
-          
+                            <!-- Body -->
+                            <div class="card-body position-relative">
+
+                                <!-- Badge -->
+                                {% if product.active_discount != 0 %}
+                                    <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ product.active_discount|percent:product.amount }}% discount</span>
+                  </span>
+                                    </div>
+                                {% endif %}
+                                <!-- Heading -->
+                                <div class="text-center mb-3">
+                                    <!-- <span class="badge badge-pill badge-warning"> -->
+                                    <span class="h6 text-uppercase">{{ product.name }}</span>
+                                    <!-- </span> -->
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    {% if product.active_discount != 0 %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s
+                                                style="color: #df4759;">{{ product.amount|integer }}</s></span>
+                                        <span class="h2 align-self-end mb-1">{{ product.amount|sub:product.active_discount }}</span>
+                                        *
+                                    {% else %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-2 mb-0" data-annual="10"
+                                              data-monthly="10">{{ product.amount|integer }}</span>
+                                    {% endif %}
+                                </div>
+                                <br>
+
+                                <!-- Text -->
+                                {% for feature in features %}
+                                    {% if feature.product_id == product.id %}
+                                        <!-- List -->
+                                        <div class="d-flex">
+
+                                            <!-- Badge -->
+                                            <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                                                <i class="fe fe-check"></i>
+                                            </div>
+
+                                            <!-- Text -->
+                                            <p>
+                                                {{ feature.feature }}
+                                            </p>
+
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- Link -->
+                                <form action="{% url 'payment' product.id %}" method="GET">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}"/>
+                                    <button type="submit" class="btn btn-block btn-warning">
+                                        Purchase
+                                        <i class="fe fe-arrow-right ml-3"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+
+        </div> <!-- / .row -->
+    <hr>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+
+                <!-- Badge -->
+                <span class="badge badge-pill badge-primary-soft mb-3">
+              <span class="h6 text-uppercase">Individual Packs</span>
+            </span>
+
+                <!-- Heading -->
+                <h1>
+                    Astrologer products
+                </h1>
+
+                <!-- Text -->
+                <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+                    30-45 minutes Live online session on future career prospects for the individual with an explanation of do’s and don’ts in various phases oflife will be undertaken. Relevant queries are also answered by one ofour expert Astrologers, based on the individual’s Horoscope. A reportwill be generated based on the discussion and made available to the respective individual. Relevant data needs to be filled before
+                </p>
+
+            </div>
+        </div> <!-- / .row -->
+        <div class="row">
+            {% for product in products %}
+                {% if product.prod_type == "J" %}
+                    <div class="col-12 col-md-4" data-aos="fade-up">
+
+                        <!-- Card -->
+                        <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
+
+                            <!-- Body -->
+                            <div class="card-body position-relative">
+
+                                <!-- Badge -->
+                                {% if product.active_discount != 0 %}
+                                    <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ product.active_discount|percent:product.amount }}% discount</span>
+                  </span>
+                                    </div>
+                                {% endif %}
+                                <!-- Heading -->
+                                <div class="text-center mb-3">
+                                    <!-- <span class="badge badge-pill badge-warning"> -->
+                                    <span class="h6 text-uppercase">{{ product.name }}</span>
+                                    <!-- </span> -->
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    {% if product.active_discount != 0 %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s
+                                                style="color: #df4759;">{{ product.amount|integer }}</s></span>
+                                        <span class="h2 align-self-end mb-1">{{ product.amount|sub:product.active_discount }}</span>
+                                        *
+                                    {% else %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-2 mb-0" data-annual="10"
+                                              data-monthly="10">{{ product.amount|integer }}</span>
+                                    {% endif %}
+                                </div>
+                                <br>
+
+                                <!-- Text -->
+                                {% for feature in features %}
+                                    {% if feature.product_id == product.id %}
+                                        <!-- List -->
+                                        <div class="d-flex">
+
+                                            <!-- Badge -->
+                                            <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                                                <i class="fe fe-check"></i>
+                                            </div>
+
+                                            <!-- Text -->
+                                            <p>
+                                                {{ feature.feature }}
+                                            </p>
+
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- Link -->
+                                <form action="{% url 'payment' product.id %}" method="GET">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}"/>
+                                    <button type="submit" class="btn btn-block btn-warning">
+                                        Purchase
+                                        <i class="fe fe-arrow-right ml-3"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+
+        </div> <!-- / .row -->
+    <hr>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+
+                <!-- Badge -->
+                <span class="badge badge-pill badge-primary-soft mb-3">
+              <span class="h6 text-uppercase">Individual Packs</span>
+            </span>
+
+                <!-- Heading -->
+                <h1>
+                    Astrologer career products
+                </h1>
+
+                <!-- Text -->
+                <p class="font-size-lg text-gray-700 mb-7 mb-md-9">
+                    A career horoscope seeks to help people to find a role or career path best suited to them, by identifying the key characteristics associatedwith their star sign and how these might translate into the workplace. This is the simplest form of astrology. Individual will get their report in preferred language English/ Malayalam. Same will be available in our Website for their future reference. Relevant data needs to be filled before
+                </p>
+
+            </div>
+        </div> <!-- / .row -->
+        <div class="row">
+            {% for product in products %}
+                {% if product.prod_type == "A" %}
+                    <div class="col-12 col-md-4" data-aos="fade-up">
+
+                        <!-- Card -->
+                        <div class="card shadow-light-lg mb-6 mb-md-0 lift lift-lg">
+
+                            <!-- Body -->
+                            <div class="card-body position-relative">
+
+                                <!-- Badge -->
+                                {% if product.active_discount != 0 %}
+                                    <div class="position-relative text-right mt-n8 mr-n4 mb-3">
+                  <span class="badge badge-pill badge-success">
+                    <span class="h6 text-uppercase">{{ product.active_discount|percent:product.amount }}% discount</span>
+                  </span>
+                                    </div>
+                                {% endif %}
+                                <!-- Heading -->
+                                <div class="text-center mb-3">
+                                    <!-- <span class="badge badge-pill badge-warning"> -->
+                                    <span class="h6 text-uppercase">{{ product.name }}</span>
+                                    <!-- </span> -->
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    {% if product.active_discount != 0 %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-4 mb-2" data-annual="10" data-monthly="10"><s
+                                                style="color: #df4759;">{{ product.amount|integer }}</s></span>
+                                        <span class="h2 align-self-end mb-1">{{ product.amount|sub:product.active_discount }}</span>
+                                        *
+                                    {% else %}
+                                        <span class="h2 mb-0 mt-2">₹</span>
+                                        <span class="price display-2 mb-0" data-annual="10"
+                                              data-monthly="10">{{ product.amount|integer }}</span>
+                                    {% endif %}
+                                </div>
+                                <br>
+
+                                <!-- Text -->
+                                {% for feature in features %}
+                                    {% if feature.product_id == product.id %}
+                                        <!-- List -->
+                                        <div class="d-flex">
+
+                                            <!-- Badge -->
+                                            <div class="badge badge-rounded-circle badge-success-soft mt-1 mr-4">
+                                                <i class="fe fe-check"></i>
+                                            </div>
+
+                                            <!-- Text -->
+                                            <p>
+                                                {{ feature.feature }}
+                                            </p>
+
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- Link -->
+                                <form action="{% url 'payment' product.id %}" method="GET">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product" value="{{ product.id }}"/>
+                                    <button type="submit" class="btn btn-block btn-warning">
+                                        Purchase
+                                        <i class="fe fe-arrow-right ml-3"></i>
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+
         </div> <!-- / .row -->
         <br><br>
         <i>* Introductory offer. Offer only valid for limited period.</i>
-      </div> <!-- / .container -->
-      
+    </div> <!-- / .container -->
+
     </section>
-  
+
 {% endblock content %}

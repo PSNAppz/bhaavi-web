@@ -18,11 +18,11 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('support/', include('helpdesk.urls', namespace='support')),
+
     path('', include('accounts.urls')),
     path('', include('picset.urls')),
 
-    # Mentor Dash
-    path('', include('mentor.urls')),
 
     # Payment flow below
     path('', include('payment.urls'))

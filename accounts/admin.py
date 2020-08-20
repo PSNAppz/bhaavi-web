@@ -22,7 +22,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('full_name', 'email', 'password')}),
         # ('Full name', {'fields': ()}),
-        ('Permissions', {'fields': ('customer', 'jyolsyan', 'mentor', 'admin')}),
+        ('Permissions', {'fields': ('customer', 'jyolsyan', 'mentor', 'admin', 'is_staff')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -39,7 +39,8 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(UserProfile)
-
+admin.site.register(MentorProfile)
+admin.site.register(MentorProducts)
 
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)

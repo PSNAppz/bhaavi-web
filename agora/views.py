@@ -22,7 +22,7 @@ class AgoraVideoCall(View):
         elif permission_class == 'IsAuthenticated':
             return bool(request.user and request.user.is_authenticated)
         elif permission_class == 'IsAdmin':
-            return bool(request.user and request.user.is_staff)
+            return bool(request.user and request.user.sis_staff)
         else:
             return False
 

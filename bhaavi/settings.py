@@ -31,21 +31,30 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'djangocms_admin_style',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+    'django.contrib.sites',
+    'markdown_deux',
+    'bootstrapform',
+    'helpdesk',
+
     'agora',
     'crispy_forms',
 
+    'storages',
+
     'accounts',
     'product',
-    'mentor',
     'payment',
     'schedule',
     'picset',
+
 ]
 
 MIDDLEWARE = [
@@ -58,7 +67,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'bhaavi.urls'
+
 
 TEMPLATES = [
     {
@@ -117,6 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
+SITE_ID = 1
 
 LANGUAGE_CODE = 'en-us'
 
@@ -135,7 +147,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# STATIC_ROOT= os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -153,9 +165,31 @@ MESSAGE_TAGS = {
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = config('EMAIL_HOST')
+# EMAIL_PORT = config('EMAIL_PORT')
+# EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('SENDGRID_API_KEY')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_ID')
-EMAIL_HOST_PASSWORD = config('EMAIL_APP_PASS')
+
+# AWS S3 SETTINGS
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_LOCATION = 'static'
+
+DEFAULT_FILE_STORAGE = 'bhaavi.storage_backends.MediaStorage'
+AWS_DEFAULT_ACL = None
+LOGIN_URL = '/login'
