@@ -7,6 +7,7 @@ urlpatterns = [
     # Basic page URLs
     path('', views.homePage, name="home"),
     path('dashboard/profile', views.profilePage, name="profile"),
+    path('dashboard/paymentHistory', views.customerPaymentHistory, name="payment-history"),
     path('dashboard/profile/save', views.saveProfile, name="profile_save"),
     path('dashboard', views.userDashboard, name="dashboard"),
     path('dashboard/view', views.viewReport, name="report_view"),
@@ -64,6 +65,7 @@ urlpatterns = [
     path('dashboard/admin/product', views.adminProductView, name="product"),
     path('dashboard/admin/customers', views.adminCustomersView, name="customers"),
     path('dashboard/admin/orders', views.adminOrdersView, name="orders"),
+    path('dashboard/admin/picset', views.picsetAdminView, name="picset-admin"),
     path('dashboard/admin/mentorReport', views.adminMentorReportView, name="mentor_report"),
     path('dashboard/admin/adminMentorReportConfirmView/<int:id>', views.adminMentorReportConfirmView,
          name="mentor_report_confirm"),
