@@ -152,21 +152,29 @@ def createOrder(request, id):
                 order_currency = 'INR'
                 order_receipt = invoice
                 notes = {'Product': user_purchase.product.name}
-                product_name = product.name
                 response = client.order.create(
                     dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes,
                          payment_capture='0'))
-                order_id = response['id']
-                order_status = response['status']
 
-                if order_status == 'created':
-                    context = {'order_id': order_id, 'product': product, 'amount': order_amount,
+                if (order_amount > 0):
+                    response = client.order.create(
+                        dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes,
+                             payment_capture='0'))
+                    order_id = response['id']
+                    order_status = response['status']
+                    if order_status == 'created':
+                        context = {'order_id': order_id, 'product': product, 'amount': order_amount,
+                                   'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
+                                   'discount_price': get_discount_price, 'rpay_id': rpay_id}
+                        return render(request, 'accounts/payment.html', context)
+                    else:
+                        messages.error(request, 'Some error occured, please try again!')
+                        return redirect('plans')
+                else:
+                    context = {'product': product, 'amount': order_amount,
                                'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
                                'discount_price': get_discount_price, 'rpay_id': rpay_id}
                     return render(request, 'accounts/payment.html', context)
-                else:
-                    messages.error(request, 'Some error occured, please try again!')
-                    return redirect('plans')
 
             else:
                 # Check if user already has the product
@@ -197,20 +205,86 @@ def createOrder(request, id):
                     order_currency = 'INR'
                     order_receipt = invoice
                     notes = {'Product': product.name}
-                    product_name = product.name
-                    response = client.order.create(
-                        dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes,
-                             payment_capture='0'))
-                    order_id = response['id']
-                    order_status = response['status']
-                    if order_status == 'created':
-                        context = {'order_id': order_id, 'product': product, 'amount': order_amount,
+                    if (order_amount > 0):
+                        response = client.order.create(
+                            dict(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes,
+                                 payment_capture='0'))
+                        order_id = response['id']
+                        order_status = response['status']
+                        if order_status == 'created':
+                            context = {'order_id': order_id, 'product': product, 'amount': order_amount,
+                                       'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
+                                       'discount_price': get_discount_price, 'rpay_id': rpay_id}
+                            return render(request, 'accounts/payment.html', context)
+                        else:
+                            messages.error(request, 'Some error occured, please try again!')
+                            return redirect('plans')
+                    else:
+                        context = {'product': product, 'amount': order_amount,
                                    'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
                                    'discount_price': get_discount_price, 'rpay_id': rpay_id}
                         return render(request, 'accounts/payment.html', context)
+
+
+@login_required(login_url='login')
+def freePurchasePage(request):
+    if request.method == "POST":
+        response = request.POST
+        product_id = request.POST.get('product')
+        product = Product.objects.get(id=product_id)
+
+        mobile = response['mobile'],
+        address = response['address'],
+        state = response['state'],
+        pincode = response['pincode']
+
+        if mobile == '' or address == '' or state == '' or pincode == '':
+            messages.error(request, 'Please fill all the fields!')
+
+        try:
+            user_purchase = UserPurchases.objects.get(product=product, payment_progress=True, user=request.user)
+            try:
+                coupon_code = user_purchase.coupon.code
+                if coupon_code:
+                    coupon = Coupon.objects.get(code=coupon_code)
+                    coupon.count -= 1
+                    coupon.save()
+                    create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
+                                                                    discount_percent=coupon.discount_percent)
+            except:
+                pass
+            items = UserPurchases.objects.filter(invoice=response['invoice'])
+
+            if not items.count() > 1:
+                UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
+            else:
+                user_id = items[0].user_id
+                for item in items:
+                    if not item.product.is_package:
+                        UserPurchases.objects.filter(pk=item.id).update(payment_progress=0, status=1)
                     else:
-                        messages.error(request, 'Some error occured, please try again!')
-                        return redirect('plans')
+                        UserPurchases.objects.filter(pk=item.id).update(payment_progress=0)
+            try:
+                UserProfile.objects.filter(user=request.user).update(
+                    mobile=response['mobile'],
+                    address=response['address'],
+                    state=response['state'],
+                    pincode=response['pincode'],
+                )
+            except UserProfile.DoesNotExist:
+                UserProfile.objects.create(
+                    mobile=response['mobile'],
+                    address=response['address'],
+                    state=response['state'],
+                    pincode=response['pincode'],
+                    user=request.user
+                )
+
+            context = {'payment': True}
+        except:
+            context = {'payment': False}
+
+        return render(request, 'accounts/success.html', context)
 
 
 @login_required(login_url='login')
@@ -219,6 +293,16 @@ def paymentSuccessPage(request):
         response = request.POST
         product_id = request.POST.get('product')
         product = Product.objects.get(id=product_id)
+        items = UserPurchases.objects.filter(invoice=response['invoice'])
+
+        mobile = response['mobile'],
+        address = response['address'],
+        state = response['state'],
+        pincode = response['pincode']
+
+        if mobile == '' or address == '' or state == '' or pincode == '':
+            messages.error(request, 'Please fill all the fields!')
+
         try:
             response['razorpay_payment_id']
             razorpay_payment_id = response['razorpay_payment_id']
@@ -227,17 +311,19 @@ def paymentSuccessPage(request):
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
                 user_purchase = UserPurchases.objects.get(product=product, payment_progress=True, user=request.user)
-                if(user_purchase.coupon):
+                try:
                     coupon_code = user_purchase.coupon.code
-                    coupon = Coupon.objects.get(code=coupon_code)
-                    coupon.count -= 1
-                    coupon.save()
-                    create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
-                                                                discount_percent=coupon.discount_percent)
-                items = UserPurchases.objects.filter(invoice=response['invoice'])
+                    if coupon_code:
+                        coupon = Coupon.objects.get(code=coupon_code)
+                        coupon.count -= 1
+                        coupon.save()
+                        create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
+                                                                        discount_percent=coupon.discount_percent)
+                except:
+                    pass
+                    items = UserPurchases.objects.filter(invoice=response['invoice'])
                 if not items.count() > 1:
                     purchase = UserPurchases.objects.get(invoice=response['invoice'])
-                    user_id = purchase.user_id
                     try:
                         check_saved = RazorPayTransactions.objects.get(purchase_id=purchase.id)
                     except  RazorPayTransactions.DoesNotExist:
@@ -260,15 +346,13 @@ def paymentSuccessPage(request):
                             status=1,
                             purchase=items[0]
                         )
-                        user_id = items[0].user_id
                         for item in items:
                             if not item.product.is_package:
                                 UserPurchases.objects.filter(pk=item.id).update(payment_progress=0, status=1)
                             else:
                                 UserPurchases.objects.filter(pk=item.id).update(payment_progress=0)
                 try:
-                    user_profile = UserProfile.objects.get(user_id=user_id)
-                    UserProfile.objects.filter(pk=user_profile.id).update(
+                    UserProfile.objects.filter(user=request.user).update(
                         mobile=response['mobile'],
                         address=response['address'],
                         state=response['state'],
