@@ -47,9 +47,7 @@
                             <th>Amount</th>
                             <th>Time</th>
                             <th>Invoice</th>
-                            <th>Not used</th>
-                            <th>Using</th>
-                            <th>Consumed</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -62,24 +60,14 @@
                                 <td>{{ order.payment_date }}</td>
                                 <td>{{ order.purchase.invoice }}</td>
                                 <td>
-                                    {% if order.purchase.status == 0 and order.purchase.consumed == 0 %}
-                                        yes
-                                        {% else %}
-                                        no
+                                    {% if order.purchase.status == 1 %}
+                                        <span class="badge badge-success">Purchased</span>
                                     {% endif %}
-                                </td>
-                                <td>
-                                    {% if order.purchase.status == 1 and order.purchase.consumed == 0 %}
-                                        yes
-                                        {% else %}
-                                        no
+                                    {% if order.purchase.in_use == 1 and order.purchase.consumed == 0 %}
+                                        <span class="badge badge-primary">in use</span>
                                     {% endif %}
-                                </td>
-                                <td>
-                                    {% if order.purchase.status == 0 and order.purchase.consumed == 1 %}
-                                        yes
-                                        {% else %}
-                                        no
+                                    {% if order.purchase.in_use == 0 and order.purchase.consumed == 1 %}
+                                        <span class="badge badge-primary">completed</span>
                                     {% endif %}
                                 </td>
                             </tr>

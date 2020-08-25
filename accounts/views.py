@@ -303,6 +303,7 @@ def requestCall(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
                 product_id=product_id).product
+            user_purchase = UserPurchases.objects.filter(user_id=user.id).filter(status=1,product_id=product_id).update(in_use=True)
         except Exception as e:
             print(e)
             messages.error(request, 'Invalid product!')
@@ -411,6 +412,7 @@ def requestCallAstro(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
                 product_id=product_id).product
+            user_purchase = UserPurchases.objects.filter(user_id=user.id).filter(status=1,product_id=product_id).update(in_use=True)
         except Exception as e:
             print(e)
             messages.error(request, 'Invalid product!')
@@ -493,6 +495,7 @@ def submitCareerAstro(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
                 product_id=product_id).product
+            user_purchase = UserPurchases.objects.filter(user_id=user.id).filter(status=1,product_id=product_id).update(in_use=True)
         except Exception as e:
             print(e)
             messages.error(request, 'Invalid product!')
@@ -1279,7 +1282,7 @@ def submitCareerReportHoroscope(request, id):
             product_id = callRequest.product.id
             product = Product.objects.get(id=product_id)
             user = callRequest.user
-            UserPurchases.objects.filter(product=product, user=user).update(status=False, consumed=True, coupon=None)
+            UserPurchases.objects.filter(product=product, user=user).update(status=False, consumed=True,in_use=False, coupon=None)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('astroboard')
     messages.error(request, 'Please upload a file format pdf!')
