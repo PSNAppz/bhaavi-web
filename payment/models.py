@@ -22,6 +22,7 @@ class UserPurchases(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     status = models.BooleanField(default=0)
     payment_progress = models.BooleanField(default=1)
+    consumed = models.BooleanField(default=0)
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
     invoice = models.CharField(max_length=255, default=invoice_gen)
     timestamp = models.DateTimeField(auto_now_add=True)

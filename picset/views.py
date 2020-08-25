@@ -141,7 +141,7 @@ def getQuestion(request):
                         traditional_score=t,
                     )
                     UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").update(
-                        status=False)
+                        status=False, consumed=True)
                     return JsonResponse({'success': False, 'redirect': True})
             last_q = Question.objects.last()
             if question_id == last_q.id:

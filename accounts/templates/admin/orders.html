@@ -43,9 +43,13 @@
                         <tr>
                             <th>User</th>
                             <th>Product</th>
+                            <th>Product type</th>
                             <th>Amount</th>
                             <th>Time</th>
                             <th>Invoice</th>
+                            <th>Not used</th>
+                            <th>Using</th>
+                            <th>Consumed</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -53,9 +57,31 @@
                             <tr>
                                 <td>{{ order.purchase.user.get_username }}</td>
                                 <td>{{ order.purchase.product.name }}</td>
+                                <td>{{ order.purchase.product.prod_type }}</td>
                                 <td>{{ order.purchase.product.active_discount }}</td>
                                 <td>{{ order.payment_date }}</td>
                                 <td>{{ order.purchase.invoice }}</td>
+                                <td>
+                                    {% if order.purchase.status == 0 and order.purchase.consumed == 0 %}
+                                        yes
+                                        {% else %}
+                                        no
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if order.purchase.status == 1 and order.purchase.consumed == 0 %}
+                                        yes
+                                        {% else %}
+                                        no
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if order.purchase.status == 0 and order.purchase.consumed == 1 %}
+                                        yes
+                                        {% else %}
+                                        no
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>

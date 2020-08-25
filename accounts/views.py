@@ -1279,7 +1279,7 @@ def submitCareerReportHoroscope(request, id):
             product_id = callRequest.product.id
             product = Product.objects.get(id=product_id)
             user = callRequest.user
-            UserPurchases.objects.filter(product=product, user=user).update(status=False, coupon=None)
+            UserPurchases.objects.filter(product=product, user=user).update(status=False, consumed=True, coupon=None)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('astroboard')
     messages.error(request, 'Please upload a file format pdf!')
