@@ -51,7 +51,7 @@ def add_coupon(request):
                         messages.error(request, "This coupon does not exists")
                         return redirect("payment", product.id)
                 if coupon.count >= 1:
-                    user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True).first()
+                    user_purchase = UserPurchases.objects.filter( user=request.user,product=product, payment_progress=True).first()
                     user_purchase.coupon = coupon
                     user_purchase.save()
                     messages.success(request, 'Coupon added!')
@@ -178,17 +178,17 @@ def createOrder(request, id):
 
             else:
                 # Check if user already has the product
-                try:
-                    check_product_status = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                        product_id=product.id).filter(status=True, consumed=False).get()
+                
+                check_product_status = UserPurchases.objects.filter(user_id=request.user.id, product_id=product.id, status=True, consumed=False)
+                if check_product_status.exists():
                     messages.warning(request, 'Product already purchased.')
                     return redirect('plans')
-                except UserPurchases.DoesNotExist:
-                    try:
-                        in_progress = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                            payment_progress=True).get(product_id=product.id)
+                else:
+                    in_progress = UserPurchases.objects.filter(user_id=request.user.id).filter(
+                        payment_progress=True).filter(product_id=product.id, consumed=False).first()
+                    if in_progress:    
                         invoice = in_progress.invoice
-                    except UserPurchases.DoesNotExist:
+                    else:
                         purchase = UserPurchases.objects.create(
                             user=request.user,
                             product=product,
@@ -196,12 +196,13 @@ def createOrder(request, id):
                         invoice = purchase.invoice
                     client = initPaymentClient()
                     user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                        payment_progress=True).get(product_id=product.id)
+                        payment_progress=True).filter(product_id=product.id, consumed=False).first()
                     if user_purchase.coupon:
                         if user_purchase.coupon.count <= 0:
                             user_purchase.coupon = None
                     order_amount = int(user_purchase.get_total()) * 100
                     get_discount_price = int(int(user_purchase.get_product_discount()))
+                    
                     order_currency = 'INR'
                     order_receipt = invoice
                     notes = {'Product': product.name}
@@ -212,6 +213,7 @@ def createOrder(request, id):
                         order_id = response['id']
                         order_status = response['status']
                         if order_status == 'created':
+                            print("COUPON", get_discount_price, )
                             context = {'order_id': order_id, 'product': product, 'amount': order_amount,
                                        'profile': user_profile, 'invoice': invoice, 'user_purchases': user_purchase,
                                        'discount_price': get_discount_price, 'rpay_id': rpay_id}
@@ -300,9 +302,6 @@ def paymentSuccessPage(request):
         state = response['state'],
         pincode = response['pincode']
 
-        if mobile == '' or address == '' or state == '' or pincode == '':
-            messages.error(request, 'Please fill all the fields!')
-
         try:
             response['razorpay_payment_id']
             razorpay_payment_id = response['razorpay_payment_id']
@@ -310,18 +309,14 @@ def paymentSuccessPage(request):
             razorpay_signature = response['razorpay_signature']
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
-                user_purchase = UserPurchases.objects.get(product=product, payment_progress=True, user=request.user)
-                try:
+                user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True, user=request.user).first
+                if(user_purchase.coupon):
                     coupon_code = user_purchase.coupon.code
-                    if coupon_code:
-                        coupon = Coupon.objects.get(code=coupon_code)
-                        coupon.count -= 1
-                        coupon.save()
-                        create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon,
-                                                                        discount_percent=coupon.discount_percent)
-                except:
-                    pass
-                    items = UserPurchases.objects.filter(invoice=response['invoice'])
+                    coupon = Coupon.objects.get(code=coupon_code)
+                    coupon.count -= 1
+                    coupon.save()
+                    create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon, discount_percent=coupon.discount_percent)
+                items = UserPurchases.objects.filter(invoice=response['invoice'])
                 if not items.count() > 1:
                     purchase = UserPurchases.objects.get(invoice=response['invoice'])
                     try:
