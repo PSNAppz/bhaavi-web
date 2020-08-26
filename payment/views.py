@@ -318,7 +318,7 @@ def paymentSuccessPage(request):
                     create_coupon = UserRedeemCoupon.objects.create(user=request.user, coupon=coupon, discount_percent=coupon.discount_percent)
                 items = UserPurchases.objects.filter(invoice=response['invoice'])
                 if not items.count() > 1:
-                    purchase = UserPurchases.objects.get(invoice=response['invoice'])
+                    purchase = UserPurchases.objects.get(product=product, invoice=response['invoice'])
                     try:
                         check_saved = RazorPayTransactions.objects.get(purchase_id=purchase.id)
                     except  RazorPayTransactions.DoesNotExist:
@@ -329,7 +329,7 @@ def paymentSuccessPage(request):
                             status=1,
                             purchase=purchase
                         )
-                        UserPurchases.objects.filter(invoice=response['invoice']).update(payment_progress=0, status=1)
+                        UserPurchases.objects.filter(product=product, invoice=response['invoice']).update(payment_progress=0, status=1)
                 else:
                     try:
                         check_saved = RazorPayTransactions.objects.get(purchase_id=items[0].id)
