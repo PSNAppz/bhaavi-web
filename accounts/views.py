@@ -47,19 +47,19 @@ number = -5
 number2 = 65
 number3 = 5
 
+
 # Sending email (Put this inside the notification function and call it only when the notification type email is selected)
 # from_email='test@gmail.com'
-    # to_emails='thepsnarayanan@gmail.com'
-    # subject='Sending with Twilio SendGrid is Fun'
-    # html_content='and easy to do anywhere, even with Python'
-    # try:
-    #     EmailMessage(subject, html_content, from_email, [to_emails])
-       
-    # except Exception as e:
-    #     print(e)
+# to_emails='thepsnarayanan@gmail.com'
+# subject='Sending with Twilio SendGrid is Fun'
+# html_content='and easy to do anywhere, even with Python'
+# try:
+#     EmailMessage(subject, html_content, from_email, [to_emails])
+
+# except Exception as e:
+#     print(e)
 
 def homePage(request):
-    
     return render(request, 'base/home.html')
 
 
@@ -72,6 +72,23 @@ def profilePage(request):
         context = {'profile': None}
 
     return render(request, 'accounts/profile.html', context)
+
+
+@login_required(login_url='login')
+def customerPaymentHistory(request):
+    paymentHistory = []
+    try:
+        user_purchase = UserPurchases.objects.filter(user=request.user)
+        for purchase in user_purchase:
+            try:
+                payment = RazorPayTransactions.objects.get(purchase=purchase, status=1)
+                paymentHistory.append(payment)
+            except:
+                pass
+        context = {'payments': paymentHistory}
+    except:
+        context = {'payments': None}
+    return render(request, 'accounts/payment_history.html', context)
 
 
 # Conference call
@@ -286,6 +303,7 @@ def requestCall(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
                 product_id=product_id).product
+            user_purchase = UserPurchases.objects.filter(user_id=user.id).filter(status=1,product_id=product_id).update(in_use=True)
         except Exception as e:
             print(e)
             messages.error(request, 'Invalid product!')
@@ -394,6 +412,7 @@ def requestCallAstro(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
                 product_id=product_id).product
+            user_purchase = UserPurchases.objects.filter(user_id=user.id).filter(status=1,product_id=product_id).update(in_use=True)
         except Exception as e:
             print(e)
             messages.error(request, 'Invalid product!')
@@ -476,6 +495,7 @@ def submitCareerAstro(request):
         try:
             purchased_product = UserPurchases.objects.filter(user_id=user.id).filter(status=1).get(
                 product_id=product_id).product
+            user_purchase = UserPurchases.objects.filter(user_id=user.id).filter(status=1,product_id=product_id).update(in_use=True)
         except Exception as e:
             print(e)
             messages.error(request, 'Invalid product!')
@@ -784,8 +804,18 @@ def adminCustomersView(request):
 @login_required(login_url='login')
 @admin_user
 def adminOrdersView(request):
-    orders = UserPurchases.objects.all()
-    context = {'Orders': orders}
+    orders = []
+    try:
+        user_purchase = UserPurchases.objects.all()
+        for purchase in user_purchase:
+            try:
+                payment = RazorPayTransactions.objects.get(purchase=purchase, status=1)
+                orders.append(payment)
+            except:
+                pass
+        context = {'Orders': orders}
+    except:
+        context = {'Orders': orders}
     return render(request, 'admin/orders.html', context)
 
 
@@ -854,6 +884,14 @@ def couponAdminView(request):
     coupon = Coupon.objects.all().order_by('-timestamp')
     context = {'coupons': coupon}
     return render(request, 'admin/couponView.html', context)
+
+
+@login_required(login_url='login')
+@admin_user
+def picsetAdminView(request):
+    results = Result.objects.all().order_by('-timestamp')
+    context = {'results': results}
+    return render(request, 'admin/picset_details.html', context)
 
 
 @login_required(login_url='login')
@@ -1244,7 +1282,7 @@ def submitCareerReportHoroscope(request, id):
             product_id = callRequest.product.id
             product = Product.objects.get(id=product_id)
             user = callRequest.user
-            UserPurchases.objects.filter(product=product, user=user).update(status=False, coupon=None)
+            UserPurchases.objects.filter(product=product, user=user).update(status=False, consumed=True,in_use=False, coupon=None)
             messages.success(request, 'Thank you! Report sumbitted succesfully!')
             return redirect('astroboard')
     messages.error(request, 'Please upload a file format pdf!')

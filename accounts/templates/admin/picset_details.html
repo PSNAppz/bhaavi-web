@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Orders</h1>
+                    <h1 class="h2">Picset</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -42,34 +42,32 @@
                         <thead>
                         <tr>
                             <th>User</th>
+                            <th>Attendee Name</th>
                             <th>Product</th>
-                            <th>Product type</th>
-                            <th>Amount</th>
                             <th>Time</th>
-                            <th>Invoice</th>
-                            <th>Status</th>
+                            <th>Attendee Age</th>
+                            <th>Pragmatic Score</th>
+                            <th>Industrious Score</th>
+                            <th>Creative Score</th>
+                            <th>Socialite Score</th>
+                            <th>Explorer Score</th>
+                            <th>Traditional Score</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for order in Orders %}
+                        {% for result in results %}
                             <tr>
-                                <td>{{ order.purchase.user.get_username }}</td>
-                                <td>{{ order.purchase.product.name }}</td>
-                                <td>{{ order.purchase.product.prod_type }}</td>
-                                <td>{{ order.purchase.product.active_discount }}</td>
-                                <td>{{ order.payment_date }}</td>
-                                <td>{{ order.purchase.invoice }}</td>
-                                <td>
-                                    {% if order.purchase.status == 1 %}
-                                        <span class="badge badge-success">Purchased</span>
-                                    {% endif %}
-                                    {% if order.purchase.in_use == 1 and order.purchase.consumed == 0 %}
-                                        <span class="badge badge-primary">in use</span>
-                                    {% endif %}
-                                    {% if order.purchase.in_use == 0 and order.purchase.consumed == 1 %}
-                                        <span class="badge badge-primary">completed</span>
-                                    {% endif %}
-                                </td>
+                                <td>{{ result.user.get_username }}</td>
+                                <td>{{ result.attendee_name }}</td>
+                                <td>{{ result.purchase.product }}</td>
+                                <td>{{ result.timestamp }}</td>
+                                <td>{{ result.attendee_age }}</td>
+                                <td>{{ result.pragmatic_score }}</td>
+                                <td>{{ result.industrious_score }}</td>
+                                <td>{{ result.creative_score }}</td>
+                                <td>{{ result.socialite_score }}</td>
+                                <td>{{ result.explorer_score }}</td>
+                                <td>{{ result.traditional_score }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -84,7 +82,6 @@
             $('#myTable').DataTable();
         });
     </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
     <script src="dashboard.js"></script>

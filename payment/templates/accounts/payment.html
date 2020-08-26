@@ -81,7 +81,7 @@
                 {% endif %}
                 <li class="list-group-item d-flex justify-content-between">
                   <span>Total (INR)</span>
-                  <strong>₹{{user_purchases.get_total}}</strong>
+                  <strong>₹{{user_purchases.get_total|integer}}</strong>
                 </li>
               </ul>
 
@@ -98,7 +98,8 @@
             </div>
             <div class="col-md-8 order-md-1">
               <h4 class="mb-3">Billing address</h4>
-              <form class="needs-validation" action="{% url 'success' %}" method="POST" id="payment">
+            {% if amount == 0 %}
+            <form class="needs-validation" novalidate action="{% url 'free-success' %}" method="POST" id="payment">
                 {% csrf_token %}
                   <div class="mb-3">
                     <label for="fullName">Name</label>
@@ -117,7 +118,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="mobile">Mobile </label>
-                  <input type="text" class="form-control" name="mobile" id="mobile" placeholder="XXXXXXXXXX" value="{{profile.mobile}}">
+                  <input type="text" class="form-control" name="mobile" id="mobile" placeholder="XXXXXXXXXX" value="{{profile.mobile}}" required>
                   <div class="invalid-feedback">
                     Please enter a valid email address for shipping updates.
                   </div>
@@ -192,15 +193,116 @@
                 </div>
                 <hr class="mb-4">
                 <input type="hidden" name="product" value="{{product.id}}" />
-                <button class="btn btn-success btn-lg btn-block" id="rzp-button1" type="button">Proceed to pay</button>
-
+                <input type="hidden" name="invoice" value="{{ invoice }}"/>
+                <button class="btn btn-success btn-lg btn-block" type="submit">Proceed to pay</button>
               </form>
+
+            {% else %}
+
+              <form class="needs-validation" novalidate action="{% url 'success' %}" method="POST" id="payment">
+                {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="fullName">Name</label>
+                    <input type="text" class="form-control" id="fullName" placeholder="" value="{{request.user.full_name}}" disabled>
+                    <div class="invalid-feedback">
+                      Valid first name is required.
+                    </div>
+                </div>
+                <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="email">Email </label>
+                  <input type="email" class="form-control disabled" id="email" placeholder="you@example.com" value={{request.user.email}} disabled>
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="mobile">Mobile </label>
+                  <input type="text" class="form-control" name="mobile" id="mobile" placeholder="XXXXXXXXXX" value="{{profile.mobile}}" required>
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="address">Address</label>
+                  <input type="text" class="form-control" name="address" id="address" placeholder="1234 Main St" required value="{{profile.address}}">
+                  <div class="invalid-feedback">
+                    Please enter your shipping address.
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="state">State</label>
+                    <select class="custom-select d-block w-100" id="state" name="state" required>
+                      {% if profile.state%}
+                      <option value="{{profile.address}}">{{profile.state}}</option>
+                      {% else %}
+                      <option value="">Choose...</option>
+                      {% endif %}
+                      <option value="Andhra Pradesh">Andhra Pradesh</option>
+                      <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                      <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                      <option value="Assam">Assam</option>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Chandigarh">Chandigarh</option>
+                      <option value="Chhattisgarh">Chhattisgarh</option>
+                      <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                      <option value="Daman and Diu">Daman and Diu</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Lakshadweep">Lakshadweep</option>
+                      <option value="Puducherry">Puducherry</option>
+                      <option value="Goa">Goa</option>
+                      <option value="Gujarat">Gujarat</option>
+                      <option value="Haryana">Haryana</option>
+                      <option value="Himachal Pradesh">Himachal Pradesh</option>
+                      <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                      <option value="Jharkhand">Jharkhand</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Kerala">Kerala</option>
+                      <option value="Madhya Pradesh">Madhya Pradesh</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Manipur">Manipur</option>
+                      <option value="Meghalaya">Meghalaya</option>
+                      <option value="Mizoram">Mizoram</option>
+                      <option value="Nagaland">Nagaland</option>
+                      <option value="Odisha">Odisha</option>
+                      <option value="Punjab">Punjab</option>
+                      <option value="Rajasthan">Rajasthan</option>
+                      <option value="Sikkim">Sikkim</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="Telangana">Telangana</option>
+                      <option value="Tripura">Tripura</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="Uttarakhand">Uttarakhand</option>
+                      <option value="West Bengal">West Bengal</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Please provide a valid state.
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="zip">Pincode</label>
+                    <input type="text" class="form-control" id="pincode" name="pincode" placeholder="000000" value="{{profile.pincode}}" required >
+                    <div class="invalid-feedback">
+                      Zip code required.
+                    </div>
+                  </div>
+                </div>
+                <hr class="mb-4">
+                <input type="hidden" name="product" value="{{product.id}}" />
+                <button class="btn btn-success btn-lg btn-block" id="rzp-button1" type="submit">Proceed to pay</button>
+              </form>
+            {% endif %}
+
             </div>
           </div>
           <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
           <script>
           var options = {
-              "key": "rzp_live_ksMaCwCTOhtWMX", // Enter the Key ID generated from the Dashboard
+              "key": "{{ rpay_id }}", // Enter the Key ID generated from the Dashboard
               "amount": "{{amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
               "currency": "INR",
               "name": "Bhaavi consultants",
@@ -225,6 +327,26 @@
                   "color": "#335eea"
               }
           };
+
+                      (function() {
+              'use strict';
+              window.addEventListener('load', function() {
+                // Get the forms we want to add validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                  form.addEventListener('submit', function(event) {
+                      console.log(form.checkValidity())
+                    if (form.checkValidity() === false) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                  }, false);
+                });
+              }, false);
+            })();
+
           var rzp1 = new Razorpay(options);
           document.getElementById('rzp-button1').onclick = function(e){
               rzp1.open();
