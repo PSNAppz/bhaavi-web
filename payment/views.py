@@ -309,7 +309,7 @@ def paymentSuccessPage(request):
             razorpay_signature = response['razorpay_signature']
             status = paymentStatus(razorpay_payment_id, razorpay_order_id, razorpay_signature)
             if status:
-                user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True, user=request.user).first
+                user_purchase = UserPurchases.objects.filter(product=product, payment_progress=True, user=request.user).first()
                 if(user_purchase.coupon):
                     coupon_code = user_purchase.coupon.code
                     coupon = Coupon.objects.get(code=coupon_code)
