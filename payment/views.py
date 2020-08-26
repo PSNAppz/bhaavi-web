@@ -180,7 +180,7 @@ def createOrder(request, id):
                 # Check if user already has the product
                 try:
                     check_product_status = UserPurchases.objects.filter(user_id=request.user.id).filter(
-                        product_id=product.id).get(status=True)
+                        product_id=product.id).filter(status=True, consumed=False).get()
                     messages.warning(request, 'Product already purchased.')
                     return redirect('plans')
                 except UserPurchases.DoesNotExist:
