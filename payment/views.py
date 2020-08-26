@@ -365,7 +365,8 @@ def paymentSuccessPage(request):
                 context = {'payment': True}
             else:
                 context = {'payment': False}
-        except:
+        except Exception as e:
+            raise(e)
             context = {'payment': False}
 
         return render(request, 'accounts/success.html', context)
