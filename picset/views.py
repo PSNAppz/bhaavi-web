@@ -20,13 +20,12 @@ def takeTest(request):
         return redirect('dashboard')
 
     user_purchase = UserPurchases.objects.get(user_id=request.user.id, product__prod_type="O", status=True)
-    user_purchase = UserPurchases.objects.filter(user_id=request.user.id).filter(status=1).update(
+    user_purchase_update = UserPurchases.objects.filter(user_id=request.user.id).filter(status=1).update(
         in_use=True)
 
     last_q = Question.objects.last()
     name = request.GET['name']
     age = request.GET['age']
-    print(name, age)
     try:
         if (int(age) < 1 or int(age) > 110):
             messages.error(request, 'Please provide a valid attendee name and age!')
