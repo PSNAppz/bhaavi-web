@@ -134,16 +134,20 @@ def getQuestion(request):
                             e += answer.answer
                         else:
                             t += answer.answer
-                    Result.objects.filter(user_id=request.user.id).filter(purchase_id=user_purchase.id).update(
-                        pragmatic_score=p,
-                        industrious_score=i,
-                        creative_score=c,
-                        socialite_score=s,
-                        explorer_score=e,
-                        traditional_score=t,
-                    )
-                    UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").update(
-                        status=False, consumed=True, is_use=False)
+                    try:        
+                        Result.objects.filter(user_id=request.user.id).filter(purchase_id=user_purchase.id).update(
+                            pragmatic_score=p,
+                            industrious_score=i,
+                            creative_score=c,
+                            socialite_score=s,
+                            explorer_score=e,
+                            traditional_score=t,
+                        )
+                        UserPurchases.objects.filter(user_id=request.user.id).filter(product__prod_type="O").update(
+                        status=False, consumed=True, in_use=False)
+                    except Exception as e:
+                        print(e)
+                    
                     return JsonResponse({'success': False, 'redirect': True})
             last_q = Question.objects.last()
             if question_id == last_q.id:
