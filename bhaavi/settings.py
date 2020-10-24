@@ -40,20 +40,35 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
+
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+
+    'el_pagination',
+
+    'modelcluster',
+    'taggit',
     'markdown_deux',
     'bootstrapform',
     'helpdesk',
-
     'agora',
     'crispy_forms',
-
     'storages',
-
     'accounts',
     'product',
     'payment',
     'schedule',
     'picset',
+    'blog',
 
 ]
 
@@ -65,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
 
@@ -147,7 +164,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -193,3 +210,8 @@ AWS_LOCATION = 'static'
 DEFAULT_FILE_STORAGE = 'bhaavi.storage_backends.MediaStorage'
 AWS_DEFAULT_ACL = None
 LOGIN_URL = '/login'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+WAGTAIL_SITE_NAME = 'Bhaavi CMS'
