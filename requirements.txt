@@ -158,7 +158,7 @@ sqlparse==0.3.1
 srsly==1.0.2
 tensorboard==2.1.1
 tensorboardX==1.8
-tensorflow==2.1.0
+tensorflow==2.1.2
 tensorflow-estimator==2.1.0
 termcolor==1.1.0
 terminado==0.8.3
