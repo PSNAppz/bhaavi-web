@@ -38,8 +38,8 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link" id="navbarPages" href="/support">
-                        Support
+                    <a class="nav-link" id="navbarPages" href="/blog">
+                        Blog
                     </a>
                 </li>
                 {% if user.is_authenticated %}
@@ -287,6 +287,9 @@
                                             </h6>
 
                                             <!-- List -->
+                                            <a class="dropdown-item" href="/support">
+                                                Support
+                                            </a>
                                             <a class="dropdown-item" href="{% url 'about' %}">
                                                 About Us
                                             </a>
