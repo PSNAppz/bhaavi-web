@@ -1,3 +1,4 @@
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -198,6 +199,18 @@ def getResult(request, id=None):
         percentage = {'P': p, 'I': i, 'C': c, 'S': s, 'E': e, 'T': t}
         k = Counter(percentage)
         top = k.most_common(3)
+        user = User.objects.get(user=request.user)
+        full_name = user.full_name
+        from_email = 'bhaavi@support.com'
+        to_emails = user.email
+        print(user.email)
+        subject = 'PICSET result'
+        html_content = 'Hi' + full_name + ', Thank you for taking PICSET test. Your result can be seen here'
+        try:
+            email = EmailMessage(subject, html_content, from_email, [to_emails])
+            email.send()
+        except Exception as e:
+            print(e)
         context = {'result': result, 'P': p, 'I': i, 'C': c, 'S': s, 'E': e, 'T': t, 'top': top}
         return render(request, 'picset/result.html', context)
     except Exception as e:
