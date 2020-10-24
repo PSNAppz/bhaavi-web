@@ -1,0 +1,86 @@
+
+{% extends 'base/main.html' %}
+{% load static %}
+{% load filters %}
+{% load wagtailcore_tags %}
+{% load wagtailimages_tags %}
+{% load el_pagination_tags %}
+
+
+{% block content %}
+
+{% if page.header_image %}
+{% image page.header_image original as header_image %}
+<section data-jarallax data-speed=".8" class="py-8 py-md-15 bg-cover jarallax" style="background-image: url('{{header_image.url}}');"></section>
+{% endif %}
+<section class="pt-8 pt-md-11">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-9 col-xl-8">
+
+          <!-- Heading -->
+          <h1 class="display-4 text-center">
+            {{ page.title }}
+          </h1>
+
+           <!-- Meta -->
+           <div class="row align-items-center py-5 border-top border-bottom">
+           
+            <div class="col ml-n5">
+
+              <!-- Name -->
+              <h6 class="text-uppercase mb-0">
+                Bhaavi Admin
+              </h6>
+
+              <!-- Date -->
+              <time class="font-size-sm text-muted" datetime="2019-05-20">
+                Published on {{ post.date }}
+              </time>
+
+            </div>
+           
+          </div>
+          <!-- Text -->
+          <p class="lead mb-7 text-center text-muted">
+            {{ page.body|richtext }}
+          </p>
+
+          <div class="row align-items-center py-5 border-top border-bottom">
+           
+            <div class="col ml-n5">
+
+             
+
+              <!-- Date -->
+              <time class="font-size-sm text-muted" datetime="2019-05-20">
+                <div class="col ml-n5"> TAGS: 
+                {% for tag in page.tags.all %}
+
+                
+
+                    <!-- Badges -->
+                    <a class="badge badge-pill badge-secondary-soft" href="{{ self.get_parent.url }}?tag={{ tag.slug }}">
+                      <span class="h6 text-uppercase">{{tag}}</span>
+                    </a>
+                    
+      
+                  
+
+                {% endfor %}
+            </div>
+              </time>
+
+            </div>
+           
+          </div>
+         
+
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
+
+
+
+{% endblock content %}
