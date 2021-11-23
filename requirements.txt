@@ -12,7 +12,7 @@ django-crispy-forms==1.9.1
 django-el-pagination==3.3.0
 django-filter==2.4.0
 django-formtools==2.2
-django-helpdesk==0.2.21
+django-helpdesk==0.3.2
 django-markdown-deux==1.0.5
 django-modelcluster==5.1
 django-sekizai==1.1.0
