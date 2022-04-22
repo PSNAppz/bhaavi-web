@@ -35,7 +35,7 @@ markdown2==2.3.9
 mysqlclient==1.4.6
 openpyxl==3.0.5
 Pillow==7.2.0
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 python-dateutil==2.8.1
 python-decouple==3.3
 python-http-client==3.2.7
