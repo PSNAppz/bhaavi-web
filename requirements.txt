@@ -52,7 +52,7 @@ sqlparse==0.3.1
 starkbank-ecdsa==1.0.0
 tablib==2.0.0
 Unidecode==1.1.1
-urllib3==1.25.9
+urllib3==1.26.5
 wagtail==2.10.2
 webencodings==0.5.1
 Willow==1.4
